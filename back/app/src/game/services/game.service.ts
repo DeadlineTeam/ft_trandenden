@@ -71,7 +71,7 @@ export class GameService {
 		if (match) {
 			const side: SIDE = (match.game.players[SIDE.LEFT].socket.id === client.id)? SIDE.LEFT: SIDE.RIGHT;
 			match.handleInput (side, data)
-			GameService.emit (match, "paddle", (side === SIDE.LEFT)?"left":"right", match.game.players[side].paddle.position)	
+			GameService.emit (match, "paddle", side, match.game.players[side].paddle.position)
 		}
 	}
 
