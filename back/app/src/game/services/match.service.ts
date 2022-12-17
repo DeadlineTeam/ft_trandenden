@@ -35,12 +35,12 @@ export class Pong {
 			socket: client,
 			paddle: {
 				position: {
-					x: (this.game.players.length === 0)? 0: 1 - 0.03,
+					x: (this.game.players.length === 0)? 0: 1 - 0.01,
 					y: 0.5,
 				},
 				dimension: {
-					x: 0.03,
-					y: 0.18
+					x: 0.01,
+					y: 0.17
 				},
 				speed: 0.06
 			},
