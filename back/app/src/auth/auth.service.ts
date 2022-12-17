@@ -10,19 +10,26 @@ export class AuthService {
 			  private jwtService: JwtService
 	) {}
 
-  async validateUser(profile: any): Promise<any> {
+ async validateUser(profile: any): Promise<any> {
     var user: any = await this.usersService.findbylogin(profile);
-	if (!user) {
-		console.log("hello form the other side")
-		return await this.usersService.addUserAuth(profile);
-	}
-	// console.log("testtt");
+    if (!user) {
+        console.log("hello form the other side")
+        user = await this.usersService.addUserAuth(profile);
+        user.firstSignin = true;
+        return user;
+    }
+    else
+        user.firstSignin = false;
+    // console.log("testtt");
     return user;
   }
 
   async login(user: any, @Response() res: Res) {
-	const playload = { username: user.login, sub: user.id};
-	// console.log("login jwt")
-	res.cookie('Authorization', 'Bearer ' + this.jwtService.sign(playload)).redirect("http://localhost:3000/Settings");
-  }
+    const playload = { username: user.login, sub: user.id};
+    // console.log("login jwt")
+    if (user.firstSignin == true)
+        res.cookie('Authorization', 'Bearer ' + this.jwtService.sign(playload)).redirect("http://localhost:3000/Settings");
+    else
+        res.cookie('Authorization', 'Bearer ' + this.jwtService.sign(playload)).redirect("http://localhost:3000");
+    }
 }
