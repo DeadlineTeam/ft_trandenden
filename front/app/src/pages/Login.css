@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+.Login{
+
+    width: 100vw;
+    height: 100vh;
+}
+.LoginHeading{
+    align-items: center;
+    text-align: center;
+    font-family: 'Merriweather Sans', sans-serif;
+    font-weight: 700;
+    font-size: 2vw;
+    font-style: italic;
+    width: 50vw;
+    padding-top: 30vh;
+    padding-left: 25vw;
+    color: white;
+
+}
+.input_submit{
+    background-color: white;
+    width: 30%;
+    height: 4vh;
+    font-family: 'Merriweather Sans', sans-serif;
+    font-style: italic;
+    font-size: 1vw;
+    font-weight: 700;
+    border-radius: 15px;
+}
+.Buttonin{
+    padding-top: 3vh;
+    padding-left: 43vw;
+    margin: auto;
+}
+.imgs{
+    position: absolute;
+    margin-top: 7px;
+    margin-left: 25px;
+}
