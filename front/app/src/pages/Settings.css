@@ -1,0 +1,85 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@200;300;400;500&display=swap');
+.settingsinput{
+    position: absolute;
+    top: 55%;
+    left : calc(50% - 15%);
+    width: 30%;;
+    border: 2px groove white;
+    background-color: #192125;
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: x-small;
+    padding-top: 0.5%;
+    padding-left: 0.5%;
+    padding-bottom: 0.5%;
+    color: white;
+    border-radius: 7px;
+    margin: 8px 0px;
+}
+.User{
+    position: absolute;
+    top: 50%;
+    left:35%;
+    font-size: small;
+    font-weight: 500;
+    width: 20%;
+}
+.img{
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    top: 15%;
+    border-radius: 5px;
+    left: calc( 50% - 7.5%);
+    width: 15%;
+    height: 20%;
+}
+.imagechange{
+    position: absolute;
+    top: 30%;
+    height: 5%;
+    font-family:  'Montserrat Alternates', sans-serif;
+    font-weight: 700;
+    font-size: x-small;
+    border: none;
+    border-radius: 0px 0px 5px 5px;
+    background-color:rgb(255, 255, 255, 0.5); ;
+    left: calc( 50% - 7.5%);
+    width: 15%;
+}
+.username{
+    position: absolute;
+    top: 37%;
+    font-weight: 400;
+    font-size: small;
+    left:calc(50% - 100px);
+    width: 200px;
+    text-align: center;
+    align-items: center;
+    justify-items: center;
+}
+.input-submit{
+    position:  absolute;
+    top:80%;
+    left: calc(50% - 15%);
+    font-family:'Montserrat Alternates', sans-serif;
+    font-weight: 400;
+    font-size: small;
+    border: none;
+    border-radius: 5px;
+    border-color: none;
+    width:30%;
+    height: 6%;
+}
+
+.two{
+    position: absolute;
+    top: 70%;
+    width: 30%;
+    left: calc(50% - 15%);
+    font-family:'Montserrat Alternates', sans-serif;
+    font-weight: 400;
+    font-size: x-small;
+
+
+}

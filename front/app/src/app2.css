@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@200;300;400;500&display=swap');
+
+  
+*{
+ /* width: 100vw;
+  height: 100vh;
+
+  display:flex;
+  flex-direction:column ;
+  font-family: 'Montserrat Alternates', sans-serif;
+  background-size: 150%;
+*/
+margin: 0;
+padding: 0;
+text-decoration: none;
+
+}
+.App{
+ background-image: url("./1873.jpg");
+  background-color: #545454;
+  background-size: 110%;
+}
+
+.container{
+  display: flex;
+}
+.main{
+  width: 100%;
+  padding: 15px;
+}
+.sidebar{
+  position: relative;
+  background: #41474A;
+  height:  100vh;
+  color: white;
+  width: 20vw;
+  transition: all 0.5s;
+
+}
+.top-section{
+  display: flex;
+  align-items: center;
+  padding: 20px 10px;
+}
+.logo{
+  font-size: 25px;
+  background-image: ;
+}
+.bars{
+  display: flex;
+  font-size: 1.5vw;
+  margin-left: 30px;
+  padding: 0px;
+}
+.link_text{
+}
+.link{
+  display: flex;
+  color: white;
+  padding: 10px 10px;
+  font-family: Regular, 'Montserrat Alternates', sans-serif;
+  font-weight: 200;
+  font-size: 1.25vw;
+  gap: 15px;
+  transition: all 0.5s;
+  }
+.active{
+  font-weight: 500;
+  outline: none;
+
+}
+.link:active{
+  font-weight: 500;
+}
+.icon:focus{
+  background-color: blue ;
+}
+.searchbar{
+  background-color: #192125;
+  height: 30px;
+}
+.searchInputs{
+  display: flex;
+  margin-left: 33vw;
+}
+.searchbar input{
+  background-color: #252d32;
+  position: relative;
+  outline: none;
+  border: 0;
+  font-size: 10px;
+  color: white;
+  margin-top: 5px;
+  padding: 5px;
+  width: 300px;
+}
+.searchbar input:hover{
+  border: none;
+  outline: none;
+}
+.searchicon{
+  display: grid;
+  place-items: center;
+  border-radius: 0px 30px 30px 0px;
+  background-color: #41474A;
+  margin-top: 5px;
+  width: 20px;
+}
+.dataInputs{
+  margin-top: 30px;
+  width: 300px;
+  height: 100px;
+  background-color: #252d32;
+  overflow: hidden;
+  margin-top: 10px;
+  overflow-y: auto;
+  box-shadow: #545454;
+  margin-left: 33vw;
+  z-index: 1;
+}
+.dataitem{
+  display: flex;
+  width: 100%;
+  height: 20px;;
+  color: white;
+  align-items: center;
+}
+.dataInputs::-webkit-scrollbar{
+  display: none;
+}
+.dataitem p{
+  margin-left:  10px;
+}
+ .dataitem:hover{
+  background-color: #41474A;
+}
+.milieu{
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  font-family: 'Montserrat Alternates', sans-serif;
+  color: white;
+  height: 70vh;
+  margin-left: 20%;
+  background-color: #192125;
+}
