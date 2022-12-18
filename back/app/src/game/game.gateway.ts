@@ -4,7 +4,8 @@ import { GameService } from "./services/game.service";
 import { Server, Socket } from "socket.io";
 
 @WebSocketGateway ({
-	cors: '*'
+	cors: '*',
+	namespace: "/playgame"
 })
 
 

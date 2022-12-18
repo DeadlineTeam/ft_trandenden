@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+
+  backend:
+    build:
+      context:  ./back/
+      dockerfile: Dockerfile
+    command: sh -c "npx prisma migrate dev && npm run start:dev"
+    depends_on:
+      - postgres
+    env_file:
+      - ./back/app/.env
+    networks:
+      - lognet
+    volumes:
+      - ./back/app:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3001:3001
+      - 5555:5555
+
+  frontend:
+    build:
+      context:  ./front/
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+      - backend
+    networks:
+      - lognet
+    volumes:
+      - ./front/app:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000
+  
+  postgres:
+    image: postgres:13.5 
+    # restart: always
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - lognet
+    ports:
+      - '5432:5432'
+
+volumes:
+  postgres:
+
+networks:
+  lognet:
+    driver: bridge

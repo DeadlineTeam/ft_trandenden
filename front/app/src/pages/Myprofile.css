@@ -1,0 +1,170 @@
+.full{
+    display: flex;
+    flex-direction: column;
+    height: 80%;
+    width: 60%;
+    margin: auto;
+}
+.firstpart{
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    width: 100%;
+    height: 45%;
+    margin: 2%;
+    border-radius: 10px;
+}
+.profi{
+    flex-direction: column;
+    font-family:'Montserrat Alternates', sans-serif;
+    background-color: #F4F4F4;
+    width: 30%;
+    height: 100%;
+    border: none;
+    margin-right: 2%;
+    border-radius: 10px ;
+}
+.stats{
+    display: flex;
+    background-color: #192125;
+    font-family:'Montserrat Alternates', sans-serif;
+    position: relative;
+    flex-direction: row;
+    width: 70%;
+    height: 100%;
+    border: none;
+    border-radius:  10px;
+}
+.secondpart{
+    background-color: #192125;
+    width: 100%;
+    height: 50%;
+margin: 2%;
+border: none;
+border-radius: 10px;
+}
+.Profileimg{
+    position: absolute;
+    width: 10%;
+    height: 35%;
+    margin-top: 2%;
+    left: calc(15% - 5%);
+    border-color: #192125;
+    border-width: 1%;
+    border-radius: 50%;
+    border:solid; 
+}
+.name{
+    position: absolute;
+    top:50%;
+    width:30%;
+    text-align: center;
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: small;
+    font-weight: 700;
+
+}
+.nickname{
+    position: absolute;
+    top:60%;
+    width:30%;
+    text-align: center;
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: xx-small;
+    font-weight: 400;
+
+}
+.rank{
+    position: relative;
+    flex-direction: column;
+    width: 50%;
+    height: 100%;
+}
+.rankhead{
+    position: absolute;
+    color: #fff;
+    font-size: small;
+    top: 7%;
+    left: 7%;
+}
+.statsinfo{
+    position: relative;
+    flex-direction: column;
+    width: 50%;
+    height: 100%;
+    margin: 0;
+}
+.Stathead{
+    position: absolute;
+    color: #fff;
+    font-size: small;
+    top: 7%;
+    left: 7%;
+}
+.sta1{
+    position: absolute;
+    left: 7%;
+    height: 13%;
+    width: 90%;
+    top:25%;
+    background-image: linear-gradient(to left, #192125, rgb(255, 255,255,1));;
+}
+.sta4{
+    position: absolute;
+    left: 7%;
+    height: 13%;
+    width:90%;
+    top:76%;
+    background-image: linear-gradient(to left, #192125, rgb(255, 255,255,1));;
+}
+.sta3{
+    position: absolute;
+    left: 7%;
+    height: 13%;
+    width: 90%;
+    top:59%;
+    background-image: linear-gradient(to left, #192125, rgb(255, 255,255,1));;
+}
+.sta2{
+    position: absolute;
+    left: 7%;
+    height: 13%;
+    width: 90%;
+    top:42%;
+    background-image: linear-gradient(to left, #192125, rgb(255, 255,255,1));;
+}
+.secondpart{
+    position: relative;
+    font-family:'Montserrat Alternates', sans-serif;
+
+}
+.level{
+    position: absolute;
+    top:80%;
+    width:30%;
+    text-align: center;
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: small;
+    font-weight: 500;
+}
+.Matchhead{
+    position: absolute;
+    color: #fff;
+    font-size: small;
+    top: 7%;
+    left: 4%;
+}
+.stahead{
+    position: absolute;
+    font-size: x-small;
+    font-weight: 700;
+    left:5%;
+    top:5%;
+}
+.stainfo{
+    position: absolute;
+    font-size: xx-small;
+    font-weight: 500;
+    left:5%;
+    top :50%;
+}
