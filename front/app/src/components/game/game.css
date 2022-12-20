@@ -1,0 +1,57 @@
+.game {
+	width: 80vw;
+	height: 40vw;
+	margin: auto;
+	border-radius: 2px;
+}
+
+.GameContainer h1 {
+	padding:20px 20px;
+	font-size:25px;
+	color: white;
+	font-family: Montserrat Alternates, sans-serif;
+	font-weight: 400;
+	text-align: center;
+}
+
+.GameState {
+	width: 50vw;
+	height: 3vw;
+	margin: auto;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	background-color: #30373A;
+}
+
+.GameState p {
+	font-family: "Montserrat Alternates";
+	color: white;
+	font-size: 100%;
+}
+
+.GameState img {
+	height: 100%;
+	border-radius: 50%;
+}
+
+
+.Avatar{
+	width: 30%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+}
+
+
+.Score {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	/* height: 80%; */
+}
+/* .Score p {
+	text-align: left ;
+} */

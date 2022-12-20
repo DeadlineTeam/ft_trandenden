@@ -26,10 +26,11 @@ export class AuthService {
 
   async login(user: any, @Response() res: Res) {
     const playload = { username: user.login, sub: user.id};
-    // console.log("login jwt")
+    const accessTocken = this.jwtService.sign(playload);
+	console.log(accessTocken);
     if (user.firstSignin == true)
-        res.cookie('Authorization', 'Bearer ' + this.jwtService.sign(playload)).redirect("http://localhost:3000/Settings");
+        res.cookie('Authorization', 'Bearer ' + accessTocken, {httpOnly: true}).redirect("http://localhost:3000/Settings");
     else
-        res.cookie('Authorization', 'Bearer ' + this.jwtService.sign(playload)).redirect("http://localhost:3000");
+        res.cookie('Authorization', 'Bearer ' + accessTocken, {httpOnly: true}).redirect("http://localhost:3000/Rooms");
     }
 }
