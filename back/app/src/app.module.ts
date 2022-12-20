@@ -5,7 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
-import { ProfileModule } from './profile/profile.module';
 
 
 // game dependencies
@@ -21,7 +20,6 @@ import { Pong } from './game/services/match.service';
 	ConfigModule.forRoot({isGlobal: true}),
 	PrismaModule,
 	UsersModule,
-	ProfileModule,
 	ScheduleModule.forRoot (),
 	],
   controllers: [AppController],
