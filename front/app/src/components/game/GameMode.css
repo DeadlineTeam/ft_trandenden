@@ -1,0 +1,61 @@
+
+.gamechoose{
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    height: 45%;
+    top:12%;
+    width: 100%;
+}
+
+.gamechoose h1 {
+	margin: auto;
+	font-style: italic;
+	margin-top: 3%;
+	color: white;
+	font-size: large
+}
+
+
+.gamechoice{
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    margin-top: 3%;
+    width: 100%;
+    height: 100%;
+}
+
+.mode {
+    width:40%;
+    height: 100%;
+    background-color: #9da2b3;
+    margin-left: 5%;
+    border-radius: 10%;
+
+}
+
+.normimage{
+    border-radius: 10%;
+    background-color: #192125;
+
+}
+
+.modebg{
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    top :0%;
+    border-radius: 10%;
+    background-color: rgba(0, 0, 0, 0.5)
+}
+
+.modename{
+    position: absolute;
+    top :80%;
+    left: 50%;
+    font-style: italic;
+    font-size: large;
+    font-weight: 500;
+    color: white;
+}

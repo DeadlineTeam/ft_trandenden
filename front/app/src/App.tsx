@@ -19,22 +19,27 @@ import Bookdata from "./data.json"
 import Login from "./pages/Login"
 import Sidebar2 from './components/Sidebar2';
 import Sidelayout from './components/Sidelayout';
-   /*   <ProtectedLayout body={<Searchbar placeholder="Enter usernaame" data={Bookdata}/>}/>
+import GameComponent from './components/game/game';
+/*   <ProtectedLayout body={<Searchbar placeholder="Enter usernaame" data={Bookdata}/>}/>
       <ProtectedLayout body={<Sidebar/>}/>*/
+
 
 const App:React.FC = () => {
   return (  
     <div className="App">
       <BrowserRouter>
-      <ProtectedLayout body={<Sidebar2  placeholder="Enter usernaame" data={Bookdata}/>}/>
          <Routes>
-         <Route path="/" element={<Login />} />
-          <Route path="/Home"element={<Home/>}/>
-          <Route path="/DashBoard"element={<DashBoard/>}/>
-          <Route path="/Rooms"element={<Rooms/>}/>
-          <Route path="Chat/"element={<Chat/>}/>
-          <Route path="/Myprofile"element={<Myprofile/>}/>
-          <Route path="/Settings"element={<Settings/>}/>
+        	<Route path="/login" element={<Login />} />
+			<Route path="/" element={<ProtectedLayout />} >
+        		<Route index={true} element={<Home/>}/>
+        		<Route path="/DashBoard"element={<DashBoard/>}/>
+        		<Route path="/Rooms"element={<Rooms/>}/>
+        		<Route path="/Chat"element={<Chat/>}/>
+        		<Route path="/Myprofile"element={<Myprofile/>}/>
+        		<Route path="/Settings"element={<Settings/>}/>
+				<Route path="/Game" element= {<GameComponent/>}/>
+			</Route>
+			{/* <Route path="*" element={<div>404</div>} /> */}
         </Routes>
      </BrowserRouter>
     </div>
@@ -42,3 +47,5 @@ const App:React.FC = () => {
 }
 
 export default App;
+
+
