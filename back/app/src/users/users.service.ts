@@ -3,6 +3,7 @@ import {PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client'
 import { Update2faDto } from './dto/update2fa.dto';
 import { UpdateUserNameDto } from './dto/updateUsername.dto';
+import { UserDto } from './dto/User.dto';
 
 @Injectable()
 export class UsersService {
@@ -30,35 +31,22 @@ export class UsersService {
 		return res;
 	}
 
-	async updateAvatar(): Promise<any>
+	async updateAvatar(id: number, filePath: string): Promise<any>
+	{
+		console.log(id);
+		console.log(filePath)
+		console.log(await this.prisma.user.update({where: {id} , data: {avatar_url: filePath},}));
+		return {avatar_url: filePath};
+	}
+
+	async userAvatar(): Promise<string>
 	{
 		return "";
 	}
 
-	async userAvatar(): Promise<any>
+	async updateUserprofile(profile: UserDto): Promise<number>
 	{
-		return "";
-	}
-
-	async update2fa(id: number, update2faDto: Update2faDto): Promise<any>
-	{
-		console.log(update2faDto);
-		console.log(update2faDto.twofactor === true);
-		return (this.prisma.user.update({where: {id} , data: update2faDto,}));
-	}
-
-	async get2fa(): Promise<any>
-	{
-		return "";
-	}
-
-	async updateUsername(id: number, updateUserName: UpdateUserNameDto): Promise<any>
-	{
-		return (this.prisma.user.update({where: {id} , data: updateUserName,}));
-	}
-
-	async getUsername(): Promise<any>
-	{
-		return ""
+		this.prisma.user.update({where: {id: profile.id} , data: profile,});
+		return profile.id;
 	}
 }

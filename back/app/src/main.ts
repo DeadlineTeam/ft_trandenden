@@ -5,6 +5,7 @@ import { NestInterceptor } from '@nestjs/common';
 import {ExecutionContext, CallHandler, Injectable} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
+import { ValidationPipe } from '@nestjs/common';
 
 @Injectable()
 export class VersionHeaderInterceptor implements NestInterceptor {
@@ -31,7 +32,11 @@ async function bootstrap() {
     exposedHeaders: ["cookie", "Cookie", "authorization", "Authorization", "content-type"],
   });
 
-  app.enableCors({});
+  // validation pipe for DTOs 
+  // 
+  app.useGlobalPipes(new ValidationPipe({whitelist:true, skipUndefinedProperties: true}));
+
+
   const config = new DocumentBuilder()
     .setTitle('Median')
     .setDescription('The Median API description')
