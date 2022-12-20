@@ -3,7 +3,7 @@
 /*/app/node_modules
 
 /back/app/uploads
-
+/back/app/docker-compose.yml
 # Logs
 logs
 *.log
