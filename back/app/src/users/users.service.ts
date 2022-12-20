@@ -31,9 +31,12 @@ export class UsersService {
 		return res;
 	}
 
-	async updateAvatar(): Promise<any>
+	async updateAvatar(id: number, filePath: string): Promise<any>
 	{
-		return "";
+		console.log(id);
+		console.log(filePath)
+		console.log(await this.prisma.user.update({where: {id} , data: {avatar_url: filePath},}));
+		return {avatar_url: filePath};
 	}
 
 	async userAvatar(): Promise<string>
