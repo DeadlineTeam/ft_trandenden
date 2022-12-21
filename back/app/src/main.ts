@@ -6,6 +6,9 @@ import {ExecutionContext, CallHandler, Injectable} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
+
+
 
 @Injectable()
 export class VersionHeaderInterceptor implements NestInterceptor {
@@ -35,6 +38,7 @@ async function bootstrap() {
   // validation pipe for DTOs 
   // 
   app.useGlobalPipes(new ValidationPipe({whitelist:true, skipUndefinedProperties: true}));
+  app.use(cookieParser());
 
 
   const config = new DocumentBuilder()
