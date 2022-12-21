@@ -34,23 +34,19 @@ export default function ProtectedLayout() {
 
 	useEffect(() => {
 		async function  authenticateUser() {
-			try {
-				// const axiosapi = axiosApi ();
-				axios.get('http://localhost:3001/getUser', {
-					withCredentials: true,
-				}).then((data)=> {
-					console.table(data);
-				}).catch((err) => {
-					console.log();
-				});
+			// const axiosapi = axiosApi ();
+			axios.get('http://localhost:3001/getUser', {
+				withCredentials: true,
+			}).then((data)=> {
 				console.log (document.cookie)
+				console.log ("already logged in")
 				setLoading(false);
-				navigate("/Game");
-			} catch(e) {
-				console.log(e);
+				navigate("/");
+			}).catch((err) => {
+				console.log(err);
 				setLoading(false);
 				navigate("/login");
-			}
+			});
 		}
 		authenticateUser();
 	}, []);
