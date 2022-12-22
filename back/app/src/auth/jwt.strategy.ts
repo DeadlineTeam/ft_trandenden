@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 
 
 const getAuthCookie = (req) => {
-	console.log(req.cookies, "dfdsfsdfsdfdsfds")
 	  if (req && req.cookies) {
 		if (req.cookies['Authorization'] != null)
 		{
