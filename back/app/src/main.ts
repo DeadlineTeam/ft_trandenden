@@ -6,8 +6,7 @@ import {ExecutionContext, CallHandler, Injectable} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { ValidationPipe } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
-
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 
 @Injectable()
@@ -24,8 +23,9 @@ export class VersionHeaderInterceptor implements NestInterceptor {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+//   console.log(join(__dirname, '..', 'uploads'));
+//   app.useStaticAssets(join(__dirname, '..', 'uploads'));
   app.useGlobalInterceptors(new VersionHeaderInterceptor());
   app.enableCors({
     origin: "http://localhost:3000",
@@ -38,7 +38,6 @@ async function bootstrap() {
   // validation pipe for DTOs 
   // 
   app.useGlobalPipes(new ValidationPipe({whitelist:true, skipUndefinedProperties: true}));
-  app.use(cookieParser());
 
 
   const config = new DocumentBuilder()

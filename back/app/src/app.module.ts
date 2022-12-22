@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 // game dependencies
 import { GameGateway } from './game/game.gateway'
@@ -24,6 +26,11 @@ import { Pong } from './game/services/match.service';
 	MulterModule.register({
 		dest: './uploads',
 	}),
+	ServeStaticModule.forRoot({
+		rootPath: join(__dirname, '..', 'uploads'),
+		serveRoot: '/uploads',
+		renderPath: '/uploads',
+	  }),
 	],
   controllers: [AppController],
   providers: [AppService, GameGateway, GameService, Pong],})
