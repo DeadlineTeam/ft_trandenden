@@ -186,7 +186,9 @@ type Icanvas = {
 	height: number
 }
 
-const socket = io ("ws://localhost:3001/playgame")
+const socket = io ("http://localhost:3001/playgame", {
+	withCredentials: true
+})
 
 function GameCanvas ({width, height}: Icanvas) {
 	const [game, setGame] = useState<Game> (new Game (width, width * 0.5))
