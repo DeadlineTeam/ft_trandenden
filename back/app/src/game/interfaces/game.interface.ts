@@ -34,7 +34,6 @@ export interface Ball {
 }
 
 export interface Game {
-	windowRatio: number;
 	players: Array<Player>;
 	ball: Ball;
 }
