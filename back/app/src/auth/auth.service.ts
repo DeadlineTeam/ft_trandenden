@@ -24,6 +24,15 @@ export class AuthService {
     return user;
   }
 
+	verify (token: string) {
+		try {
+			return this.jwtService.verify (token , {secret: "HelloWorld"});
+		}
+		catch {
+			return null;
+		}
+	}
+
   async login(user: any, @Response() res: Res) {
     const playload = { username: user.login, sub: user.id};
     const accessTocken = this.jwtService.sign(playload);
