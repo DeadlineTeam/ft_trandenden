@@ -9,11 +9,18 @@ import { UserDto } from './dto/User.dto';
 export class UsersService {
 	constructor(private prisma: PrismaService) {}
 
-	async findbylogin(profile: any): Promise<User | null> {
-		console.log(profile.username);
+	async findById (id: number): Promise<User | null> {
+		return this.prisma.user.findUnique({
+			where: {
+				id: id
+			}
+		})
+	}
+	
+	async findbylogin(login: string): Promise<User | null> {
 		const res = this.prisma.user.findUnique({
 			where: {
-				login: profile.username,
+				login: login,
 			}
 		})
 		return res;
@@ -24,7 +31,7 @@ export class UsersService {
 			data:{
 				login: profile.username,
 				fortytwoid: Number(profile.id),
-				avatar_url: "",
+				avatar_url: profile._json.image.link,
 				username: profile.username,
 			}
 		})
