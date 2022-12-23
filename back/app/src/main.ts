@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Response } from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as cookieParser from 'cookie-parser';
 
 
 @Injectable()
@@ -38,7 +39,7 @@ async function bootstrap() {
   // validation pipe for DTOs 
   // 
   app.useGlobalPipes(new ValidationPipe({whitelist:true, skipUndefinedProperties: true}));
-
+  app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle('Median')
