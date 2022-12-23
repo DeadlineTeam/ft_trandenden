@@ -6,16 +6,14 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { MulterModule } from '@nestjs/platform-express';
-
-// game dependencies
-import { GameGateway } from './game/game.gateway'
-import { GameService } from './game/services/game.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { Pong } from './game/services/match.service';
+import { GameModule } from './game/game.module';
+
 
  
 @Module({
   imports: [
+	GameModule,
 	AuthModule,
 	ConfigModule.forRoot({isGlobal: true}),
 	PrismaModule,
@@ -26,5 +24,5 @@ import { Pong } from './game/services/match.service';
 	}),
 	],
   controllers: [AppController],
-  providers: [AppService, GameGateway, GameService, Pong],})
+  providers: [AppService],})
 export class AppModule {}
