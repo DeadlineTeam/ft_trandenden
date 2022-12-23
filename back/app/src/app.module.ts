@@ -14,6 +14,7 @@ import { GameGateway } from './game/game.gateway'
 import { GameService } from './game/services/game.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Pong } from './game/services/match.service';
+import { GameHistoryModule } from './game-history/game-history.module';
 
  
 @Module({
@@ -31,6 +32,7 @@ import { Pong } from './game/services/match.service';
 		serveRoot: '/uploads',
 		renderPath: '/uploads',
 	  }),
+	GameHistoryModule,
 	],
   controllers: [AppController],
   providers: [AppService, GameGateway, GameService, Pong],})
