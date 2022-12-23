@@ -1,28 +1,15 @@
 import React from 'react';
-
 import ProtectedLayout from './components/ProtectedLayout';
-import {
-  BrowserRouter ,
-  Routes,
-  Route,
-} from 'react-router-dom';
-import './App.css';
-import Sidebar from './components/Sidebar';
+import { BrowserRouter , Routes, Route} from 'react-router-dom';
 import DashBoard from './pages/DashBoard';
 import Home from './pages/Home';
 import Chat from './pages/Chat';
 import Rooms from './pages/Rooms';
 import Myprofile from './pages/Myprofile';
 import Settings from './pages/Settings';
-import Searchbar from './components/Searchbar';
-import Bookdata from "./data.json"
 import Login from "./pages/Login"
-import Sidebar2 from './components/Sidebar2';
-import Sidelayout from './components/Sidelayout';
 import GameComponent from './components/game/game';
-/*   <ProtectedLayout body={<Searchbar placeholder="Enter usernaame" data={Bookdata}/>}/>
-      <ProtectedLayout body={<Sidebar/>}/>*/
-
+import './App.css';
 
 const App:React.FC = () => {
   return (  
@@ -39,6 +26,7 @@ const App:React.FC = () => {
         		<Route path="/Settings"element={<Settings/>}/>
 				<Route path="/Game" element= {<GameComponent/>}/>
 			</Route>
+			{/* we neeed a 404 page */}
 			{/* <Route path="*" element={<div>404</div>} /> */}
         </Routes>
      </BrowserRouter>
