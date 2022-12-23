@@ -30,25 +30,24 @@ model User {
 
 // add score and mode later
 
-model Game {
-	id Int 		@id @default(autoincrement())
-	mode 		gameMode
-	players 	gameHistory[]
-	createdAt 	DateTime @default(now())
-}
-
 model gameHistory {
 	player 		User @relation(fields: [playerid], references: [id])
 	playerid 	Int
-
 	game 		Game @relation(fields: [gameid], references: [id])
 	gameid 		Int
-
+	score 		Int @default(0)
 	createdAt 	DateTime @default(now())
 	@@id([playerid, gameid])
 }
 
-// add an emum for the game mode
+
+model Game {
+	id Int 		@id @default(autoincrement())
+	players 	gameHistory[]
+	mode 		gameMode
+	createdAt 	DateTime @default(now())
+}
+
 enum gameMode {
 	CLASSIC
 	ULTIMATE
