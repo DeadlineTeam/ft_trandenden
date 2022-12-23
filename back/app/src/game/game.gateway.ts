@@ -3,6 +3,7 @@ import { WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websocke
 import { GameService } from "./services/game.service";
 import { Server, Socket } from "socket.io";
 import { AuthService } from "src/auth/auth.service";
+import { SocketUserService } from "./services/SocketUserService";
 
 @WebSocketGateway ({
 	cors: {
@@ -16,32 +17,33 @@ import { AuthService } from "src/auth/auth.service";
 export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	constructor (
 		private readonly gameService: GameService,
-		private readonly authService: AuthService) {}
+		private readonly authService: AuthService,
+		private readonly socketUserService: SocketUserService,
+	) {}
 
 	@WebSocketServer ()
 	server: Server;
-
 	
 	handleConnection(@ConnectedSocket () client: Socket) {		
 		const payload = this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""))
 		if (!payload) {
 			client.disconnect ();
+			return ;
 		}
+		this.socketUserService.insert (client.id, payload?.username);
 	}
-	
-	
+
 	handleDisconnect(@ConnectedSocket () client: Socket) {
 		this.gameService.leaveMatch (client)
-	}
-	
-	@SubscribeMessage ("play")
-	setToPlay (@ConnectedSocket () client: Socket, @MessageBody () data: string): void {
-		this.gameService.joinQueue(client, data);
 	}
 
 	@SubscribeMessage ("input")
 	handleInput (@ConnectedSocket () client: Socket, @MessageBody () data: string): void {
 		this.gameService.handleInput (client, data);
 	}
-
+	
+	@SubscribeMessage ("join")
+	async joinQueue (@ConnectedSocket () client: Socket, @MessageBody () mode: string) {
+		this.gameService.joinQueue (client, mode);
+	}
 }

@@ -11,7 +11,7 @@ export class AuthService {
 	) {}
 
  async validateUser(profile: any): Promise<any> {
-    var user: any = await this.usersService.findbylogin(profile);
+    var user: any = await this.usersService.findbylogin(profile.username);
     if (!user) {
         console.log("hello form the other side")
         user = await this.usersService.addUserAuth(profile);
@@ -20,7 +20,6 @@ export class AuthService {
     }
     else
         user.firstSignin = false;
-    // console.log("testtt");
     return user;
   }
 

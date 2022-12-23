@@ -1,11 +1,12 @@
-import {useEffect, useState, useRef, MouseEvent} from "react"
-import React from "react";
+import React, {useEffect, useState, useRef} from "react"
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Sketch from "react-p5"
 import p5Types from "p5";
 import io from 'socket.io-client'
 import "./game.css"
-import Sidebar from "../Sidebar";
-import img from "./eel-orch.jpeg"
+import loadingImg from "./loading.gif"
+
 
 
 enum STATE {
@@ -107,20 +108,15 @@ class Game {
 		this.paddles.forEach ((p) => { p.draw (p5)})
 	}
  	draw (p5: p5Types): void {
-		if (this.state == STATE.OVER) {
-			p5.noLoop();
-		}
-		else {
-			p5.background('#192125');
-			p5.fill ('#FFFFFF')
-			p5.circle (this.width / 2, this.height / 2, 0.17 * this.width)
-			p5.fill ('#192125')
-			p5.circle (this.width / 2, this.height / 2, 0.165 * this.width )
-			p5.fill ('#FFFFFF')
-			p5.rect (Math.round (this.width * (0.5 - 0.001)), 0, 0.002 * this.width, this.height)
-			this.ball.draw (p5)
-			this.paddles.forEach ((p) => { p.draw (p5)})
-		}
+		p5.background('#192125');
+		p5.fill ('#FFFFFF')
+		p5.circle (this.width / 2, this.height / 2, 0.17 * this.width)
+		p5.fill ('#192125')
+		p5.circle (this.width / 2, this.height / 2, 0.165 * this.width )
+		p5.fill ('#FFFFFF')
+		p5.rect (Math.round (this.width * (0.5 - 0.001)), 0, 0.002 * this.width, this.height)
+		this.ball.draw (p5)
+		this.paddles.forEach ((p) => { p.draw (p5)})
 	}
 }
 
@@ -192,33 +188,81 @@ const socket = io ("http://localhost:3001/playgame", {
 
 function GameCanvas ({width, height}: Icanvas) {
 	const [game, setGame] = useState<Game> (new Game (width, width * 0.5))
-	
+	const navigate = useNavigate ();
+	const [leftPlayer, setLeftPlayer] = useState ({
+		ImgURL: loadingImg,
+		UserName: "",
+		score: 0,
+		Side: SIDE.LEFT
+	})
+	const [rightPlayer, setRightPlayer] = useState ({
+		ImgURL: loadingImg,
+		UserName: "",
+		score: 0,
+		Side: SIDE.RIGHT
+	})
+
+	const search = useLocation().search;
+	const mode = new URLSearchParams(search).get('mode');
+
+
 	useEffect (() => {
-		socket.on ('connect', () => {
-			socket.emit ("play", "standard")
+		socket.emit ("join", mode)
+		
+		socket.on ("leftPlayer", (data) => {
+			console.log ("left", data);
+			setLeftPlayer (player => {
+				return {
+					...player,
+					ImgURL: data.avatar_url,
+					UserName: data.username
+				}
+			})
 		})
-		socket.on ('disconnect', () => {
-			game.end ()
+
+		socket.on ("rightPlayer", (data) => {
+			console.log ("right", data);
+			setRightPlayer (player => {
+				return {
+					...player,
+					ImgURL: data.avatar_url,
+					UserName: data.username
+				}
+			})
 		})
+
 		socket.on ('score', (score) => {
 			game.setScore (score)
+			setLeftPlayer (player => {
+				return {
+					...player,
+					score: score[SIDE.LEFT]
+				}
+			})
+			setRightPlayer (player => {
+				return {
+					...player,
+					score: score[SIDE.RIGHT]
+				}
+			})
 		})
+
 		socket.on ('end', () => {
 			game.end ()
+			navigate ("/");
 		})
-		socket.on ('start', () => {
-			game.start ()
-		})
+
 		socket.on ('ball', (position) => {
 			game.ball.updatePosition (position)
 		})
+
 		socket.on ('paddle', (...args) => {
-			// console.log (args);
 			game.paddles[args[0]].updatePosition(args[1])
 		})
+
 		return () => {
-			socket.off('connect')
-			socket.off('disconnect')
+			socket.off ('leftPlayer')
+			socket.off ('righPlayer')
 			socket.off ('score')
 			socket.off ('end')
 			socket.off ('ball')
@@ -227,17 +271,7 @@ function GameCanvas ({width, height}: Icanvas) {
 	}, [])
 
 	const setup = (p5: p5Types, canvasParentRef: Element) => {
-		const canvas = p5.createCanvas (width, height).parent (canvasParentRef)
-		canvas.mouseWheel ((e: MouseEvent) => {
-			// there is a problem here
-			// if (e.)
-			// if (e.deltaY > 100) {
-			// 	socket.emit ("input", "up")
-			// }
-			// else if (e.deltaY < -100) {
-			// 	socket.emit ("input", "down")
-			// }
-		})
+		p5.createCanvas (width, height).parent (canvasParentRef)
 		p5.frameRate (120)
 	}
 
@@ -249,30 +283,30 @@ function GameCanvas ({width, height}: Icanvas) {
 		p5.resizeCanvas (width, height, false);
 		
 	}
-
-	const left: IAvatar = {
-		ImgURL: "https://cdn.intra.42.fr/users/8f34afbfdf4d9a2e668bfed4a418f71e/eel-orch.jpg",
-		UserName: "l9irch",
-		score: 0,
-		Side: SIDE.LEFT
-	}
-	
-	const right: IAvatar = {
-		ImgURL: "https://cdn.intra.42.fr/users/8f34afbfdf4d9a2e668bfed4a418f71e/eel-orch.jpg",
-		UserName: "l9irch",
-		score: 0,
-		Side: SIDE.RIGHT
+	const keyPressed = (p5: p5Types) => {
+		if (p5.keyCode === p5.UP_ARROW) {
+			socket.emit ("input", "up")
+		}
+		if (p5.keyCode === p5.DOWN_ARROW) {
+			socket.emit ("input", "down")
+		}
+		if (p5.keyCode === p5.RIGHT_ARROW) {
+			if (mode === "Ultimate")
+				socket.emit ("input", "right")
+		}
+		if (p5.keyCode === p5.LEFT_ARROW) {
+			if (mode === "Ultimate")
+				socket.emit ("input", "left")
+		}
 	}
 
 	return (
 		<div>
-			<GameState left={left} right={right}/>
-			<Sketch windowResized={windowResized} setup={setup} draw={draw} />
+			<GameState left={leftPlayer} right={rightPlayer}/>
+			<Sketch keyPressed={keyPressed} windowResized={windowResized} setup={setup} draw={draw} />
 		</div>
 	)
 }
-
-
 
 const GameComponent: React.FC<any> = () => {
 	const pRef = useRef<HTMLDivElement>(null);
@@ -283,6 +317,7 @@ const GameComponent: React.FC<any> = () => {
 			setWidth (pRef.current.offsetWidth)
 		}
 	}
+	
 	useEffect (() => {
 		if (pRef.current) {
 			setWidth (pRef.current.offsetWidth)
@@ -292,20 +327,6 @@ const GameComponent: React.FC<any> = () => {
 			window.removeEventListener ('resize', onWidthChange)
 		}
 	}, [])
-
-	const left: IAvatar = {
-		ImgURL: "https://cdn.intra.42.fr/users/8f34afbfdf4d9a2e668bfed4a418f71e/eel-orch.jpg",
-		UserName: "l9irch",
-		score: 0,
-		Side: SIDE.LEFT
-	}
-	
-	const right: IAvatar = {
-		ImgURL: "https://cdn.intra.42.fr/users/8f34afbfdf4d9a2e668bfed4a418f71e/eel-orch.jpg",
-		UserName: "l9irch",
-		score: 0,
-		Side: SIDE.RIGHT
-	}
 
 	return  (
 			<div className="GameContainer">

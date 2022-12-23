@@ -12,9 +12,8 @@ export class Pong {
 		this.scored = false;
 		this.game = {
 			players: [],
-			windowRatio: 0.5,
 			ball: {
-				radius: 0.02,
+				radius: 0.013,
 				position: { 
 					x: 0.5,
 					y: 0.5,
@@ -24,7 +23,7 @@ export class Pong {
 						x: Math.random(),
 						y: Math.random()
 					} ,
-					speed: 0.001,
+					speed: 0.006,
 				}
 			}
 		}
@@ -36,7 +35,7 @@ export class Pong {
 			paddle: {
 				position: {
 					x: (this.game.players.length === 0)? 0: 1 - 0.01,
-					y: 0.5,
+					y: (1 - 0.17) / 2,
 				},
 				dimension: {
 					x: 0.01,
@@ -68,7 +67,8 @@ export class Pong {
 		}
 		else if (input === "right") {
 			if (side === SIDE.LEFT) {
-				if (this.game.players[side].paddle.position.x + dimensions.x + speed <= 0.5)
+				if (this.game.players[side].paddle.position.x + dimensions.x + speed <= 0.5
+					&& this.game.players[side].paddle.position.x + dimensions.x + speed <= this.game.ball.position.x)
 					this.game.players[side].paddle.position.x += speed;
 			}
 			else if (side === SIDE.RIGHT) {
@@ -82,12 +82,13 @@ export class Pong {
 					this.game.players[side].paddle.position.x -= speed;
 			}
 			else if (side === SIDE.RIGHT) {
-				if (this.game.players[side].paddle.position.x - speed >= 0.5)
+				if (this.game.players[side].paddle.position.x - speed >= 0.5 &&
+					this.game.players[side].paddle.position.x - speed >= this.game.ball.position.x)
 					this.game.players[side].paddle.position.x -= speed
 			}
 		}
 	}
-	resetBall ():void {
+	resetBall (): void {
 		
 		this.game.ball.position.x = 0.5;
 		this.game.ball.position.y = 0.5;
@@ -129,23 +130,22 @@ export class Pong {
 			updatePosition.y + this.game.ball.radius >= 1) {
 			this.game.ball.velocity.direction.y *= -1;
 		}
-
-		// LEFT PLAYER
 		const dimensions: Vector = this.game.players[SIDE.LEFT].paddle.dimension;
 		if (
 			updatePosition.y >= this.game.players[SIDE.LEFT].paddle.position.y &&
 			updatePosition.y <= this.game.players[SIDE.LEFT].paddle.position.y + dimensions.y &&
-			updatePosition.x - this.game.ball.radius <= this.game.players[SIDE.LEFT].paddle.position.x + dimensions.x
+			updatePosition.x >= this.game.players[SIDE.LEFT].paddle.position.x + dimensions.x &&
+			updatePosition.x <= this.game.players[SIDE.LEFT].paddle.position.x + dimensions.x + this.game.ball.radius
 			
 		) {
 			this.game.ball.velocity.direction.x = Math.abs (this.game.ball.velocity.direction.x)
 		}
 
-		// RIGHT PLAYER
 		if (
 			updatePosition.y >= this.game.players[SIDE.RIGHT].paddle.position.y &&
-			updatePosition.y <= this.game.players[SIDE.RIGHT].paddle.position.y + this.game.players[SIDE.RIGHT].paddle.dimension.y &&
-			updatePosition.x + this.game.ball.radius >= this.game.players[SIDE.RIGHT].paddle.position.x
+			updatePosition.y <= this.game.players[SIDE.RIGHT].paddle.position.y + dimensions.y &&
+			updatePosition.x <= this.game.players[SIDE.RIGHT].paddle.position.x &&
+			updatePosition.x >= this.game.players[SIDE.RIGHT].paddle.position.x - this.game.ball.radius
 		) {
 			if (this.game.ball.velocity.direction.x > 0)
 				this.game.ball.velocity.direction.x *= -1;
@@ -156,4 +156,7 @@ export class Pong {
 	
 	}
 
+	isFinished (): boolean {
+		return ((this.game.players[SIDE.RIGHT].score == 4) || (this.game.players[SIDE.LEFT].score == 4))
+	}
 };
