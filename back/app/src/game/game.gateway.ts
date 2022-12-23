@@ -3,6 +3,7 @@ import { WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websocke
 import { GameService } from "./services/game.service";
 import { Server, Socket } from "socket.io";
 import { AuthService } from "src/auth/auth.service";
+import { SocketUserService } from "./services/SocketUserService";
 
 @WebSocketGateway ({
 	cors: {
@@ -17,12 +18,11 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	constructor (
 		private readonly gameService: GameService,
 		private readonly authService: AuthService,
+		private readonly socketUserService: SocketUserService,
 	) {}
 
 	@WebSocketServer ()
 	server: Server;
-	
-	SocketUser: Map<string, string> = new Map ();
 	
 	handleConnection(@ConnectedSocket () client: Socket) {		
 		const payload = this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""))
@@ -30,7 +30,7 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 			client.disconnect ();
 			return ;
 		}
-		this.SocketUser.set (client.id, payload?.username);
+		this.socketUserService.insert (client.id, payload?.username);
 	}
 
 	handleDisconnect(@ConnectedSocket () client: Socket) {
@@ -43,7 +43,7 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	}
 	
 	@SubscribeMessage ("join")
-	async joinQueue (@ConnectedSocket () client: Socket, @MessageBody () data: string) {
-		this.gameService.joinQueue (client, data, this.SocketUser);
+	async joinQueue (@ConnectedSocket () client: Socket, @MessageBody () mode: string) {
+		this.gameService.joinQueue (client, mode);
 	}
 }
