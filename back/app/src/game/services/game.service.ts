@@ -3,58 +3,71 @@ import { SIDE} from "../interfaces/game.interface"
 import { Interval } from "@nestjs/schedule";
 import { Injectable } from "@nestjs/common";
 import { Pong } from "./match.service";
+import { User } from "@prisma/client";
+import { UsersService } from "src/users/users.service";
+import { SocketUserService } from "./SocketUserService";
+
+
+type Queue = {
+	Normal: Array<Socket>
+	Ultimate: Array<Socket>
+}
+
+interface holder <T> {
+	leftPlayer: T,
+	rightPlayer: T
+}
+
 
 @Injectable ()
 export class GameService {
-	queue: Array<Socket> = []
-	standardQueue: Array<Socket> = []
-	nonStandardQueue: Array<Socket> = []
+	constructor (
+		private readonly userService: UsersService,
+		private readonly socketUserService: SocketUserService,
+	) {}
+
+	queues: Queue = { Normal: [], Ultimate: []}
 	matches: Map<string, Pong> = new Map ();
 
-	
-	static emit (match: Pong, event: string, ...args: any): void {
+	static emitRoom (match: Pong, event: string, ...args: any): void {
 		for (const p of match.game.players)
 			p.socket.emit (event, ...args);
 	}
-
-	joinQueue (socket: Socket, data: string) {
-		console.log ("client wants to join queue for" + data + "mode");
-		if (data === "standard") {
-			this.standardQueue.push (socket);
-		}
-		else if (data === "nonstandard") {
-			this.nonStandardQueue.push (socket);
-		}
-		if (this.standardQueue.length >= 2) {
+	async Matching (queue: Array<Socket>): Promise<void> {
+		if (queue.length >= 2) {
 			const match: Pong = new Pong ();
-			match.addPlayer (this.standardQueue.shift ())
-			match.addPlayer (this.standardQueue.shift ())
-			GameService.emit (match, "setup", {
-				windowRation: match.game.windowRatio,
-				ballradius: match.game.ball.radius,
-				paddleDimension: match.game.players[0].paddle.dimension,
-			})
+			const players: holder <Socket> = {
+				leftPlayer: queue.shift (),
+				rightPlayer: queue.shift ()
+			}
+			const event: holder <User | null> = {leftPlayer: null, rightPlayer: null}
+			for (const p in players) {
+				match.addPlayer (players[p])
+				const user: User | null = await this.userService.findbylogin (this.socketUserService.get(players[p].id));
+				event[p] = user
+			}
+			for (const [p, u] of Object.entries (event))
+				GameService.emitRoom (match, p, u)
 			this.matches.set (match.id, match);
 		}
-		if (this.nonStandardQueue.length >= 2) {
-			const match: Pong = new Pong ();
-			match.addPlayer (this.nonStandardQueue.shift ())
-			match.addPlayer (this.nonStandardQueue.shift ())
-			GameService.emit (match, "setup", {
-				windowRatio: match.game.windowRatio,
-				ballradius: match.game.ball.radius,
-				paddleDimension: match.game.players[0].paddle.dimension,
-			})
-			this.matches.set (match.id, match);
+		else {
+			const socket: Socket = queue[0];
+			const player = await this.userService.findbylogin (this.socketUserService.get (socket.id))
+			socket.emit ('leftPlayer', player)
 		}
+	}
+	async joinQueue (socket: Socket, mode: string) {
+		this.queues[mode].push (socket)
+		this.Matching (this.queues[mode]);
 	}
 	
 	leaveMatch (socket: Socket): void {
-		console.log ("client disconnect", socket.id)
-		this.queue = this.queue.filter ((client) => (client.id != socket.id))
 		const match: Pong = this.findMatch (socket);
 		if (match) {
-			GameService.emit (match, "end")
+			GameService.emitRoom (match, "end")
+			for (const c of match.game.players) {
+				this.socketUserService.remove (c.socket.id);
+			}
 			this.matches.delete (match.id)
 		}
 	}
@@ -71,7 +84,7 @@ export class GameService {
 		if (match) {
 			const side: SIDE = (match.game.players[SIDE.LEFT].socket.id === client.id)? SIDE.LEFT: SIDE.RIGHT;
 			match.handleInput (side, data)
-			GameService.emit (match, "paddle", side, match.game.players[side].paddle.position)
+			GameService.emitRoom (match, "paddle", side, match.game.players[side].paddle.position)
 		}
 	}
 
@@ -80,11 +93,21 @@ export class GameService {
 		for (const match of this.matches.values ()) {
 			match.update ()
 			if (match.scored) {
-				GameService.emit (match, "score", match.game.players.map ((p) => p.score))
+				GameService.emitRoom (match, "score", match.game.players.map ((p) => p.score))
 				match.reset ();
 			}
-			GameService.emit (match, "ball", match.game.ball.position)
+			if (match.isFinished ()) {
+					// set match as finished
+					GameService.emitRoom (match, "end");
+					// save game to GameHistory
+					//
+					// remove match from  matches
+					this.matches.delete (match.id)
+			
+			}
+			else {
+				GameService.emitRoom (match, "ball", match.game.ball.position)
+			}
 		}
 	}
-
 }
