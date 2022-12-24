@@ -7,6 +7,9 @@ import io from 'socket.io-client'
 import "./game.css"
 import loadingImg from "./loading.gif"
 
+import { gameSocketContext } from "../../contexts/socket";
+import { useContext } from "react";
+
 
 
 enum STATE {
@@ -182,9 +185,7 @@ type Icanvas = {
 	height: number
 }
 
-const socket = io ("http://localhost:3001/playgame", {
-	withCredentials: true
-})
+
 
 function GameCanvas ({width, height}: Icanvas) {
 	const [game, setGame] = useState<Game> (new Game (width, width * 0.5))
@@ -201,14 +202,33 @@ function GameCanvas ({width, height}: Icanvas) {
 		score: 0,
 		Side: SIDE.RIGHT
 	})
+	const socket = useContext (gameSocketContext);
 
 	const search = useLocation().search;
+	
 	const mode = new URLSearchParams(search).get('mode');
+	const watch = new URLSearchParams (search).get ('watch')
+
+
 
 
 	useEffect (() => {
-		socket.emit ("join", mode)
-		
+		if (mode) {
+			if (mode !== 'Normal' && mode !== 'Ultimate') {
+				navigate ("/")
+			}
+			else {
+				socket.emit ("join", mode)
+			}
+		}
+		else if (watch) {
+			socket.emit ("watch", watch)
+		}
+		else {
+			///// don't know what to put here
+		}
+
+
 		socket.on ("leftPlayer", (data) => {
 			console.log ("left", data);
 			setLeftPlayer (player => {
@@ -254,6 +274,7 @@ function GameCanvas ({width, height}: Icanvas) {
 
 		socket.on ('ball', (position) => {
 			game.ball.updatePosition (position)
+			// console.log ()
 		})
 
 		socket.on ('paddle', (...args) => {
@@ -284,19 +305,21 @@ function GameCanvas ({width, height}: Icanvas) {
 		
 	}
 	const keyPressed = (p5: p5Types) => {
-		if (p5.keyCode === p5.UP_ARROW) {
-			socket.emit ("input", "up")
-		}
-		if (p5.keyCode === p5.DOWN_ARROW) {
-			socket.emit ("input", "down")
-		}
-		if (p5.keyCode === p5.RIGHT_ARROW) {
-			if (mode === "Ultimate")
-				socket.emit ("input", "right")
-		}
-		if (p5.keyCode === p5.LEFT_ARROW) {
-			if (mode === "Ultimate")
-				socket.emit ("input", "left")
+		if (mode) {
+			if (p5.keyCode === p5.UP_ARROW) {
+				socket.emit ("input", "up")
+			}
+			if (p5.keyCode === p5.DOWN_ARROW) {
+				socket.emit ("input", "down")
+			}
+			if (p5.keyCode === p5.RIGHT_ARROW) {
+				if (mode === "Ultimate")
+					socket.emit ("input", "right")
+			}
+			if (p5.keyCode === p5.LEFT_ARROW) {
+				if (mode === "Ultimate")
+					socket.emit ("input", "left")
+			}
 		}
 	}
 
