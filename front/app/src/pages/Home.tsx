@@ -1,15 +1,16 @@
 import { GameChoose } from "../components/game/GameMode"
 import useUserContext from "../hooks/useUser"
 import "./Home.css"
+import Matchhistory from "./Matchhistory"
 
 const Home = () => {
-	const user = useUserContext();
-
-	console.log(user);
-
+	
   return (
 	<div className='fullhome'>
 		<GameChoose/>
+		<div className='matchhistory'>
+			<Matchhistory />
+		</div>
 	</div>
   )
 }
