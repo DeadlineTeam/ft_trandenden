@@ -35,5 +35,6 @@ export interface Ball {
 
 export interface Game {
 	players: Array<Player>;
+	watchers: Array<Socket>;
 	ball: Ball;
 }
