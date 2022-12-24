@@ -7,11 +7,6 @@ export class UserDto {
 	@IsNotEmpty()
 	id: number;
 
-	@ApiProperty({required: true})
-	@IsNumber()
-	@IsNotEmpty()
-	fortytwoid: number;
-
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
