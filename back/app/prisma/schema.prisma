@@ -18,5 +18,46 @@ model User {
 	avatar_url	String?
 	twofactor	Boolean @default(false)
 	createdAt   DateTime @default(now())
+	win			Int @default(0)
+	loss		Int @default(0)
+	level		Float @default(0)
+	rank		Int @default(0)
+	rankavatar	String?
+	winrate		Float @default(0)
+	games		gameHistory[]
 	updatedAt   DateTime @updatedAt
 }
+
+// add score and mode later
+
+model gameHistory {
+	player 		User @relation(fields: [playerid], references: [id])
+	playerid 	Int
+	game 		Game @relation(fields: [gameid], references: [id])
+	gameid 		Int
+	score 		Int @default(0)
+	createdAt 	DateTime @default(now())
+	@@id([playerid, gameid])
+}
+
+
+model Game {
+	id Int 		@id @default(autoincrement())
+	players 	gameHistory[]
+	mode 		gameMode
+	status 		gameStatus @default(STARTED)
+	createdAt 	DateTime @default(now())
+}
+
+enum gameMode {
+	CLASSIC
+	ULTIMATE
+}
+
+enum gameStatus {
+	STARTED
+	GOING
+	FINISHED	
+}
+
+// add score and mode later

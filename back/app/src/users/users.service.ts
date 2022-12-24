@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client'
+import { gameMode } from '@prisma/client';
 import { Update2faDto } from './dto/update2fa.dto';
 import { UpdateUserNameDto } from './dto/updateUsername.dto';
 import { UserDto } from './dto/User.dto';
@@ -55,5 +56,18 @@ export class UsersService {
 	{
 		this.prisma.user.update({where: {id: profile.id} , data: profile,});
 		return profile.id;
+	}
+
+	async intraId(id: number): Promise<number>
+	{
+		const res = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+			select: {
+				fortytwoid: true,
+			}
+		})
+		return res.fortytwoid;
 	}
 }

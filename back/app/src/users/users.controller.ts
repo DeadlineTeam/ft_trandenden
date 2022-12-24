@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UploadedFile, UseGuards } from '@nestjs/common';
 import { UsersService} from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UserDto } from './dto/User.dto';
@@ -7,7 +7,9 @@ import { UseInterceptors } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { Express } from 'express';
 import { editFilename, imageFileFilter } from './utils/upload';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 @ApiTags('userProfile')
 export class UsersController {
@@ -35,5 +37,11 @@ export class UsersController {
 	async userProfile(@Param('id') id: string, @Body() userProfile: UserDto)
 	{
 		return this.userService.updateUserprofile(userProfile);
+	}
+
+	@Get('/intraId/:id')
+	async userIntraId(@Param('id') id: number)
+	{
+		return this.userService.intraId(+id);
 	}
 }
