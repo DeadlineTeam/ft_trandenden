@@ -45,6 +45,7 @@ model Game {
 	id Int 		@id @default(autoincrement())
 	players 	gameHistory[]
 	mode 		gameMode
+	status 		gameStatus @default(STARTED)
 	createdAt 	DateTime @default(now())
 }
 
@@ -53,5 +54,10 @@ enum gameMode {
 	ULTIMATE
 }
 
+enum gameStatus {
+	STARTED
+	GOING
+	FINISHED	
+}
 
 // add score and mode later
