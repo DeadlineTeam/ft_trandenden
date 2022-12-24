@@ -274,7 +274,6 @@ function GameCanvas ({width, height}: Icanvas) {
 
 		socket.on ('ball', (position) => {
 			game.ball.updatePosition (position)
-			// console.log ()
 		})
 
 		socket.on ('paddle', (...args) => {
