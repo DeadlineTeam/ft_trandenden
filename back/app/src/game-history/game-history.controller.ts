@@ -26,8 +26,8 @@ export class GameHistoryController {
 		}
 		return await this.gameHistory.addGameHistory(his);
 	}
-	@Get('usergamerHistory')
-	async usergamerHistory() {
-		return await this.gameHistory.usergamerHistory(2);
-	}
+	// @Get('usergamerHistory')
+	// async usergamerHistory() {
+	// 	return await this.gameHistory.usergamerHistory(2);
+	// }
 }

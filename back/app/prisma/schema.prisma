@@ -23,6 +23,7 @@ model User {
 	level		Float @default(0)
 	rank		Int @default(0)
 	rankavatar	String?
+	totalgames	Int @default(0)
 	winrate		Float @default(0)
 	games		gameHistory[]
 	updatedAt   DateTime @updatedAt

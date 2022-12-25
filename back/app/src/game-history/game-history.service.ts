@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameHistoryDto } from './dto/gameHistoryDto';
-import { GameDto } from './dto/gameDto';
 import { gameResult } from '@prisma/client';
-import { UserDto } from 'src/users/dto/User.dto';
+import { UpdateUserNameDto } from 'src/users/dto/updateUsername.dto';
 
 
 @Injectable()
@@ -35,6 +34,15 @@ export class GameHistoryService {
 			return 2;
 	}
 
+	rankAvatar(rank: number): string
+	{
+		if (rank === 0)
+			return "/uploads/avatars/rank0";
+		if (rank === 1)
+			return "/uploads/avatars/rank1";
+		if (rank === 2)
+			return "/uploads/avatars/rank2";
+	}
 
 	private async updatePlayerStats (result: any, playerInfo: any): Promise<any>
 	{
@@ -52,7 +60,9 @@ export class GameHistoryService {
 				loss: match.result === gameResult.LOSS ? info.player.loss + 1 : info.player.loss,
 				level: match.result === gameResult.WIN ? info.player.level + 0.25 : info.player.level,
 				rank: match.result === gameResult.WIN ? this.playerRank(info.player.level + 0.25) : this.playerRank(info.player.level),
+				rankavatar: this.rankAvatar(match.result === gameResult.WIN ? this.playerRank(info.player.level + 0.25) : this.playerRank(info.player.level)),
 				winrate: match.result === gameResult.WIN ? (info.player.win + 1) / (info.player.win + info.player.loss + 1) : info.player.win / (info.player.win + info.player.loss + 1),
+				totalgames: info.player.totalgames + 1,
 			}
 		});
 		console.log(db, "db");
@@ -103,14 +113,14 @@ export class GameHistoryService {
 	}
 
 
-	async usergamerHistory(userid: number) : Promise<any>
+	async usergamerHistory(userName: string) : Promise<any>
 	{
 		const res = await this.prisma.game.findMany({
 			where: {
 				players: {
 					some: {
 						player: {
-							id: userid,
+							username: userName,
 						},
 					},
 				},
