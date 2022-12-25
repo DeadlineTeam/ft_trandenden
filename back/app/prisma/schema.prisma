@@ -36,6 +36,8 @@ model gameHistory {
 	game 		Game @relation(fields: [gameid], references: [id])
 	gameid 		Int
 	score 		Int @default(0)
+	mode 		gameMode
+	result		gameResult @default(LOSS)
 	createdAt 	DateTime @default(now())
 	@@id([playerid, gameid])
 }
@@ -44,7 +46,6 @@ model gameHistory {
 model Game {
 	id Int 		@id @default(autoincrement())
 	players 	gameHistory[]
-	mode 		gameMode
 	status 		gameStatus @default(STARTED)
 	createdAt 	DateTime @default(now())
 }
@@ -58,6 +59,11 @@ enum gameStatus {
 	STARTED
 	GOING
 	FINISHED	
+}
+
+enum gameResult {
+	WIN
+	LOSS
 }
 
 // add score and mode later
