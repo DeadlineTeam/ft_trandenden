@@ -42,14 +42,18 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 		this.gameService.leaveMatch (client)
 	}
 
+	@SubscribeMessage ("join")
+	joinQueue (@ConnectedSocket () client: Socket, @MessageBody () mode: string) {
+		this.gameService.joinQueue (client, mode);
+	}
+	@SubscribeMessage ("leave")
+	leaveQueue (@ConnectedSocket () client: Socket) {
+		this.gameService.leaveMatch (client);
+	}
+	
 	@SubscribeMessage ("input")
 	handleInput (@ConnectedSocket () client: Socket, @MessageBody () data: string): void {
 		this.gameService.handleInput (client, data);
-	}
-	
-	@SubscribeMessage ("join")
-	async joinQueue (@ConnectedSocket () client: Socket, @MessageBody () mode: string) {
-		this.gameService.joinQueue (client, mode);
 	}
 
 	@SubscribeMessage ("watch")
@@ -65,7 +69,6 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	}
 	@SubscribeMessage ("noBroadcast")
 	leaveBroadcastRoom (@ConnectedSocket () client: Socket) {
-		console.log (client.id, "no broadcast ")
 		client.leave (GameGateway.LiveGameRoom)
 	}
 

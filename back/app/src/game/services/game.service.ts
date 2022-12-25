@@ -130,6 +130,10 @@ export class GameService {
 		const match: Pong = this.findMatch (socket);
 		if (match)
 			this.endMatch (match);
+		else {
+			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id)
+			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id)
+		}
 	}
 	
 	findMatch (client: Socket): Pong {
