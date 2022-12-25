@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UploadedFile, UseGuards, Request} from '@nestjs/common';
 import { UsersService} from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UserDto } from './dto/User.dto';
+import { UpdateUserNameDto } from './dto/updateUsername.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors } from '@nestjs/common';
 import { diskStorage } from 'multer';
@@ -11,11 +12,10 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
-@ApiTags('userProfile')
 export class UsersController {
 
 	constructor (private readonly userService: UsersService) {}
-	@Post('Avatar/:id')
+	@Post('Avatar')
 	@UseInterceptors(FileInterceptor('file',{
 		storage: diskStorage({
 			destination: './uploads',
@@ -23,25 +23,22 @@ export class UsersController {
 		}),
 		fileFilter: imageFileFilter,
 	}),)
-	async updateAvatar(@Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
-		return await this.userService.updateAvatar(+id, file.path);
+	async updateAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
+		console.log(req.user.userId);
+		return await this.userService.updateAvatar(req.user.userId, file.path);
 	}
 
-	@Get('Avatar/:id')
-	async getUserAvatar(@Param('id') id: string)
-	{
-		return await this.userService.userAvatar();
+	@Get("leaderboard/")
+	async getLaderboard() {
+		return await this.userService.leaderboard();
 	}
 
-	@Post('userProfile/:id')
-	async userProfile(@Param('id') id: string, @Body() userProfile: UserDto)
-	{
-		return this.userService.updateUserprofile(userProfile);
+	@Post("username")
+	async updateUsername(@Request() req,@Body() updateUsernameDto: UpdateUserNameDto) {
+		return await this.userService.updateUsername(req.user.userId ,updateUsernameDto);
 	}
-
-	@Get('/intraId/:id')
-	async userIntraId(@Param('id') id: number)
-	{
-		return this.userService.intraId(+id);
+	@Get("username")
+	async getUsername(@Request() req) {
+		return req.user.username;
 	}
 }

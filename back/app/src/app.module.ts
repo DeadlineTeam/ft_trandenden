@@ -16,6 +16,7 @@ import { GameService } from './game/services/game.service';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { GameModule } from './game/game.module';
+import { ProfileModule } from './profile/profile.module';
 
 
  
@@ -36,6 +37,7 @@ import { GameModule } from './game/game.module';
 		renderPath: '/uploads',
 	  }),
 	GameHistoryModule,
+	ProfileModule,
 	],
   controllers: [AppController],
   providers: [AppService],})
