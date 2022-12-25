@@ -4,7 +4,7 @@ import { Inject, forwardRef} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { AuthService } from "src/auth/auth.service";
 import { GameService, LiveMatch } from "./services/game.service";
-import { SocketUserService } from "./services/SocketUserService";
+import { UsersService } from "src/users/users.service";
 
 @WebSocketGateway ({
 	cors: {
@@ -20,7 +20,7 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 		@Inject(forwardRef(() => GameService))
 		private readonly gameService: GameService,
 		private readonly authService: AuthService,
-		private readonly socketUserService: SocketUserService,
+		private readonly userService: UsersService
 	) {}
 		
 	@WebSocketServer ()
@@ -28,18 +28,18 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	
 	static LiveGameRoom: string = "LiveGames";
 		
-	handleConnection(@ConnectedSocket () client: Socket) {		
+	async handleConnection(@ConnectedSocket () client: Socket) {		
 		const payload = this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""))
 		if (!payload) {
 			client.disconnect ();
 			return ;
 		}
-		this.socketUserService.insert (client.id, payload?.username);
+		const user = await this.userService.findById (Number (payload.sub));
+		client.data =  user;
 	}
 
 	handleDisconnect(@ConnectedSocket () client: Socket) {
 		this.gameService.leaveMatch (client)
-		this.socketUserService.remove (client.id);
 	}
 
 	@SubscribeMessage ("input")
@@ -59,7 +59,6 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
 	@SubscribeMessage ("LiveGames")
 	joinRoomForBroadcast (@ConnectedSocket () client: Socket) {
-		// console.log (client.id, "wants to watch games")
 		client.join (GameGateway.LiveGameRoom);
 		this.gameService.LiveGameBroadcast ()
 
@@ -71,7 +70,6 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	}
 
 	broadCastLiveGames (liveMatches: LiveMatch []) {
-		// console.log ("back ----->", liveMatches)
 		this.server.to (GameGateway.LiveGameRoom).emit (GameGateway.LiveGameRoom, liveMatches);
 	}
 

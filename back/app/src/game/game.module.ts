@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { GameGateway } from "./game.gateway";
 import { GameService } from "./services/game.service";
-import { SocketUserService } from "./services/SocketUserService";
 import { UsersModule } from "src/users/users.module";
 import { AuthModule } from "src/auth/auth.module";
 import { PrismaModule } from "src/prisma/prisma.module";
@@ -12,6 +11,6 @@ import { PrismaModule } from "src/prisma/prisma.module";
 		AuthModule,
 		PrismaModule,
 	],
-	providers: [SocketUserService, GameService, GameGateway]
+	providers: [GameService, GameGateway]
 })
 export class GameModule {}

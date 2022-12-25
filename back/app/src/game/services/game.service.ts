@@ -3,9 +3,6 @@ import { SIDE} from "../interfaces/game.interface"
 import { Interval } from "@nestjs/schedule";
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { Pong } from "./match.service";
-import { User } from "@prisma/client";
-import { UsersService } from "src/users/users.service";
-import { SocketUserService } from "./SocketUserService";
 import { GameGateway } from "../game.gateway";
 import { PrismaService } from "src/prisma/prisma.service";
 import { gameMode } from "@prisma/client";
@@ -42,8 +39,6 @@ export class GameService {
 	constructor (
 		@Inject(forwardRef(() => GameGateway))
 		private readonly gateWay: GameGateway,
-		private readonly userService: UsersService,
-		private readonly socketUserService: SocketUserService,
 		private readonly prisma: PrismaService,
 	) {}
 
@@ -59,48 +54,33 @@ export class GameService {
 
 
 	async startMatch (match: Pong) {
-		console.log ("match started")
 		this.matches.set (match.id, match);
-		const games = await this.getliveGames ();
-		this.gateWay.broadCastLiveGames (games);
+		this.LiveGameBroadcast ();
 	}
 	
-
-	
-	async getPlayersInfo (players: holder <Socket>) {
-		const data: holder <User | null> = {leftPlayer: null, rightPlayer: null}
-		for (const p in players) {
-			const user: User | null = await this.userService.findbylogin (this.socketUserService.get(players[p].id));
-			data[p] = user
-		}
-		return data;
-	}
-
 	async Matching (queue: Array<Socket>, mode: string): Promise<void> {
-		if (queue.length >= 2) {
-			const match: Pong = new Pong (mode);
-			/////// check if we do not have the same user
-			const players: holder <Socket> = {
-				leftPlayer: queue.shift (),
-				rightPlayer: queue.shift ()
+
+		let pSockets: Array<Socket> = [] 
+		for (let i = 0; i < queue.length - 1; i++) {
+			if (queue[i].data.id !== queue[i + 1].data.id) {
+				pSockets = queue.splice (i, 2);
+				delete queue [i];
+				delete queue [i + 1];
+				break
 			}
-			for (const [p, u] of Object.entries (players))
-				match.addPlayer (u);
-			
-			const event = await this.getPlayersInfo (players);
-			console.log ("hehheheh");
-			for (const [p, u] of Object.entries (event))
-				GameService.emitRoom (match, p, u)
-			await this.startMatch (match)
 		}
-		else {
-			const socket: Socket = queue[0];
-			const player = await this.userService.findbylogin (this.socketUserService.get (socket.id))
-			socket.emit ('leftPlayer', player)
+
+		if (pSockets.length) {
+			const match = new Pong (mode);
+			pSockets.forEach ((s) => { match.addPlayer (s)})
+			GameService.emitRoom (match, "leftPlayer", pSockets[0].data)
+			GameService.emitRoom (match, "rightPlayer", pSockets[1].data)
+			this.startMatch (match)
 		}
 	}
 
-	async joinQueue (socket: Socket, mode: string) {
+	async joinQueue (socket: Socket, mode: string) {	
+		socket.emit ('leftPlayer', socket.data)
 		this.queues[mode].push (socket)
 		this.Matching (this.queues[mode], mode);
 	}
@@ -109,12 +89,10 @@ export class GameService {
 		const match = this.matches.get (id)
 		if (match) {
 			match.addWatcher (socket);
-			console.log ("watcher added")
-			const event = await this.getPlayersInfo (
-				{
-					leftPlayer: match.game.players[0].socket,
-					rightPlayer: match.game.players[1].socket 
-				});
+			const event = {
+					leftPlayer: match.game.players[0].socket.data,
+					rightPlayer: match.game.players[1].socket.data 
+				};
 			for (const [p, u] of Object.entries (event)) {
 				socket.emit (p, u);
 			}
@@ -134,11 +112,11 @@ export class GameService {
 					create: [
 						{
 							score: pong.game.players[SIDE.LEFT].score,
-							player: { connect: { username: this.socketUserService.get (pong.game.players[SIDE.LEFT].socket.id)}, }
+							player: { connect: { id : pong.game.players[SIDE.LEFT].socket.data.id }, }
 						},
 						{
 							score: pong.game.players[SIDE.RIGHT].score,
-							player: { connect: { username: this.socketUserService.get (pong.game.players[SIDE.RIGHT].socket.id)}, }
+							player: { connect: { id : pong.game.players[SIDE.RIGHT].socket.data.id}, }
 						}
 					]
 				}
@@ -176,31 +154,22 @@ export class GameService {
 		let games = new Array <LiveMatch> ();
 
 		for (const match of this.matches.values ()) {
-			const lpusername: string = this.socketUserService.get (match.game.players[0].socket.id)
-			const lpUser: User | null = await this.userService.findbylogin (lpusername);
-			
-			const rpusername: string = this.socketUserService.get (match.game.players[1].socket.id)
-			const rpUser: User | null = await this.userService.findbylogin (rpusername);
-			
-	
-			const matchdata: LiveMatch = <LiveMatch> {
+			games.push (
+			{
 				id: match.id,
 				leftPlayer: {
-					user: lpusername,
-					avatar: lpUser.avatar_url
+					user: match.game.players[0].socket.data.username,
+					avatar: match.game.players[0].socket.data.avatar_url
 				},
 				rightPlayer: {
-					user: rpusername,
-					avatar: rpUser.avatar_url
+					user: match.game.players[1].socket.data.username,
+					avatar: match.game.players[1].socket.data.avatar_url
 				}
-			}
-			games.push (matchdata)
+			})
 		}
 		return games;
 	}
 
-	
-	// @Interval (1000)
 	async LiveGameBroadcast () {
 		const games = await this.getliveGames ();
 		this.gateWay.broadCastLiveGames (games);
