@@ -2,14 +2,17 @@ import {Game, Player, SIDE, Vector} from '../interfaces/game.interface'
 import { Socket } from 'socket.io';
 import { Injectable } from '@nestjs/common';
 
+
 @Injectable ()
 export class Pong {
 	game: Game;
+	mode: string; 
 	id: string;
 	scored: boolean;
-	constructor () {
+	constructor (mode: string) {
 		this.id =  (Math.random ()).toString (16).substring (2);
 		this.scored = false;
+		this.mode = mode;
 		this.game = {
 			players: [],
 			watchers: [],
@@ -163,7 +166,7 @@ export class Pong {
 	}
 
 	isFinished (): boolean {
-		const Score = 10;
+		const Score = 6;
 		return ((this.game.players[SIDE.RIGHT].score == Score) || (this.game.players[SIDE.LEFT].score == Score))
 	}
 };

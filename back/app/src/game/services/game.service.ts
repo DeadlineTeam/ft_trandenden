@@ -7,6 +7,8 @@ import { User } from "@prisma/client";
 import { UsersService } from "src/users/users.service";
 import { SocketUserService } from "./SocketUserService";
 import { GameGateway } from "../game.gateway";
+import { PrismaService } from "src/prisma/prisma.service";
+import { gameMode } from "@prisma/client";
 
 
 type Queue = {
@@ -42,7 +44,7 @@ export class GameService {
 		private readonly gateWay: GameGateway,
 		private readonly userService: UsersService,
 		private readonly socketUserService: SocketUserService,
-
+		private readonly prisma: PrismaService,
 	) {}
 
 	queues: Queue = { Normal: [], Ultimate: []}
@@ -74,9 +76,9 @@ export class GameService {
 		return data;
 	}
 
-	async Matching (queue: Array<Socket>): Promise<void> {
+	async Matching (queue: Array<Socket>, mode: string): Promise<void> {
 		if (queue.length >= 2) {
-			const match: Pong = new Pong ();
+			const match: Pong = new Pong (mode);
 			/////// check if we do not have the same user
 			const players: holder <Socket> = {
 				leftPlayer: queue.shift (),
@@ -100,7 +102,7 @@ export class GameService {
 
 	async joinQueue (socket: Socket, mode: string) {
 		this.queues[mode].push (socket)
-		this.Matching (this.queues[mode]);
+		this.Matching (this.queues[mode], mode);
 	}
 
 	async watchGame (socket: Socket, id: string) {
@@ -122,17 +124,34 @@ export class GameService {
 			socket.emit ('end');
 		}
 	}
+
+	async endMatch (pong: Pong) {
+		GameService.emitRoom (pong, "end");
+		await this.prisma.game.create ( {
+			data: {
+				mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
+				players: {
+					create: [
+						{
+							score: pong.game.players[SIDE.LEFT].score,
+							player: { connect: { username: this.socketUserService.get (pong.game.players[SIDE.LEFT].socket.id)}, }
+						},
+						{
+							score: pong.game.players[SIDE.RIGHT].score,
+							player: { connect: { username: this.socketUserService.get (pong.game.players[SIDE.RIGHT].socket.id)}, }
+						}
+					]
+				}
+			},
+		})
+		this.matches.delete (pong.id);
+		this.LiveGameBroadcast ();
+	}
 	
 	leaveMatch (socket: Socket): void {
 		const match: Pong = this.findMatch (socket);
-		if (match) {
-			GameService.emitRoom (match, "end")
-			for (const c of match.game.players) {
-				this.socketUserService.remove (c.socket.id);
-			}
-			this.matches.delete (match.id)
-		}
-		this.LiveGameBroadcast ();
+		if (match)
+			this.endMatch (match);
 	}
 	
 	findMatch (client: Socket): Pong {
@@ -196,13 +215,7 @@ export class GameService {
 				match.reset ();
 			}
 			if (match.isFinished ()) {
-					// set match as finished
-					GameService.emitRoom (match, "end");
-					// save game to GameHistory
-					//
-					// remove match from  matches
-					this.matches.delete (match.id)
-			
+				this.endMatch (match);
 			}
 			else {
 				GameService.emitRoom (match, "ball", match.game.ball.position)

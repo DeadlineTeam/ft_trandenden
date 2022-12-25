@@ -39,6 +39,7 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
 	handleDisconnect(@ConnectedSocket () client: Socket) {
 		this.gameService.leaveMatch (client)
+		this.socketUserService.remove (client.id);
 	}
 
 	@SubscribeMessage ("input")
