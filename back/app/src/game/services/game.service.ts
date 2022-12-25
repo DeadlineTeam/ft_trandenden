@@ -107,14 +107,15 @@ export class GameService {
 		GameService.emitRoom (pong, "end");
 		await this.prisma.game.create ( {
 			data: {
-				mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
 				players: {
 					create: [
 						{
+							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
 							score: pong.game.players[SIDE.LEFT].score,
 							player: { connect: { id : pong.game.players[SIDE.LEFT].socket.data.id }, }
 						},
 						{
+							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
 							score: pong.game.players[SIDE.RIGHT].score,
 							player: { connect: { id : pong.game.players[SIDE.RIGHT].socket.data.id}, }
 						}
