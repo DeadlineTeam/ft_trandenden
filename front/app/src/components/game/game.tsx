@@ -281,6 +281,7 @@ function GameCanvas ({width, height}: Icanvas) {
 		})
 
 		return () => {
+			socket.emit ("leave");
 			socket.off ('leftPlayer')
 			socket.off ('righPlayer')
 			socket.off ('score')
