@@ -12,6 +12,7 @@ export class Pong {
 		this.scored = false;
 		this.game = {
 			players: [],
+			watchers: [],
 			ball: {
 				radius: 0.013,
 				position: { 
@@ -47,6 +48,11 @@ export class Pong {
 		}
 		this.game.players.push (player);
 	}
+
+	addWatcher (client: Socket) {
+		this.game.watchers.push (client);
+	}
+
 	isPlaying (client: Socket): boolean {
 		for (const p of this.game.players) {
 			if (p.socket.id === client.id)
@@ -157,6 +163,7 @@ export class Pong {
 	}
 
 	isFinished (): boolean {
-		return ((this.game.players[SIDE.RIGHT].score == 4) || (this.game.players[SIDE.LEFT].score == 4))
+		const Score = 10;
+		return ((this.game.players[SIDE.RIGHT].score == Score) || (this.game.players[SIDE.LEFT].score == Score))
 	}
 };
