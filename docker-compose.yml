@@ -6,6 +6,7 @@ services:
       context:  ./back/
       dockerfile: Dockerfile
     command: sh -c "npx prisma migrate dev && npm run start:dev"
+    restart: always
     depends_on:
       - postgres
     env_file:
@@ -23,6 +24,7 @@ services:
     build:
       context:  ./front/
       dockerfile: Dockerfile
+    restart: always
     depends_on:
       - postgres
       - backend
@@ -36,7 +38,7 @@ services:
   
   postgres:
     image: postgres:13.5 
-    # restart: always
+    restart: always
     environment:
       - POSTGRES_USER=myuser
       - POSTGRES_PASSWORD=mypassword

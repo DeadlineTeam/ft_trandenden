@@ -1,49 +1,44 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UploadedFile, UseGuards, Request} from '@nestjs/common';
 import { UsersService} from './users.service';
 import { ApiTags } from '@nestjs/swagger';
-import { Update2faDto } from './dto/update2fa.dto';
+import { UserDto } from './dto/User.dto';
 import { UpdateUserNameDto } from './dto/updateUsername.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UseInterceptors } from '@nestjs/common';
+import { diskStorage } from 'multer';
+import { Express } from 'express';
+import { editFilename, imageFileFilter } from './utils/upload';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-
+@UseGuards(JwtAuthGuard)
 @Controller('users')
-@ApiTags('userProfile')
 export class UsersController {
 
 	constructor (private readonly userService: UsersService) {}
-	@Post('updateAvatar/:id')
-	async updateAvatar(@Param('id') id: string) {
-		return await this.userService.updateAvatar();
+	@Post('Avatar')
+	@UseInterceptors(FileInterceptor('file',{
+		storage: diskStorage({
+			destination: './uploads',
+			filename: editFilename,
+		}),
+		fileFilter: imageFileFilter,
+	}),)
+	async updateAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
+		console.log(req.user.userId);
+		return await this.userService.updateAvatar(req.user.userId, file.path);
 	}
 
-	@Get('userAvatar/:id')
-	async getUserAvatar(@Param('id') id: string)
-	{
-		return await this.userService.userAvatar();
+	@Get("leaderboard/")
+	async getLaderboard() {
+		return await this.userService.leaderboard();
 	}
 
-	@Post('Update2fa/:id')
-	async Update2fa(@Param('id') id: string, @Body() Update2fa: Update2faDto)
-	{
-		console.log("hello");
-		console.log(Update2fa);
-		return await this.userService.update2fa(+id, Update2fa);
+	@Post("username")
+	async updateUsername(@Request() req,@Body() updateUsernameDto: UpdateUserNameDto) {
+		return await this.userService.updateUsername(req.user.userId ,updateUsernameDto);
 	}
-
-	@Get('get2fa/:id')
-	async gete2fa(@Param('id') id: string)
-	{
-		return await this.userService.get2fa();
-	}
-
-	@Post('updateUsername/:id')
-	async updateUserName(@Param('id') id: string, @Body() updateUserName:UpdateUserNameDto)
-	{
-		return await this.userService.updateUsername(+id, updateUserName);
-	}
-
-	@Get('username/:id')
-	async getUserName(@Param('id') id: string)
-	{
-		return await this.userService.getUsername();
+	@Get("username")
+	async getUsername(@Request() req) {
+		return req.user.username;
 	}
 }
