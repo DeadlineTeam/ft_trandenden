@@ -7,8 +7,9 @@ import { FortyTwoStrategy } from './42.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 
+
 @Module({
-  imports: [UsersModule, PassportModule, 
+  imports: [UsersModule, PassportModule.register({failureRedirect: 'localhost:3000'}), 
 	JwtModule.register({
 		secret: 'HelloWorld',
 		signOptions: { expiresIn: '7d'}
