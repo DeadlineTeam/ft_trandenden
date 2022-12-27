@@ -17,6 +17,7 @@ model User {
 	fortytwoid	Int @unique
 	avatar_url	String?
 	twofactor	Boolean @default(false)
+	twofasecret	String?
 	createdAt   DateTime @default(now())
 	win			Int @default(0)
 	loss		Int @default(0)
