@@ -26,6 +26,9 @@ export class UserDto {
 	@IsBoolean()
 	twofactor?: boolean;
 
+	@IsString()
+	@IsNotEmpty()
+	twofasecret?: string;
 	
 	@ApiProperty({required: false})
 	@IsPositive()

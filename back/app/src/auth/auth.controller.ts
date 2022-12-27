@@ -1,0 +1,50 @@
+import { Controller,  Request, Get, UseGuards, Post, Body } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { Response as Res } from 'express';
+import { Request as Req } from 'express'	
+import { Response } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
+import { FortyTwoAuthGuard } from './42-auth.guard';
+import { UseFilters } from '@nestjs/common';
+import {AuthDeclinedExceptionFilter} from './auth-execption.filter';
+import { TwofaService } from './2fa.service';
+import { Update2faDto } from "src/users/dto/update2fa.dto";
+import { UnauthorizedException } from '@nestjs/common';
+
+
+@Controller()
+export class AuthController {
+	constructor (private authService:AuthService,
+				private usersService: UsersService,
+				private twofaService: TwofaService,
+				) {}
+
+	@UseGuards(FortyTwoAuthGuard)
+  	@UseFilters(AuthDeclinedExceptionFilter)
+	@Get("pong_api")
+	async auth(@Request() req, @Response() res: Res) {
+		// console.log("holla");
+		// console.log(req.user)
+		return await this.authService.login(req.user, res);
+	}
+
+	@Post("2fa/generate")
+	@UseGuards(JwtAuthGuard)
+	async register(@Request() req, @Response() res: Res) {
+		const otpauthUrl  = await this.twofaService.generateSecret(req.user.userId, req.user.username);
+		return this.twofaService.pipeqrcode(res, otpauthUrl);
+	}
+
+	@Post("2fa/turn-on")
+	@UseGuards(JwtAuthGuard)
+	async turnOnTa(@Request() req, @Body() tfaCode: Update2faDto) {
+		console.log(tfaCode)
+		const isVerified = await this.twofaService.verifyToken(req.user.userId, tfaCode.twofasecret);
+		console.log(isVerified)
+		if (!isVerified)
+			throw new UnauthorizedException('Wrong authentication code');
+		await this.usersService.turnOnTwofa(req.user.userId);
+	}
+
+}
