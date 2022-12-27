@@ -18,11 +18,13 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { GameModule } from './game/game.module';
 import { ProfileModule } from './profile/profile.module';
 import { ChatModule } from './chat/chat.module';
+import { FriendModule } from './friend/friend.module';
 
  
 @Module({
   imports: [
 	ChatModule,
+	FriendModule,
 	GameModule,
 	AuthModule,
 	ConfigModule.forRoot({isGlobal: true}),
