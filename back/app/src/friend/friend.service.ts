@@ -135,4 +135,35 @@ export class FriendService {
 			})
 		}
 	}
+
+	async getall (userId: number) {
+		const friends = await this.prisma.friendShip.findMany ({
+			where: {
+				InitiatorId: userId,
+				status: FRIENDSHIPSTATUS.FRIEND
+			},
+			include: {
+				Acceptor: true
+			}
+		})
+		const friends2 = await this.prisma.friendShip.findMany ({
+			where: {
+				AcceptorId: userId,
+				status: FRIENDSHIPSTATUS.FRIEND
+			},
+			include: {
+				Initiator: true
+			}
+		})
+		return (
+			friends.map ((friend) => friend.Acceptor)
+			.concat (friends2.map ((friend) => friend.Initiator))
+			.map ((friend) => {
+				return {
+					id: friend.id,
+					username: friend.username,
+					profilePicture: friend.avatar_url
+				}
+			}))
+	}
 }

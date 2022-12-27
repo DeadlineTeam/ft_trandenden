@@ -24,5 +24,9 @@ export class FriendController {
 	async unblockfriend (@Req () req, @Param('Id', ParseIntPipe) Id: number) {
 		return this.friendService.unblok (req.user.userId, Id);
 	}
+	@Get ('all')
+	async getallfriends (@Req () req) {
+		return this.friendService.getall (req.user.userId);
+	}
 }
 
