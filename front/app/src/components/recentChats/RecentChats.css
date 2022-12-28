@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+.recentConversations {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.recentConversations:hover {
+    background-color: grey;
+}
+
+.recentConversationsImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 1px solid white ;
+}
+
+.recentConversationsName {
+    font-weight: 500;
+    color: whitesmoke;
+}
