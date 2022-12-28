@@ -51,7 +51,7 @@ const CreateRoom = () => {
 
 
     console.log(formData)
-    axios.post('/room/create', formData)
+    axios.post('http://localhost:3001/room/create', formData,  { withCredentials: true, })
     .then(response => {
       console.log(response.data);
     })
