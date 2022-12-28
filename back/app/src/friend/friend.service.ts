@@ -34,7 +34,6 @@ export class FriendService {
 					AcceptorId: friend.id,
 				}
 			})
-			/// send notification to user
 		}
 	}
 	//delete a friend

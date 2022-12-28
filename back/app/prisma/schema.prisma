@@ -115,8 +115,8 @@ model MemberShip {
 	userId			Int
 	room			Room			@relation(fields: [roomId], references: [id])
 	roomId			Int
-	muted			Boolean
-	muteTime		DateTime
+	muted			Boolean			@default(false)
+	muteTime		Int 			@default(0)
 	role			ROLE
 }
 
