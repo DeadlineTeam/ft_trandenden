@@ -1,0 +1,155 @@
+.container {
+    font-family: "Gill Sans", sans-serif;
+    font-size: 20px;
+    margin-left: 15%;
+    margin-top: 15%;
+    width: 70%;
+    height: 60%;
+    outline: auto 10px black;
+    background-color: #192125;
+    /* Center vertically and horizontally */
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+    color: white;
+}
+
+.child1 {
+    position: relative;
+    margin-left: 5%;
+    margin-top: 3%
+}
+
+.child2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5%;
+}
+
+.child2 img {
+    border:  solid black;
+    border-radius: 4px;
+    padding: 5px;
+    width: 150px;
+}
+
+.child3 {
+    display: flex;
+    justify-content: center;
+    gap: 2%;
+}
+
+.inputFieldRoomName {
+    border-radius: 5%;
+    outline: auto 10px white;
+    background-color: #192125;
+    color: whitesmoke;
+}
+
+.child4 {
+    display: flex;
+    justify-content: center;
+    gap: 1%;
+}
+
+.child4CheckBox {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+}
+
+.child5 {
+    display: flex;
+    justify-content: center;
+    gap: 2%;
+}
+
+.inputFieldPassword {
+    border-radius: 5%;
+    outline: auto 10px white;
+    background-color: #192125;
+    color: whitesmoke;
+}
+
+.child6 {
+    display: flex;
+    justify-content: center;
+    gap: 1%;
+}
+
+.child6SelectMembers {
+    outline: auto 10px white;
+    border-radius: 4px;
+    padding: 5px;
+    width: 300px;
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.member {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.member button {
+    display: block;
+    position: relative;
+    margin-left: 30%;
+}
+
+.member button img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.member:hover {
+    background-color: grey;
+}
+
+.memberImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 1px solid white ;
+}
+
+.memberName {
+    font-weight: 500;
+    color: whitesmoke;
+}
+
+
+.child7 {
+    display: flex;
+    justify-content: center;
+    gap: 1%;
+}
+
+.child7Cancel,.child7Save {
+    outline: auto 10px white;
+    border-radius: 4px;
+    width: 10%;
+    text-align: center;
+}
+.btn {
+    display: block;
+    position: relative;
+	width: 100%;
+    background-color: #192125;
+    color: white;
+    font-family: "Gill Sans", sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+

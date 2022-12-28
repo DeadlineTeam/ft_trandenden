@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+.chatApp {
+    font-family: "Gill Sans", sans-serif;
+    font-size: 15px;
+    margin-left: 10%;
+    margin-top: 10%;
+    width: 85%;
+    height: 80%;
+    outline: auto 10px black;
+    background-color: #192125;
+    display: flex;
+}
+
+.recentMessages {
+    flex: 1.5;
+}
+
+.recentMessagesWrapper .recentMessagesTitle {
+    color: whitesmoke;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+}
+
+
+
+.availableRooms {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.availableRoomsTitle {
+    display: flex;
+    
+    color: whitesmoke;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    justify-content: center;
+}
+
+.chatZone {
+    flex: 5.5;
+    background-color: #192125;
+}
+
+.chatZoneWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.chatZoneTop {
+    height: 100%;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+.chatZoneBottom {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chatZoneInput {
+    width: 100%;
+    height:  30px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.chatZoneSubmitButton {
+    width: 70px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: teal;
+
+}
+
+.onlineFriendsAndRooms {
+    flex: 2.5px;
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+}
+
+.onlineFriendsTitle {
+    display: flex;
+    background-color: #192125;
+    color: whitesmoke;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    justify-content: center;
+    
+}
+
+
+.recentMessagesWrapper,.chatZoneWrapper,.onlineFriendsWrapper, .onlineFriendsAndRooms {
+    background-color: #192125;
+    height: 100%;
+}
