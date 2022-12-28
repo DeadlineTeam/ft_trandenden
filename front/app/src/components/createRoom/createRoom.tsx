@@ -42,10 +42,10 @@ const CreateRoom = () => {
   const handleSubmit = (e:any) => {
     e.preventDefault();
     const formData = {
-      roomName: roomName,
+      name: roomName,
       visibility: visibility,
       password: password,
-      friends: friends
+      users: friends
     };
 
 
