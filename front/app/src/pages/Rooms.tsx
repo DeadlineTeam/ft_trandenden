@@ -1,9 +1,13 @@
 import React from 'react'
+import CreateRoom from '../components/createRoom/createRoom'
+import RoomSettings from '../components/roomSettings/roomSettings'
 
 const Rooms = () => {
   return (
-    <div>        <h1 style={{padding:"20px 20px", fontSize:"25px" ,color: "white", fontFamily:"'Montserrat Alternates', sans-serif", fontWeight:"300"}}>Rooms</h1>
-    </div>
+    <>
+      <CreateRoom/>
+      {/* <RoomSettings/> */}
+    </>
   )
 }
 

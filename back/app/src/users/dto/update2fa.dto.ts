@@ -1,8 +1,10 @@
 import { PartialType, ApiProperty } from '@nestjs/swagger';
 import { UserDto } from './User.dto';
-// import { IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class Update2faDto extends PartialType(UserDto){
 	@ApiProperty()
-	value: boolean;
+	@IsString()
+	@IsNotEmpty()
+	twofasecret: string;
 }

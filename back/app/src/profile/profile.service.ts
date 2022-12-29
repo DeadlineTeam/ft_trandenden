@@ -1,26 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { GameHistoryService } from 'src/game-history/game-history.service';
+import { UsersService } from 'src/users/users.service';
+import { UpdateUserNameDto } from 'src/users/dto/updateUsername.dto';
+import { Response as Res} from 'express';
 
 @Injectable()
 export class ProfileService {
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
-  }
+	constructor (
+		private gameHistory: GameHistoryService,
+		private users: UsersService,
+		) {}
+	
+	async getIconInfo(username: string) {
+		return await this.users.getIconInfo(username);
+	}
+	
+	async getStats(username: string) : Promise<any>{
+		return await this.users.getStats(username);
+	}
 
-  findAll() {
-    return `This action returns all profile`;
-  }
+	async getGameHistory(username: string) {
+		return await this.gameHistory.usergamerHistory(username);
+	}
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
-  }
-
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
-  }
+	async logout(res: Res) {
+		return this.users.logout(res);
+	}
 }

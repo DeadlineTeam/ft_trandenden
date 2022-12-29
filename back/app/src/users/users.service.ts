@@ -1,18 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client'
-import { Update2faDto } from './dto/update2fa.dto';
 import { UpdateUserNameDto } from './dto/updateUsername.dto';
+import { Response } from 'express';
+import { HttpStatus } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
 	constructor(private prisma: PrismaService) {}
 
-	async findbylogin(profile: any): Promise<User | null> {
-		console.log(profile.username);
+	async findById (id: number): Promise<User | null> {
+		return this.prisma.user.findUnique({
+			where: {
+				id: id
+			}
+		})
+	}
+	
+	async findbylogin(login: string): Promise<User | null> {
 		const res = this.prisma.user.findUnique({
 			where: {
-				login: profile.username,
+				login: login,
 			}
 		})
 		return res;
@@ -23,42 +31,147 @@ export class UsersService {
 			data:{
 				login: profile.username,
 				fortytwoid: Number(profile.id),
-				avatar_url: "",
+				avatar_url: profile._json.image.link,
 				username: profile.username,
+				rankavatar: "/uploads/avatar.png",
 			}
 		})
 		return res;
 	}
 
-	async updateAvatar(): Promise<any>
+	async updateAvatar(id: number, filePath: string): Promise<any>
 	{
-		return "";
+		console.log(id);
+		console.log(filePath)
+		console.log(await this.prisma.user.update({where: {id} , data: {avatar_url: filePath},}));
+		return {avatar_url: filePath};
 	}
 
-	async userAvatar(): Promise<any>
+	async getStats(userName: string): Promise<any>
 	{
-		return "";
+		const res = await this.prisma.user.findUnique({
+			where: {
+				username: userName,
+			},
+			select: {
+				win : true,
+				loss: true,
+				rank: true,
+				rankavatar: true,
+				winrate: true,
+				totalgames: true,
+			},
+		})
+		return res;
 	}
 
-	async update2fa(id: number, update2faDto: Update2faDto): Promise<any>
+	async getIconInfo(userName: string): Promise<any>
 	{
-		console.log(update2faDto);
-		console.log(update2faDto.twofactor === true);
-		return (this.prisma.user.update({where: {id} , data: update2faDto,}));
+		console.log(userName);
+		const res = await this.prisma.user.findUnique({
+			where: {
+				username: userName,
+			},
+			select: {
+				level: true,
+				avatar_url: true,
+				username: true,
+			},
+		})
+		return res;
 	}
 
-	async get2fa(): Promise<any>
+	async leaderboard(): Promise<any>
 	{
-		return "";
+		const res = await this.prisma.user.findMany({
+			select: {
+				avatar_url: true,
+				username: true,
+				level: true,
+				winrate: true,
+				games :{
+					select: {
+						result: true,
+					},
+					orderBy: {
+						createdAt: 'desc',
+					},
+					take:3
+				},
+				totalgames: true,
+			},
+			orderBy: {
+				winrate: 'desc',
+			},
+			take: 15,
+		})
+		return res;
 	}
 
-	async updateUsername(id: number, updateUserName: UpdateUserNameDto): Promise<any>
+	async updateUsername(userId: number, updateUserNameDto: UpdateUserNameDto): Promise<any>
 	{
-		return (this.prisma.user.update({where: {id} , data: updateUserName,}));
+		const res = await this.prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				username: updateUserNameDto.username,
+			},
+		})
+		return res;
 	}
 
-	async getUsername(): Promise<any>
+	async logout(res: Response): Promise<any>
 	{
-		return ""
+	return res.status(HttpStatus.OK)
+		.clearCookie('Authorization', {httpOnly: true})
+		.send({'message': 'logout'});
+	}
+
+	async setTwofaSecret(userId: number, secret: string): Promise<any>
+	{
+		const res = await this.prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twofasecret: secret,
+			},
+		})
+		return res;
+	}
+
+	async turnOnTwofa(userId: number): Promise<any>
+	{
+		const res = await this.prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twofactor: true,
+			},
+		})
+		return res;
+	}
+
+	async turnOffTwofa(userId: number): Promise<any>
+	{
+		const res = await this.prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twofactor: false,
+			},
+		})
+		return res;
+	}
+
+	async findByuername(username: string): Promise<User | null> {
+		return this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+		})
 	}
 }

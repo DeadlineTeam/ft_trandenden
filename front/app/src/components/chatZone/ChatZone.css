@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+.message {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    
+}
+
+.messageTop {
+    display: flex;
+}
+
+.messageImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 1px solid white ;
+}  
+
+.messageText {
+    padding: 10px;
+    border-radius: 20px;
+    background-color: grey;
+    color: whitesmoke;
+    max-width: 300px;
+}
+
+.messageBottom {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.message.own {
+    align-items: flex-end;
+}
+
+.message.own .messageText{
+    background-color: white;
+    color: black;
+}

@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+
+
+.onlineFriend {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+
+.onlineFriendImgContainer {
+    position: relative;
+    margin-right: 10px;
+}
+
+.onlineFriendImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid white ;
+}
+
+.onlineFriendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: lawngreen;
+    position: absolute;
+    top: 0;
+    right: 2px;
+}
+
+.onlineFriendName {
+    color: whitesmoke;
+}

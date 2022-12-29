@@ -1,61 +1,139 @@
 import { Socket } from "socket.io";
 import { SIDE} from "../interfaces/game.interface"
 import { Interval } from "@nestjs/schedule";
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { Pong } from "./match.service";
+import { GameGateway } from "../game.gateway";
+import { PrismaService } from "src/prisma/prisma.service";
+import { gameMode } from "@prisma/client";
+
+
+type Queue = {
+	Normal: Array<Socket>
+	Ultimate: Array<Socket>
+}
+
+interface holder <T> {
+	leftPlayer: T,
+	rightPlayer: T
+}
+
+
+
+export interface LiveMatch {
+	id: string,
+	leftPlayer: {
+		user: string
+		avatar: string
+	},
+	rightPlayer: {
+		user: string
+		avatar: string
+	}
+}
+
+export type LiveMatches = typeof Array<LiveMatch>
 
 @Injectable ()
 export class GameService {
-	queue: Array<Socket> = []
-	standardQueue: Array<Socket> = []
-	nonStandardQueue: Array<Socket> = []
+	constructor (
+		@Inject(forwardRef(() => GameGateway))
+		private readonly gateWay: GameGateway,
+		private readonly prisma: PrismaService,
+	) {}
+
+	queues: Queue = { Normal: [], Ultimate: []}
 	matches: Map<string, Pong> = new Map ();
 
-	
-	static emit (match: Pong, event: string, ...args: any): void {
+	static emitRoom (match: Pong, event: string, ...args: any): void {
 		for (const p of match.game.players)
 			p.socket.emit (event, ...args);
+		for (const s of match.game.watchers)
+			s.emit (event, ...args)
 	}
 
-	joinQueue (socket: Socket, data: string) {
-		console.log ("client wants to join queue for" + data + "mode");
-		if (data === "standard") {
-			this.standardQueue.push (socket);
+
+	async startMatch (match: Pong) {
+		this.matches.set (match.id, match);
+		this.LiveGameBroadcast ();
+	}
+	
+	async Matching (queue: Array<Socket>, mode: string): Promise<void> {
+
+		let pSockets: Array<Socket> = [] 
+		for (let i = 0; i < queue.length - 1; i++) {
+			if (queue[i].data.id !== queue[i + 1].data.id) {
+				pSockets = queue.splice (i, 2);
+				delete queue [i];
+				delete queue [i + 1];
+				break
+			}
 		}
-		else if (data === "nonstandard") {
-			this.nonStandardQueue.push (socket);
+
+		if (pSockets.length) {
+			const match = new Pong (mode);
+			pSockets.forEach ((s) => { match.addPlayer (s)})
+			GameService.emitRoom (match, "leftPlayer", pSockets[0].data)
+			GameService.emitRoom (match, "rightPlayer", pSockets[1].data)
+			this.startMatch (match)
 		}
-		if (this.standardQueue.length >= 2) {
-			const match: Pong = new Pong ();
-			match.addPlayer (this.standardQueue.shift ())
-			match.addPlayer (this.standardQueue.shift ())
-			GameService.emit (match, "setup", {
-				windowRation: match.game.windowRatio,
-				ballradius: match.game.ball.radius,
-				paddleDimension: match.game.players[0].paddle.dimension,
-			})
-			this.matches.set (match.id, match);
+	}
+
+	async joinQueue (socket: Socket, mode: string) {	
+		socket.emit ('leftPlayer', socket.data)
+		this.queues[mode].push (socket)
+		this.Matching (this.queues[mode], mode);
+	}
+
+	async watchGame (socket: Socket, id: string) {
+		const match = this.matches.get (id)
+		if (match) {
+			match.addWatcher (socket);
+			const event = {
+					leftPlayer: match.game.players[0].socket.data,
+					rightPlayer: match.game.players[1].socket.data 
+				};
+			for (const [p, u] of Object.entries (event)) {
+				socket.emit (p, u);
+			}
+			socket.emit("score", match.game.players.map ((p) => p.score))
 		}
-		if (this.nonStandardQueue.length >= 2) {
-			const match: Pong = new Pong ();
-			match.addPlayer (this.nonStandardQueue.shift ())
-			match.addPlayer (this.nonStandardQueue.shift ())
-			GameService.emit (match, "setup", {
-				windowRatio: match.game.windowRatio,
-				ballradius: match.game.ball.radius,
-				paddleDimension: match.game.players[0].paddle.dimension,
-			})
-			this.matches.set (match.id, match);
+		else {
+			socket.emit ('end');
 		}
+	}
+
+	async endMatch (pong: Pong) {
+		GameService.emitRoom (pong, "end");
+		await this.prisma.game.create ( {
+			data: {
+				players: {
+					create: [
+						{
+							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
+							score: pong.game.players[SIDE.LEFT].score,
+							player: { connect: { id : pong.game.players[SIDE.LEFT].socket.data.id }, }
+						},
+						{
+							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
+							score: pong.game.players[SIDE.RIGHT].score,
+							player: { connect: { id : pong.game.players[SIDE.RIGHT].socket.data.id}, }
+						}
+					]
+				}
+			},
+		})
+		this.matches.delete (pong.id);
+		this.LiveGameBroadcast ();
 	}
 	
 	leaveMatch (socket: Socket): void {
-		console.log ("client disconnect", socket.id)
-		this.queue = this.queue.filter ((client) => (client.id != socket.id))
 		const match: Pong = this.findMatch (socket);
-		if (match) {
-			GameService.emit (match, "end")
-			this.matches.delete (match.id)
+		if (match)
+			this.endMatch (match);
+		else {
+			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id)
+			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id)
 		}
 	}
 	
@@ -64,6 +142,7 @@ export class GameService {
 			if (match.isPlaying (client))
 				return match;
 		}
+		return null;
 	}
 
 	handleInput (client: Socket, data: string): void {
@@ -71,20 +150,50 @@ export class GameService {
 		if (match) {
 			const side: SIDE = (match.game.players[SIDE.LEFT].socket.id === client.id)? SIDE.LEFT: SIDE.RIGHT;
 			match.handleInput (side, data)
-			GameService.emit (match, "paddle", side, match.game.players[side].paddle.position)
+			GameService.emitRoom (match, "paddle", side, match.game.players[side].paddle.position)
 		}
+	}
+
+	
+	async getliveGames (): Promise <Array <LiveMatch>> {
+		let games = new Array <LiveMatch> ();
+
+		for (const match of this.matches.values ()) {
+			games.push (
+			{
+				id: match.id,
+				leftPlayer: {
+					user: match.game.players[0].socket.data.username,
+					avatar: match.game.players[0].socket.data.avatar_url
+				},
+				rightPlayer: {
+					user: match.game.players[1].socket.data.username,
+					avatar: match.game.players[1].socket.data.avatar_url
+				}
+			})
+		}
+		return games;
+	}
+
+	async LiveGameBroadcast () {
+		const games = await this.getliveGames ();
+		this.gateWay.broadCastLiveGames (games);
 	}
 
 	@Interval (1000/60)
-	gameLoop (): void {
+	async gameLoop () {
 		for (const match of this.matches.values ()) {
 			match.update ()
 			if (match.scored) {
-				GameService.emit (match, "score", match.game.players.map ((p) => p.score))
+				GameService.emitRoom (match, "score", match.game.players.map ((p) => p.score))
 				match.reset ();
 			}
-			GameService.emit (match, "ball", match.game.ball.position)
+			if (match.isFinished ()) {
+				this.endMatch (match);
+			}
+			else {
+				GameService.emitRoom (match, "ball", match.game.ball.position)
+			}
 		}
 	}
-
 }

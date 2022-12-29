@@ -1,34 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ProfileService } from './profile.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 
+import { Controller, Post, Get , Param, Response} from '@nestjs/common';
+import { ProfileService } from './profile.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+import { UpdateUserNameDto } from 'src/users/dto/updateUsername.dto';
+import { Response as Res} from 'express';
+
+@UseGuards(JwtAuthGuard)
 @Controller('profile')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+	constructor(private profile: ProfileService) {
+	}
 
-  @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.create(createProfileDto);
-  }
+	@Get('iconInfo/:username')
+	async getIconInfo(@Param('username') username: string) {
+		console.log(username);
+		return await this.profile.getIconInfo(username);
+	}
 
-  @Get()
-  findAll() {
-    return this.profileService.findAll();
-  }
+	@Get('stats/:username')
+	async getStats(@Param('username') username: string) {
+		return await this.profile.getStats(username);
+	}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
-  }
+	// check for null responses
+	@Get('gameHistory/:username')
+	async getGameHistory(@Param('username') username: string) {
+		return await this.profile.getGameHistory(username);
+	}
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(+id, updateProfileDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
-  }
+	@Post('logout')
+	async logout(@Response() res: Res) {
+		return await this.profile.logout(res);
+	}
 }

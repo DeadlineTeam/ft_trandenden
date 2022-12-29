@@ -17,6 +17,123 @@ model User {
 	fortytwoid	Int @unique
 	avatar_url	String?
 	twofactor	Boolean @default(false)
+	twofasecret	String?
 	createdAt   DateTime @default(now())
+	win			Int @default(0)
+	loss		Int @default(0)
+	level		Float @default(0)
+	rank		Int @default(0)
+	rankavatar	String?
+	totalgames	Int @default(0)
+	winrate		Float @default(0)
+	games		gameHistory[]
 	updatedAt   DateTime @updatedAt
+
+	rooms				MemberShip[]
+	sentfriendship		FriendShip[]					@relation("initiatefriendship")
+	receivedfrienship	FriendShip[]					@relation("acceptfriendship")
+	Message				Message[]
+}
+
+// add score and mode later
+
+model gameHistory {
+	player 		User @relation(fields: [playerid], references: [id])
+	playerid 	Int
+	game 		Game @relation(fields: [gameid], references: [id])
+	gameid 		Int
+	score 		Int @default(0)
+	mode 		gameMode
+	result		gameResult @default(LOSS)
+	createdAt 	DateTime @default(now())
+	@@id([playerid, gameid])
+}
+
+
+model Game {
+	id Int 		@id @default(autoincrement())
+	players 	gameHistory[]
+	status 		gameStatus @default(STARTED)
+	createdAt 	DateTime @default(now())
+}
+
+enum gameMode {
+	CLASSIC
+	ULTIMATE
+}
+
+enum gameStatus {
+	STARTED
+	GOING
+	FINISHED	
+}
+
+enum gameResult {
+	WIN
+	LOSS
+}
+
+// add score and mode later
+
+// // chat and friends databases
+// // message model
+model Message {
+	id				Int				@id @default(autoincrement())
+	sender			User			@relation(fields: [senderId], references: [id])
+	senderId		Int
+	room			Room			@relation(fields: [roomId], references: [id])
+	roomId			Int
+	sentTime		DateTime		@default(now())
+}
+
+// room model
+enum VISIBILITY {
+	DM
+	PRIVATE
+	PROTECTED
+	PUBLIC
+}
+
+model Room {
+	id				Int				@id @default(autoincrement())
+	name			String
+	visibility		VISIBILITY
+	passwd			String?
+	users			MemberShip[]
+	messages 		Message[]
+}
+
+//membership
+enum ROLE {
+	USER
+	ADMIN
+	OWNER
+}
+
+model MemberShip {
+	id				Int				@id @default (autoincrement())
+	user			User			@relation(fields: [userId], references: [id])
+	userId			Int
+	room			Room			@relation(fields: [roomId], references: [id])
+	roomId			Int
+	muted			Boolean			@default(false)
+	muteTime		Int 			@default(0)
+	role			ROLE
+}
+
+
+//frienship
+enum FRIENDSHIPSTATUS {
+	PENDING
+	FRIEND
+	BLOCKED
+}
+
+model FriendShip {
+	id						Int			@id @default (autoincrement())
+	Initiator				User     	@relation(name: "initiatefriendship", fields: [InitiatorId], references: [id])
+	InitiatorId     		Int
+	Acceptor				User		@relation(name: "acceptfriendship", fields: [AcceptorId], references: [id])
+	AcceptorId     			Int
+	status					FRIENDSHIPSTATUS
 }
