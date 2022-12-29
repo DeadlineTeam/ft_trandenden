@@ -159,6 +159,10 @@ export class RoomService {
 				throw new HttpException (`Password is incorrect`, 400);
 			}
 		}
+		const member = await this.member.getMember (roomId, userId);
+		if (member) {
+			throw new HttpException (`User with id ${userId} is already a member of room with id ${roomId}`, 400);
+		}
 		return await this.member.addMember(roomId, userId);
 	}
 
