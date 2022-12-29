@@ -127,4 +127,51 @@ export class UsersService {
 		.clearCookie('Authorization', {httpOnly: true})
 		.send({'message': 'logout'});
 	}
+
+	async setTwofaSecret(userId: number, secret: string): Promise<any>
+	{
+		const res = await this.prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twofasecret: secret,
+			},
+		})
+		return res;
+	}
+
+	async turnOnTwofa(userId: number): Promise<any>
+	{
+		const res = await this.prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twofactor: true,
+			},
+		})
+		return res;
+	}
+
+	async turnOffTwofa(userId: number): Promise<any>
+	{
+		const res = await this.prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twofactor: false,
+			},
+		})
+		return res;
+	}
+
+	async findByuername(username: string): Promise<User | null> {
+		return this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+		})
+	}
 }

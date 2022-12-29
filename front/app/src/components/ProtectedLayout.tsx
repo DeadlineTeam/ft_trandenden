@@ -41,7 +41,7 @@ export default function ProtectedLayout() {
 				console.log (document.cookie)
 				console.log ("already logged in")
 				setLoading(false);
-				navigate("/");
+				// navigate("/");
 			}).catch((err) => {
 				console.log(err);
 				setLoading(false);

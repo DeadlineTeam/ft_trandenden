@@ -1,6 +1,5 @@
 
 import { Controller,  Request, Get, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { Response as Res } from 'express';
@@ -18,14 +17,14 @@ export class AppController {
 	constructor (private authService:AuthService,
 				private usersService: UsersService) {}
   
-	@UseGuards(FortyTwoAuthGuard)
-  	@UseFilters(AuthDeclinedExceptionFilter)
-	@Get("pong_api")
-	async auth(@Request() req, @Response() res: Res) {
-		// console.log("holla");
-		// console.log(req.user)
-		return await this.authService.login(req.user, res);
-	}
+	// @UseGuards(FortyTwoAuthGuard)
+  	// @UseFilters(AuthDeclinedExceptionFilter)
+	// @Get("pong_api")
+	// async auth(@Request() req, @Response() res: Res) {
+	// 	// console.log("holla");
+	// 	// console.log(req.user)
+	// 	return await this.authService.login(req.user, res);
+	// }
 
 	@UseGuards(JwtAuthGuard)
 	@Get("getUser")
