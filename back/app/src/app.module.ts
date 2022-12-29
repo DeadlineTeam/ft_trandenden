@@ -21,10 +21,12 @@ import { ChatModule } from './chat/chat.module';
 import { FriendModule } from './friend/friend.module';
 import { RoomModule } from './room/room.module';
 import { MemberModule } from './member/member.module';
+import { OnlineModule } from './online/online.module';
 
  
 @Module({
   imports: [
+	OnlineModule,
 	MemberModule,
 	RoomModule,
 	ChatModule,
