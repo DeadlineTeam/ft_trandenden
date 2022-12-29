@@ -31,8 +31,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	
 	async handleConnection (@ConnectedSocket () client: Socket) {
-
+		const payload = this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""))
+		if (!payload) {
+			client.disconnect ();
+			return ;
+		}
 	}
+
 	async handleDisconnect(client: Socket) {
 		
 	}

@@ -101,6 +101,9 @@ model Room {
 	passwd			String?
 	users			MemberShip[]
 	messages 		Message[]
+
+	createdAt		DateTime		@default(now())
+	updatedAt		DateTime		@updatedAt
 }
 
 //membership
@@ -119,6 +122,9 @@ model MemberShip {
 	muted			Boolean			@default(false)
 	muteTime		Int 			@default(0)
 	role			ROLE
+
+	createdAt		DateTime		@default(now())
+	banned			Boolean			@default(false)
 }
 
 
