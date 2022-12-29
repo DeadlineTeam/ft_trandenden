@@ -40,20 +40,24 @@ export class AuthService {
 
 	async login(user: any, isTfauth: boolean = false) : Promise<string>{
 		const playload = {isTwoFactorAuthenticated: isTfauth, sub: user.id};
-		const accessTocken = this.jwtService.sign(playload);
+		const accessTocken = await this.jwtService.sign(playload);
 		console.log(accessTocken);
 		return accessTocken;
 	}
 
-	async signIn(user:any, res: Res)
+	async signIn(user:any, res: Res): Promise<string>
 	{
 		if (user.firstSignin == true)
-			res.cookie('Authorization', 'Bearer ' + (await this.login(user)), {httpOnly: true}).redirect("http://localhost:3000/Settings");
+		{
+			await res.cookie('Authorization', 'Bearer ' + (await this.login(user)), {httpOnly: true});//.redirect("http://localhost:3000/Settings");
+			return "http://localhost:3000/Settings";
+		}
 		if (user.twofactor)
 		{
-			return res.cookie('TfaCookie', 'Bearer ' + (await this.twofaService.twoFaKey(user.username)), {httpOnly: true}).redirect("http://localhost:3000/2fa");
+			await res.cookie('TfaCookie', 'Bearer ' + (await this.twofaService.twoFaKey(user.username)), {httpOnly: true});//.redirect("http://localhost:3000/2fa");
+			return "http://localhost:3000/2fa";
 		}
-		else
-			res.cookie('Authorization', 'Bearer ' + (await this.login(user)), {httpOnly: true}).redirect("http://localhost:3000/Rooms"); // change to Home page later
+		await res.cookie('Authorization', 'Bearer ' + (await this.login(user)), {httpOnly: true});//.redirect("http://localhost:3000/Rooms"); // change to Home page later
+		return "http://localhost:3000/Rooms";
 	}
 }
