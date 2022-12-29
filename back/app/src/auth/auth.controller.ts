@@ -24,9 +24,9 @@ export class AuthController {
   	@UseFilters(AuthDeclinedExceptionFilter)
 	@Get("pong_api")
 	async auth(@Request() req, @Response() res: Res) {
-		// console.log("holla");
-		// console.log(req.user)
-		return await this.authService.login(req.user, res);
+		console.log("holla");
+		console.log(req.user)
+		return await this.authService.signIn(req.user, res);
 	}
 
 	@Post("2fa/generate")
@@ -39,12 +39,27 @@ export class AuthController {
 	@Post("2fa/turn-on")
 	@UseGuards(JwtAuthGuard)
 	async turnOnTa(@Request() req, @Body() tfaCode: Update2faDto) {
-		console.log(tfaCode)
-		const isVerified = await this.twofaService.verifyToken(req.user.userId, tfaCode.twofasecret);
+		console.log("controller", tfaCode);
+		const isVerified = await this.twofaService.verifyToken(req.user.username, tfaCode.twofasecret);
 		console.log(isVerified)
 		if (!isVerified)
 			throw new UnauthorizedException('Wrong authentication code');
 		await this.usersService.turnOnTwofa(req.user.userId);
 	}
 
+	@Post('2fa/authenticate')
+	async authenticate(@Request() req: Req,@Response() res: Res, @Body() tfaCode: Update2faDto)
+	{
+		if (req.cookies['TfaCookie'] == null)
+			throw new UnauthorizedException('invalid cookieee');
+		const username = await this.twofaService.verifyTwoFaKey(req.cookies['TfaCookie'].split(' ')[1]);
+		if (username == null)
+			throw new UnauthorizedException('invalid cccookie');
+		const isVerified = await this.twofaService.verifyToken(username, tfaCode.twofasecret);
+		if (!isVerified)
+			throw new UnauthorizedException('user Not foud Or Wrong authentication code');
+		const user = this.usersService.findByuername(username);
+		const cookie = await this.authService.login(user, true);
+		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true}).redirect("http://localhost:3000/");
+	}
 }

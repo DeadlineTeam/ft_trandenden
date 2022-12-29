@@ -23,7 +23,7 @@ export class VersionHeaderInterceptor implements NestInterceptor {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {logger: ['debug', 'verbose']});
 //   console.log(join(__dirname, '..', 'uploads'));
 //   app.useStaticAssets(join(__dirname, '..', 'uploads'));
   app.useGlobalInterceptors(new VersionHeaderInterceptor());

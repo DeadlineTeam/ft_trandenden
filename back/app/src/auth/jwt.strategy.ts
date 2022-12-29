@@ -1,6 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
 
 
 const getAuthCookie = (req) => {
@@ -15,7 +16,7 @@ const getAuthCookie = (req) => {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private usersService: UsersService) {
     super({
       jwtFromRequest: getAuthCookie,
       ignoreExpiration: true,
@@ -25,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
 	console.log("playload == ", payload);
-    return { userId: payload.sub, username: payload.username };
+	const username = (await this.usersService.findById(payload.sub)).username;
+    return { userId: payload.sub, isTauth: payload.isTwoFactorAuthenticated, username: username };
   }
 }

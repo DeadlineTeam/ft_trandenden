@@ -6,6 +6,7 @@ import { UserDto } from "src/users/dto/User.dto";
 import { ConfigService } from "@nestjs/config";
 import { Response } from 'express';
 import { toFileStream } from 'qrcode';
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -27,15 +28,31 @@ export class TwofaService {
 		return toFileStream(res, otpauthUrl);
 	}
 
-	async verifyToken(id: number, tfaCode: string) : Promise<boolean> {
-		const user: UserDto = await this.usersService.findById(id);
-		// console.log(user);
-		console.log(tfaCode);
+
+
+	async verifyToken(username: string, tfaCode: string) : Promise<boolean> {
+		const user: UserDto = await this.usersService.findByuername(username);
+		console.log("verifyToken",tfaCode);
 		if (!user)
 			return false;
 		return authenticator.verify({
 			token: tfaCode,
 			secret: user.twofasecret,
-		})
+		});
+	}
+
+	async twoFaKey(username: string): Promise<string> {
+		const rounds = 10;
+		const key = await bcrypt.hash(username, rounds);
+		return key + "||" + username;
+	}
+
+	async verifyTwoFaKey(key: string): Promise<string> {
+		// console.log(key);
+		const [hash, username] = key.split("||");
+		const isMatch = await bcrypt.compare(username, hash);
+		if (isMatch)
+			return username;
+		return null;
 	}
 }
