@@ -31,30 +31,52 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			client.disconnect ();
 			return false;
 		}
-		await this.prisma.user.update ({
-			where: {
-				id: payload.sub
-			},
-			data: {
-				online: true
+		try {
+			const user = this.prisma.user.findUnique ({
+				where: {
+					id: payload.sub
+				},
+			})
+			if (!user) {
+				client.disconnect ();
+				return false;
 			}
-		})
+			await this.prisma.user.update ({
+				where: {
+					id: payload.sub
+				},
+				data: {
+					online: true
+				}
+			})
+		} catch (e) {
+			client.disconnect ();
+			return ;
+		}
+		client.data.id = payload.sub;
 		client.join (payload.sub.toString ());
 		this.server.emit (`online${payload.sub}`);
 	}
 
+	
+
 	async handleDisconnect(client: Socket) {
 		client.leave (client.data.id.toString ());
 		const room = this.server.adapter.rooms.get (client.data.id.toString ());
+		console.log ("leaaaaved")
 		if (room == undefined) {
-			await this.prisma.user.update ({
-				where: {
-					id: client.data.id
-				},
-				data: {
-					online: false
-				}
-			})
+			try {
+				await this.prisma.user.update ({
+					where: {
+						id: client.data.id
+					},
+					data: {
+						online: false
+					}
+				})
+			} catch (e) {
+				return ;
+			}
 			this.server.emit (`offline${client.data.id}`);
 		}
 	}
