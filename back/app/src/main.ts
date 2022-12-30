@@ -8,6 +8,9 @@ import { Response } from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
+import { HttpAdapterHost } from '@nestjs/core';
+import { PrismaClientExceptionFilter } from './prisma/prisma-client-exception.filter';
+
 
 @Injectable()
 export class VersionHeaderInterceptor implements NestInterceptor {
@@ -37,8 +40,10 @@ async function bootstrap() {
 
   // validation pipe for DTOs 
   // 
-  app.useGlobalPipes(new ValidationPipe({whitelist:true, skipUndefinedProperties: true}));
+  app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   const config = new DocumentBuilder()
     .setTitle('Median')
