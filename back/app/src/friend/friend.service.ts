@@ -165,4 +165,27 @@ export class FriendService {
 				}
 			}))
 	}
+
+	async getStatus (userId: number, friendId: number) {
+		const friends = await this.prisma.friendShip.findFirst ({
+			where: {
+				OR: [
+					{
+						InitiatorId: userId,
+						AcceptorId: friendId,
+					},
+					{
+						InitiatorId: friendId,
+						AcceptorId: userId,
+					}
+				]
+			},
+		})
+		if (!friends)
+			return "not friends"
+		else if (friends.status === FRIENDSHIPSTATUS.BLOCKED)
+			return "blocked"
+		else if (friends.status === FRIENDSHIPSTATUS.PENDING)
+			return "pending"
+	}
 }
