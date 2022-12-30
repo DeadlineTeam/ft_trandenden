@@ -61,6 +61,9 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	
 
 	async handleDisconnect(client: Socket) {
+		if (!client.data.id) {
+			return ;
+		}
 		client.leave (client.data.id.toString ());
 		const room = this.server.adapter.rooms.get (client.data.id.toString ());
 		console.log ("leaaaaved")

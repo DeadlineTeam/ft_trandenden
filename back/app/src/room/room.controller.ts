@@ -20,6 +20,12 @@ export class RoomController {
 		return this.roomService.findAll(req.user.userId);
 	}
 
+	// get all the roooms that the user is a member of
+	@Get('myrooms')
+	async findMyRooms(@Req () req) {
+		return this.roomService.findMyRooms(req.user.userId);
+	}
+
 	@Post ('DMcreate/:receiverId') 
 	async createDM(@Req () req, @Param('receiverId', ParseIntPipe) receiverId: number) {
 		return this.roomService.createDM(req.user.userId, receiverId);

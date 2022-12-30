@@ -177,4 +177,33 @@ export class RoomService {
 		}
 		return this.member.deleteMember (roomId, userId);
 	}
+
+	async  findMyRooms (userId: number) {
+		const rooms = await this.prisma.memberShip.findMany({
+			where: {
+				userId: userId,
+				banned: false,
+			},
+			select: {
+				role: true,
+				room: {
+					select: {
+						id: true,
+						name: true,
+						visibility: true,
+					}
+				},
+			},
+		});
+		let roomsDto = []
+		for (const room of rooms) {
+			roomsDto.push (
+				{
+					role: room.role,
+					...room.room
+				}
+			)
+		}
+		return roomsDto;
+	}
 }
