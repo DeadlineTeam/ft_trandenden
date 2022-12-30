@@ -84,6 +84,7 @@ model Message {
 	senderId		Int
 	room			Room			@relation(fields: [roomId], references: [id])
 	roomId			Int
+	content			String
 	sentTime		DateTime		@default(now())
 }
 
