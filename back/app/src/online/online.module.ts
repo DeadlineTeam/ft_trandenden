@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { OnlineService } from './online.service';
-import { GateWayGuard } from './gatway.guard';
 import { AuthModule } from 'src/auth/auth.module';
 import { OnlineGateway } from './online.gateway';
 
@@ -12,8 +10,6 @@ import { OnlineGateway } from './online.gateway';
 	],
 	exports: [],
 	providers: [
-		OnlineService,
-		GateWayGuard,
 		OnlineGateway
 	],
 })
