@@ -22,10 +22,12 @@ import { FriendModule } from './friend/friend.module';
 import { RoomModule } from './room/room.module';
 import { MemberModule } from './member/member.module';
 import { OnlineModule } from './online/online.module';
+import { MessageModule } from './message/message.module';
 
  
 @Module({
   imports: [
+	MessageModule,
 	OnlineModule,
 	MemberModule,
 	RoomModule,
