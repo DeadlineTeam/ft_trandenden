@@ -17,7 +17,7 @@ const CreateRoom = () => {
   
 
   useEffect(() => {
-    axios.get("/friend/all").then((response) => {
+    axios.get("/localDb.json").then((response) =>{
       setFriends(response.data);
       console.log(response.data);
     })
@@ -74,9 +74,9 @@ const CreateRoom = () => {
           <p>Add Members :</p>
           <div className="child6SelectMembers">
             {friends.map((friend:any) => (
-              <div className="member" key={friend.id}>
-                <img className="memberImg" src={friend.profilePicture} alt="Snake"/>
-                <span className="memberName">{friend.username}</span>
+              <div className="membeR" key={friend.id}>
+                <img className="membeRImg" src={require(`../../${friend.profilePicture}`)} alt="Snake"/>
+                <span className="membeRName">{friend.username}</span>
                 <button><img src={require('../../addIcon.png')} alt="" /></button>
               </div>
             ) )}
