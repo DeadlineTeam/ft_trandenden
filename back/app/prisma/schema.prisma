@@ -33,6 +33,7 @@ model User {
 	sentfriendship		FriendShip[]					@relation("initiatefriendship")
 	receivedfrienship	FriendShip[]					@relation("acceptfriendship")
 	Message				Message[]
+	online				Boolean							@default(false)
 }
 
 // add score and mode later

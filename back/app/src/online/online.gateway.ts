@@ -2,15 +2,12 @@ import {
 		WebSocketGateway,
 		OnGatewayConnection,
 		OnGatewayDisconnect,
-		SubscribeMessage,
 		WebSocketServer,
 		ConnectedSocket,
 							} from '@nestjs/websockets';
-import { GateWayGuard } from './gatway.guard';
-import { UseGuards } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
-import { OnlineService } from './online.service';
 import { AuthService } from 'src/auth/auth.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 					
 @WebSocketGateway({
 	cors: {
@@ -20,28 +17,45 @@ import { AuthService } from 'src/auth/auth.service';
 	namespace: "online"
 })
 export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
-	constructor (private readonly onlineService: OnlineService,
-				private readonly authService: AuthService) {}
+	constructor (
+				private readonly authService: AuthService,
+				private readonly prisma: PrismaService,
+				) {}
 
 	@WebSocketServer ()
-	server: Server;
+	server;
 
-	// @UseGuards (GateWayGuard)
 	async handleConnection (@ConnectedSocket () client: Socket) {
 		const payload 	= this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""))
-		console.log ("hellollo")
-		console.log (payload);
 		if (!payload) {
 			client.disconnect ();
 			return false;
 		}
+		await this.prisma.user.update ({
+			where: {
+				id: payload.sub
+			},
+			data: {
+				online: true
+			}
+		})
+		client.join (payload.sub.toString ());
+		this.server.emit (`online${payload.sub}`);
 	}
 
-	@SubscribeMessage("online")
-	async online (@ConnectedSocket () client: Socket, data: {userId: number}) {
-		console.log ("online");
-	}
 	async handleDisconnect(client: Socket) {
-	
+		client.leave (client.data.id.toString ());
+		const room = this.server.adapter.rooms.get (client.data.id.toString ());
+		if (room == undefined) {
+			await this.prisma.user.update ({
+				where: {
+					id: client.data.id
+				},
+				data: {
+					online: false
+				}
+			})
+			this.server.emit (`offline${client.data.id}`);
+		}
 	}
 }
