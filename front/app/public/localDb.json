@@ -1,0 +1,28 @@
+
+[
+    {
+        "id":1,
+        "username": "Solid Snake",
+        "profilePicture": "SolidSnake.png"
+    },
+    {
+        "id":2,
+        "username": "Liquid Snake",
+        "profilePicture": "LiquidSnake.png"
+    },
+    {
+        "id":3,
+        "username": "The Boss",
+        "profilePicture": "TheBoss.png"
+    },
+    {
+        "id":4,
+        "username": "Big Boss",
+        "profilePicture": "BigBoss.png"
+    },
+    {
+        "id": 5,
+        "username": "Eva",
+        "profilePicture": "Eva.png"
+    }
+]

@@ -1,9 +1,9 @@
 .container {
     font-family: "Gill Sans", sans-serif;
     font-size: 20px;
-    margin-left: 15%;
-    margin-top: 15%;
-    width: 70%;
+    margin: auto;
+    margin-top: 5%;
+    width: 60%;
     height: 60%;
     outline: auto 10px black;
     background-color: #192125;
@@ -87,29 +87,30 @@
     overflow-y: scroll;
 }
 
-.member {
+.membeR {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
 }
 
-.member button {
+.membeR button {
     display: block;
     position: relative;
     margin-left: 30%;
 }
 
-.member button img {
+.membeR button img {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.member:hover {
+.membeR:hover {
     background-color: grey;
 }
 
-.memberImg {
+.membeRImg {
     width: 32px;
     height: 32px;
     border-radius: 50px;
@@ -118,7 +119,7 @@
     border: 1px solid white ;
 }
 
-.memberName {
+.membeRName {
     font-weight: 500;
     color: whitesmoke;
 }

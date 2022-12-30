@@ -19,6 +19,26 @@ const Chat = () => {
             <RecentChats/>
             <RecentChats/>
             <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
+            <RecentChats/>
           </div>  
         </div>
         {/* recent Messages End */}
@@ -27,6 +47,25 @@ const Chat = () => {
         <div className="chatZone">
           <div className="chatZoneWrapper">
             <div className="chatZoneTop">
+              <Message/>
+              <Message own={true}/>
+              <Message/>
+              <Message own={true}/>
+              <Message/>
+              <Message/>
+              <Message/>
+              <Message/>
+              <Message own={true}/>
+              <Message own={true}/>
+              <Message/>
+              <Message/>
+              <Message/>
+              <Message/>
+              <Message/>
+              <Message own={true}/>
+              <Message/>
+              <Message own={true}/>
+              <Message/>
               <Message/>
               <Message own={true}/>
               <Message/>
@@ -66,6 +105,25 @@ const Chat = () => {
               <Friends/>
               <Friends/>
               <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+              <Friends/>
+
             </div>
           </div>
           <div className="availableRooms">
@@ -76,6 +134,28 @@ const Chat = () => {
               <Room/>
               <Room/>
               <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              <Room/>
+              
             </div>
           </div>
         </div>

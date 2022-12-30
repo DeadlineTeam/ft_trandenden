@@ -5,8 +5,8 @@ import RoomSettings from '../components/roomSettings/roomSettings'
 const Rooms = () => {
   return (
     <>
-      <CreateRoom/>
-      {/* <RoomSettings/> */}
+      {/* <CreateRoom/> */}
+      <RoomSettings/>
     </>
   )
 }

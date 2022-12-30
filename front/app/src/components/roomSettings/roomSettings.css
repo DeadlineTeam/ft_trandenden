@@ -1,9 +1,9 @@
 .container {
     font-family: "Gill Sans", sans-serif;
     font-size: 20px;
-    margin-left: 15%;
-    margin-top: 15%;
-    width: 70%;
+    margin: auto;
+    margin-top: 5%;
+    width: 60%;
     height: 60%;
     outline: auto 10px black;
     background-color: #192125;
@@ -24,53 +24,76 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 5%;
+    gap: 1%;
 }
 
-.inputFieldRoomName {
-    border-radius: 5%;
-    outline: auto 10px white;
-    background-color: #192125;
-    color: whitesmoke;
+.membersWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    align-items: center;
 }
 
 .child3 {
     display: flex;
-    justify-content: center;
-    gap: 1%;
-}
-
-.child3SelectMembers {
-    outline: auto 10px white;
-    border-radius: 4px;
-    padding: 5px;
-    width: 300px;
-    height: 200px;
-    overflow-y: scroll;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .child4 {
     display: flex;
-    justify-content: center;
-    gap: 1%;
+    flex-direction: row;
+    gap: 10px;
 }
 
-.child4SelectMembers {
+.membersWrapperElements {
     outline: auto 10px white;
     border-radius: 4px;
     padding: 5px;
-    width: 300px;
+    width: 500px;
     height: 200px;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    
+}
+.membersWrapperElements1 {
+    outline: auto 10px white;
+    border-radius: 4px;
+    padding: 5px;
+    width: 500px;
+    height: 200px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.member {
+
+.user {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
 }
 
-.memberImg {
+.user button {
+    display: block;
+    position: relative;
+    margin-left: 30%;
+}
+
+.user button img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.user:hover {
+    background-color: grey;
+}
+
+.userImg {
     width: 32px;
     height: 32px;
     border-radius: 50px;
@@ -79,16 +102,14 @@
     border: 1px solid white ;
 }
 
-.memberName {
+.userName {
     font-weight: 500;
     color: whitesmoke;
-}
-.member:hover {
-    background-color: grey;
 }
 
 .child5 {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     gap: 1%;
 }
@@ -102,6 +123,7 @@
 
 .btn {
     display: block;
+    position: relative;
 	width: 100%;
     background-color: #192125;
     color: white;
@@ -110,29 +132,15 @@
     cursor: pointer;
 }
 
-.addMember {
+.roomMembers {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 10px;
+    justify-content: space-between;
+    gap: 20%;
 }
 
-.addMember button {
-    position: relative;
-    margin-left: 20%;
-    
-}
-
-.addMember button img {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-.addMember:hover {
-    background-color: grey;
-}
-
-.addMemberImg {
+.roomMembersImg {
     width: 32px;
     height: 32px;
     border-radius: 50px;
@@ -141,7 +149,13 @@
     border: 1px solid white ;
 }
 
-.addMemberName {
-    font-weight: 500;
-    color: whitesmoke;
+.optionsWrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.optionsWrapper img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
