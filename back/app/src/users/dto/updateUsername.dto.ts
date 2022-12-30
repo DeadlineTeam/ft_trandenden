@@ -1,10 +1,10 @@
 import { PartialType, ApiProperty } from '@nestjs/swagger';
-import { UserDto } from './User.dto';
 import { IsString, isAlpha, Matches } from 'class-validator';
 
-export class UpdateUserNameDto extends PartialType(UserDto){
+export class UpdateUserNameDto{
 	@ApiProperty()
-	@IsString()
-	@Matches(/[a-zA-Z0-9_-]{4,10}/, {message: 'Username must be alphanumeric'})
-	username: string;
+	@Matches(/^[a-zA-Z0-9_-]{2,10}$/, {
+		message: 'Username must contain only letters, numbers, underscores, and hyphens, and be between 2 and 10 characters in length'
+	  })
+	  username: string;
 }

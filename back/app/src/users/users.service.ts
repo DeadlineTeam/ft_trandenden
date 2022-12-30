@@ -4,6 +4,7 @@ import { User } from '@prisma/client'
 import { UpdateUserNameDto } from './dto/updateUsername.dto';
 import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
+import {NotFoundException} from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -47,11 +48,11 @@ export class UsersService {
 		return {avatar_url: filePath};
 	}
 
-	async getStats(userName: string): Promise<any>
+	async getStats(username: UpdateUserNameDto): Promise<any>
 	{
 		const res = await this.prisma.user.findUnique({
 			where: {
-				username: userName,
+				username: username.username,
 			},
 			select: {
 				win : true,
@@ -65,12 +66,12 @@ export class UsersService {
 		return res;
 	}
 
-	async getIconInfo(userName: string): Promise<any>
+	async getIconInfo(username: UpdateUserNameDto): Promise<any>
 	{
-		console.log(userName);
+		console.log(username);
 		const res = await this.prisma.user.findUnique({
 			where: {
-				username: userName,
+				username: username.username,
 			},
 			select: {
 				level: true,
@@ -78,6 +79,8 @@ export class UsersService {
 				username: true,
 			},
 		})
+		if (res === null)
+			throw new NotFoundException('User not found');
 		return res;
 	}
 
@@ -105,6 +108,8 @@ export class UsersService {
 			},
 			take: 15,
 		})
+		if (res === null)
+			throw new NotFoundException('No matches found');
 		return res;
 	}
 
