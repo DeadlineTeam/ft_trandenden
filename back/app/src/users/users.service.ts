@@ -192,11 +192,11 @@ export class UsersService {
 		})
 	}
 	
-	async getAllUsers(): Promise<User[]> {
+	async getAllUsers(id: number): Promise<User[]> {
 		const users = await this.prisma.user.findMany();
 		users.map((user) => {
 			 exclude(user, ['twofasecret']);
 		})
-		return users;
+		return users.filter((user) => user.id !== id);
 	}
 }

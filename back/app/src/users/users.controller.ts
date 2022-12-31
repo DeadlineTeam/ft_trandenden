@@ -46,7 +46,7 @@ export class UsersController {
 	}
 
 	@Get('all')
-	async getAllUsers() {
-		return await this.userService.getAllUsers();
+	async getAllUsers(@Request() req) {
+		return await this.userService.getAllUsers(req.user.userId);
 	}
 }
