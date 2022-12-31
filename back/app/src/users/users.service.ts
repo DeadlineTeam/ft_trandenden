@@ -6,6 +6,16 @@ import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
 import {NotFoundException} from '@nestjs/common';
 
+function exclude<User, Key extends keyof User>(
+	user: User,
+	keys: Key[]
+  ): Omit<User, Key> {
+	for (let key of keys) {
+	  delete user[key]
+	}
+	return user
+}
+
 @Injectable()
 export class UsersService {
 	constructor(private prisma: PrismaService) {}
@@ -180,5 +190,13 @@ export class UsersService {
 				username: username,
 			},
 		})
+	}
+	
+	async getAllUsers(): Promise<User[]> {
+		const users = await this.prisma.user.findMany();
+		users.map((user) => {
+			 exclude(user, ['twofasecret']);
+		})
+		return users;
 	}
 }
