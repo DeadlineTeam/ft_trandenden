@@ -12,19 +12,19 @@ export class FriendController {
 	async addfriend(@Req() req, @Param('Id', ParseIntPipe) Id: number) {
 		return this.friendService.add (req.user.userId, Id)
 	}
-	@Post ('/:Id/delete')
-	async removefriend (@Req () req, @Param('Id', ParseIntPipe) Id: number) {
-		return this.friendService.delete (req.user.userId, Id)
-	}
+	// @Post ('/:Id/delete')
+	// async removefriend (@Req () req, @Param('Id', ParseIntPipe) Id: number) {
+	// 	return this.friendService.delete (req.user.userId, Id)
+	// }
 	@Post ('/:Id/block')
 	async blockfriend (@Req () req, @Param('Id', ParseIntPipe) Id: number) {
 		return this.friendService.block (req.user.userId, Id)
 	}
 	@Post ('/:Id/unblock')
 	async unblockfriend (@Req () req, @Param('Id', ParseIntPipe) Id: number) {
-		return this.friendService.unblok (req.user.userId, Id);
+		return this.friendService.unblock (req.user.userId, Id);
 	}
-	@Get ('all')
+	@Get ('/all')
 	async getallfriends (@Req () req) {
 		return this.friendService.getall (req.user.userId);
 	}
