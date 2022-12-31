@@ -1,4 +1,4 @@
-import { Controller, Request, Delete, Get, Body, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Request, Delete, Get, Body, Param, Post, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { MemberService } from './member.service';
 import { Roles } from 'src/member/role-guard/roles.decorator';
@@ -13,7 +13,7 @@ export class MemberController {
 	@UseGuards(RolesGuard)
 	@Roles('OWNER')
 	@Post('/:roomId/:userId/add')
-	addMember(@Param('roomId') roomId: number, @Param('userId') userId: number) {
+	addMember(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.addMember(roomId, userId);
 	}
 
@@ -21,7 +21,7 @@ export class MemberController {
 	@UseGuards(ExistanceGuard)
 	@UseGuards(RolesGuard)
 	@Get('/:roomId/:userId/get')
-	getMember(@Param('roomId') roomId: number, @Param('userId') userId: number) {
+	getMember(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.getMember(roomId, userId);
 	}
 
@@ -29,27 +29,27 @@ export class MemberController {
 	@UseGuards (RolesGuard)
 	@Roles('OWNER', 'ADMIN')
 	@Delete ('/:roomId/:userId/delete')
-	deleteMember(@Param('roomId') roomId: number, @Param('userId') userId: number) {
+	deleteMember(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.deleteMember(roomId, userId);
 	}
 
 	@UseGuards(ExistanceGuard)
 	@UseGuards(RolesGuard)
 	@Get('/:roomId/:userId/role')
-	getRole(@Param('roomId') roomId: number, @Param('userId') userId: number) {
+	getRole(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.getRole(roomId, userId);
 	}
 
 	@UseGuards(RolesGuard)
 	@Get ('/:roomId/all')
-	getAllMembers(@Param('roomId') roomId: number) {
+	getAllMembers(@Param('roomId', ParseIntPipe) roomId: number) {
 		return this.memberService.getAllMembers(roomId);
 	}
 
 
 	@UseGuards(RolesGuard)
 	@Get ('/:roomId/owner')
-	getOwner(@Param('roomId') roomId: number) {
+	getOwner(@Param('roomId', ParseIntPipe) roomId: number) {
 		return this.memberService.getOwner(roomId);
 	}
 
@@ -57,7 +57,7 @@ export class MemberController {
 	@UseGuards(RolesGuard)
 	@Roles('OWNER')
 	@Post ('/:roomId/:userId/updateRole')
-	updateRole(@Param('roomId') roomId: number, @Param('userId') userId: number, @Body('role') role: string) {
+	updateRole(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number, @Body('role') role: string) {
 		return this.memberService.updateRole(roomId, userId, role);
 	}
 
@@ -65,14 +65,14 @@ export class MemberController {
 	@UseGuards(RolesGuard)
 	@Roles('OWNER', 'ADMIN')
 	@Post('/:roomId/:userId/mute')
-	muteUser(@Param('roomId') roomId: number, @Param('userId') userId: number) {
+	muteUser(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.muteUser(roomId, userId);
 	}
 
 	@UseGuards(RolesGuard)
 	@Roles('OWNER', 'ADMIN')
 	@Post ('/:roomId/:userId/unmute')
-	unmuteUser(@Param('roomId') roomId: number, @Param('userId') userId: number) {
+	unmuteUser(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.unmuteUser(roomId, userId);
 	}
 }
