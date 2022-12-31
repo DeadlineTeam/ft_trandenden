@@ -105,6 +105,9 @@ export class MemberService {
 		if (member?.muted === true) {
 			throw new HttpException('User is already muted', 400);
 		}
+		setTimeout (async () => {
+			await this.unmuteUser(roomId, userId);
+		}, 20000)
 		return await this.prisma.memberShip.updateMany({
 			where: {
 				roomId: roomId,
@@ -119,7 +122,7 @@ export class MemberService {
 
 	async unmuteUser(roomId: number, userId: number) {
 		const member = await this.getMember(roomId, userId);
-		if (member.muted === true) {
+		if (member && member.muted === true) {
 			return await this.prisma.memberShip.updateMany({
 				where: {
 					roomId: roomId,
@@ -132,4 +135,29 @@ export class MemberService {
 			});
 		}
 	}
+
+	async getRooms (userId: number) {
+		const rooms = await this.prisma.memberShip.findMany({
+			where: {
+				userId: userId
+			},
+			select : {
+				roomId: true
+			}
+		});
+		return rooms;
+	}
+
+	async getMembersIds (roomId: number) {
+		const members = await this.prisma.memberShip.findMany({
+			where: {
+				roomId: roomId
+			},
+			select: {
+				userId: true
+			}
+		});
+		return members.map (member => member.userId);
+	}
+
 }
