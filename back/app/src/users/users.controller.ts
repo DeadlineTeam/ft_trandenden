@@ -9,6 +9,7 @@ import { diskStorage } from 'multer';
 import { Express } from 'express';
 import { editFilename, imageFileFilter } from './utils/upload';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import {ForbiddenException} from '@nestjs/common';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -35,10 +36,17 @@ export class UsersController {
 
 	@Post("username")
 	async updateUsername(@Request() req,@Body() updateUsernameDto: UpdateUserNameDto) {
+		if (updateUsernameDto.username === "me")
+			throw new ForbiddenException("You can't change your username to 'me'");
 		return await this.userService.updateUsername(req.user.userId ,updateUsernameDto);
 	}
 	@Get("username")
 	async getUsername(@Request() req) {
 		return req.user.username;
+	}
+
+	@Get('all')
+	async getAllUsers(@Request() req) {
+		return await this.userService.getAllUsers(req.user.userId);
 	}
 }

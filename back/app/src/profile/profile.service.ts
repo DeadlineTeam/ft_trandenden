@@ -12,15 +12,15 @@ export class ProfileService {
 		private users: UsersService,
 		) {}
 	
-	async getIconInfo(username: string) {
+	async getIconInfo(username: UpdateUserNameDto) {
 		return await this.users.getIconInfo(username);
 	}
 	
-	async getStats(username: string) : Promise<any>{
+	async getStats(username: UpdateUserNameDto) : Promise<any>{
 		return await this.users.getStats(username);
 	}
 
-	async getGameHistory(username: string) {
+	async getGameHistory(username: UpdateUserNameDto) {
 		return await this.gameHistory.usergamerHistory(username);
 	}
 
