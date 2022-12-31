@@ -63,6 +63,8 @@ export class UsersService {
 				totalgames: true,
 			},
 		})
+		if (res === null)
+			throw new NotFoundException('User not found');
 		return res;
 	}
 

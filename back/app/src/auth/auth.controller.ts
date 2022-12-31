@@ -64,4 +64,10 @@ export class AuthController {
 		res.clearCookie('TfaCookie');
 		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true}).redirect("http://localhost:3000/");
 	}
+
+	@Get('2fa/turn-off')
+	@UseGuards(JwtAuthGuard)
+	async turnOffTa(@Request() req) {
+		await this.usersService.turnOffTwofa(req.user.userId);
+	}
 }

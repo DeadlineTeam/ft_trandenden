@@ -34,8 +34,8 @@ export class ProfileController {
 		return await this.profile.getGameHistory(username);
 	}
 
-	@Post('logout')
+	@Get('logout')
 	async logout(@Response() res: Res) {
-		return await this.profile.logout(res);
+		await this.profile.logout(res);
 	}
 }
