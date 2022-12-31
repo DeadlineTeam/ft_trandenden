@@ -25,7 +25,6 @@ export class FriendService {
 				AcceptorId: friend.id
 			}
 		})
-		console.log ("hehehehhe");
 		if (!friendship) {
 			await this.prisma.friendShip.create ({
 				data: {
@@ -188,4 +187,33 @@ export class FriendService {
 		else if (friends.status === FRIENDSHIPSTATUS.PENDING)
 			return "pending"
 	}
+
+	async BlockedFriends (userId: number) {
+		const blocked = await this.prisma.friendShip.findMany ({
+			where: {
+				OR: [
+					{
+						InitiatorId: userId,
+						status: FRIENDSHIPSTATUS.BLOCKED
+					},
+					{
+						AcceptorId: userId,
+						status: FRIENDSHIPSTATUS.BLOCKED
+					},
+				]
+			},
+			include: {
+				Initiator: true,
+				Acceptor: true
+			},
+		});
+		return blocked.map ((friend) => {
+			if (friend.InitiatorId === userId)
+				return friend.Acceptor.id;
+			else
+				return friend.Initiator.id;
+		})
+
+	}
+
 }
