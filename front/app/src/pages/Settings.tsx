@@ -27,14 +27,41 @@ background-color: #fff;
 border-radius: 90px;    
 transition: 0.3s;  
 }`;
-const Settings = () => {
 
+const dataUrlToBlob = (dataurl: string): Blob => {
+  // Split the data URL into two parts: the header and the base64 image data
+  const parts = dataurl.split(',');
+  const header = parts[0];
+  const base64 = parts[1];
+
+  // Decode the base64 image data
+  const decodedData = atob(base64);
+
+  // Convert the decoded data to a Uint8Array
+  const uInt8Array = new Uint8Array(decodedData.length);
+  for (let i = 0; i < decodedData.length; i++) {
+    uInt8Array[i] = decodedData.charCodeAt(i);
+  }
+
+  // Get the content type from the data URL header
+  const contentTypeMatch = header.match(/:(.*?);/);
+  const contentType = contentTypeMatch ? contentTypeMatch[1] : '';
+
+  // Create a blob from the Uint8Array
+  const blob = new Blob([uInt8Array], { type: contentType });
+
+  return blob;
+}
+
+const Settings = () => {
+ 
   // useEffect(()=>
     const url4 = "http://localhost:3001/profile/iconInfo/"
     axios.post(url4, {username: "me"},{withCredentials: true}).then((response3) =>{
       console.log(response3.data)
       setAvatarurl(response3.data.avatar_url)
       setImg(avatarurl)
+      setUsername(response3.data.username)
   
     })
   
@@ -53,21 +80,19 @@ const Settings = () => {
   
     const reader: FileReader = new FileReader();
     reader.onload = function(event:any) {
-      const dataUrl = event.target.result;
-      const url4 = "http://localhost:3001/users/Avatar"
-      console.log(dataUrl)
-      setImg(dataUrl)
-      axios.post(url4, {dataUrl},{withCredentials: true}).then((response3) =>{
-      })
+      const dataUrl:string = event.target.result;
+      const img1 = dataUrlToBlob(dataUrl)
+      console.log(img1)
+     // const url4 = "http://localhost:3001/users/Avatar"
+     // axios.post(url4, {img1},{withCredentials: true}).then((response3) =>{
+      //})
     }
     reader.readAsDataURL(file);
   }
   const handlename = (event:React.FormEvent& { target: HTMLInputElement }) =>{
     setName(event.target.value);
   }
-  const handleSubmit = (event:React.FormEvent) =>{
-    username = name;
-  }
+ 
   const [openmodel1,setOpenmodel1] = useState(false)
 
   const uploadfile= () =>{
@@ -80,6 +105,13 @@ const Settings = () => {
 
     setToggled(!toggled)
   }
+
+  const handlesubmit = () =>{
+    const url3 = "http://localhost:3001/users/username"
+    axios.post(url3, {username: name},{withCredentials: true}).then((response2) =>{
+
+    })
+  }
   console.log(openmodel)
   console.log("im here")
   console.log(openmodel1)
@@ -88,8 +120,8 @@ const Settings = () => {
     <div className="milieu">
         <img className="img" id='img' src={img} alt="sqdqs" width="50vw" height="50vh" />
         <input type='file' id='inputfile' accept='.jpg' onChange={handleFileChange} className='imagechange'/>
-        <p className='username' >{username}</p>
-        <form className='fm' onSubmit={handleSubmit}>
+        <p className='username' >{username1}</p>
+        <form className='fm' onSubmit={handlesubmit}>
             <div  className="User" >username :</div>
             <input type='text' value={name} onChange={handlename} placeholder={username}className="settingsinput"/>
             <div className='switchee'>
@@ -99,7 +131,7 @@ const Settings = () => {
             </div>    
             {openmodel && <Faca closemodel ={setOpenmodel} openmodel1={setOpenmodel1}/> }
             {openmodel1 && <Faca1 closemodel = {setOpenmodel1} />}
-            <button type='submit' className='input-submit'> Sauvegarder</button>
+            <button type='submit' onSubmit={handlesubmit} className='input-submit'> Sauvegarder</button>
             
         </form>
     </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "./faca1.css"
 import ReactInputVerificationCode from 'react-input-verification-code';
+import axios from 'axios';
 interface props{
     closemodel : React.Dispatch<React.SetStateAction<boolean>>
   }
@@ -22,6 +23,16 @@ const Faca1 = ({closemodel}:props) => {
         isComplete(false)
       }
     const clearValue = () => setValue("");
+    const handlecode = (event:any) =>{
+      event.preventDefault();
+      axios.post("http://localhost:3001/2fa/turn-on",{value},{withCredentials: true}).then((response) =>{
+        console.log(response.data)
+        closemodel(false)
+      }).catch(error=>{
+        if (error.response)
+        closemodel(false)
+      })  
+    }
     console.log(complete);
     console.log(value.length)
     console.log(value)
@@ -37,7 +48,7 @@ const Faca1 = ({closemodel}:props) => {
             </div>
           <div className='footer'>
           <button className='cancelButton'  onClick={() => closemodel(false)}>Cancel </button>
-            <button className='continueButton' disabled={complete ? false:true}>Continue </button>
+            <button className='continueButton' disabled={complete ? false:true} onClick={handlecode}>Continue </button>
           </div>
         </div>
 

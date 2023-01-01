@@ -27,7 +27,7 @@ export const Sidebardata=[
         icon:<BsChatLeftText/>
     },
     {
-        path:"/Myprofile/me",
+        path:"/profile/me",
         name:"Myprofile",
         icon:<RiAccountCircleLine/>
     }, 
