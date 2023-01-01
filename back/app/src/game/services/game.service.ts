@@ -102,35 +102,13 @@ export class GameService {
 			socket.emit ('end');
 		}
 	}
-
-	async endMatch (pong: Pong) {
-		GameService.emitRoom (pong, "end");
-		await this.prisma.game.create ( {
-			data: {
-				players: {
-					create: [
-						{
-							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
-							score: pong.game.players[SIDE.LEFT].score,
-							player: { connect: { id : pong.game.players[SIDE.LEFT].socket.data.id }, }
-						},
-						{
-							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
-							score: pong.game.players[SIDE.RIGHT].score,
-							player: { connect: { id : pong.game.players[SIDE.RIGHT].socket.data.id}, }
-						}
-					]
-				}
-			},
-		})
-		this.matches.delete (pong.id);
-		this.LiveGameBroadcast ();
-	}
 	
 	leaveMatch (socket: Socket): void {
 		const match: Pong = this.findMatch (socket);
-		if (match)
-			this.endMatch (match);
+		if (match) {
+			GameService.emitRoom (match, "end");
+			this.matches.delete (match.id);
+		}
 		else {
 			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id)
 			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id)
@@ -189,11 +167,33 @@ export class GameService {
 				match.reset ();
 			}
 			if (match.isFinished ()) {
-				this.endMatch (match);
+				GameService.emitRoom (match, "end");
+				console.log ("ending match");
+				await this.prisma.game.create ( {
+					data: {
+						players: {
+							create: [
+								{
+									mode: match.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
+									score: match.game.players[SIDE.LEFT].score,
+									player: { connect: { id : match.game.players[SIDE.LEFT].socket.data.id }, }
+								},
+								{
+									mode: match.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
+									score: match.game.players[SIDE.RIGHT].score,
+									player: { connect: { id : match.game.players[SIDE.RIGHT].socket.data.id}, }
+								}
+							]
+						}
+					},
+				})
+				this.matches.delete (match.id);
+				this.LiveGameBroadcast ();
 			}
 			else {
 				GameService.emitRoom (match, "ball", match.game.ball.position)
 			}
 		}
 	}
-}
+
+}	
