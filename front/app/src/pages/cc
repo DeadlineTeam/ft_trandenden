@@ -29,16 +29,14 @@ transition: 0.3s;
 }`;
 const Settings = () => {
 
-  // useEffect(()=>
-    const url4 = "http://localhost:3001/profile/iconInfo/"
-    axios.post(url4, {username: "me"},{withCredentials: true}).then((response3) =>{
-      console.log(response3.data)
-      setAvatarurl(response3.data.avatar_url)
-      setImg(avatarurl)
-  
-    })
-  
- 
+  const url4 = "http://localhost:3001/profile/iconInfo/"
+  axios.post(url4, {username: "me"},{withCredentials: true}).then((response3) =>{
+    console.log(response3.data)
+    setAvatarurl(response3.data.avatar_url)
+    setImg(avatarurl)
+    setUsername(response3.data.username)
+
+  })
   var [username1, setUsername] = useState("");
   const [avatarurl,setAvatarurl] = useState("")
   var file1:string
@@ -47,27 +45,23 @@ const Settings = () => {
   let file:FileList ;
   const [name, setName] = useState('');
   let username:string = "Flen ben Flen"
-
-  function handleFileChange(event: any|null) {
-    const file: File = event.target.files[0];
-  
-    const reader: FileReader = new FileReader();
-    reader.onload = function(event:any) {
-      const dataUrl = event.target.result;
-      const url4 = "http://localhost:3001/users/Avatar"
-      console.log(dataUrl)
-      setImg(dataUrl)
-      axios.post(url4, {dataUrl},{withCredentials: true}).then((response3) =>{
-      })
-    }
-    reader.readAsDataURL(file);
-  }
   const handlename = (event:React.FormEvent& { target: HTMLInputElement }) =>{
     setName(event.target.value);
   }
   const handleSubmit = (event:React.FormEvent) =>{
     username = name;
   }
+ 
+  const handleimage = (event:any ) =>{
+    file1 = URL.createObjectURL(event.target.files)
+     
+  }
+  useEffect(()=>{
+    var e = document.getElementById('inputfile')
+    e?.addEventListener("change", (c :any)=>{
+      axios.post()
+      setImg(URL.createObjectURL(c.target.files[0]))})
+ } ,)
   const [openmodel1,setOpenmodel1] = useState(false)
 
   const uploadfile= () =>{
@@ -86,8 +80,8 @@ const Settings = () => {
   return (
     <div>        <h1 style={{padding:"20px 20px", fontSize:"25px" ,color: "white", fontFamily:"'Montserrat Alternates', sans-serif", fontWeight:"400"}}>Settings</h1>
     <div className="milieu">
-        <img className="img" id='img' src={img} alt="sqdqs" width="50vw" height="50vh" />
-        <input type='file' id='inputfile' accept='.jpg' onChange={handleFileChange} className='imagechange'/>
+        <img className="img" src={img} alt="sqdqs" width="50vw" height="50vh" />
+        <input type='file' id='inputfile' accept='.jpg' onClick={uploadfile} className='imagechange'/>
         <p className='username' >{username}</p>
         <form className='fm' onSubmit={handleSubmit}>
             <div  className="User" >username :</div>

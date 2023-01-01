@@ -32,15 +32,17 @@
   width: 30px;
 }
 .dataInputs{
+  position: relative;
   margin-top: 30px;
   width: 25vw;
   height: 100px;
   background-color: #252d32;
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 10px; 
   overflow-y: auto;
   box-shadow: #545454;
   margin-left: 33vw;
+  z-index: 100;
     }
 .dataitem{
   display: flex;

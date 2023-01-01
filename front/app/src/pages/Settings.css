@@ -83,3 +83,18 @@
 
 
 }
+.switchee{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    font-size: x-small;
+    font-weight: 400;
+    top: 70%;
+    width:30%;
+    left:calc(50% - 15%) ;
+}
+.tfa{
+    margin-right: 2%;
+}
+.fm{
+}
