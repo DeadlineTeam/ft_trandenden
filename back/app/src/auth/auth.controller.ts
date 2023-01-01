@@ -26,7 +26,8 @@ export class AuthController {
 	async auth(@Request() req, @Response() res: Res) {
 		console.log("holla");
 		console.log(req.user)
-		return await this.authService.signIn(req.user, res);
+		const redirect_url = await this.authService.signIn(req.user, res);
+		res.redirect(redirect_url);
 	}
 
 	@Post("2fa/generate")
@@ -60,6 +61,13 @@ export class AuthController {
 			throw new UnauthorizedException('user Not foud Or Wrong authentication code');
 		const user = this.usersService.findByuername(username);
 		const cookie = await this.authService.login(user, true);
+		res.clearCookie('TfaCookie');
 		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true}).redirect("http://localhost:3000/");
+	}
+
+	@Get('2fa/turn-off')
+	@UseGuards(JwtAuthGuard)
+	async turnOffTa(@Request() req) {
+		await this.usersService.turnOffTwofa(req.user.userId);
 	}
 }

@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar2 from "./Sidebar2";
 import axiosApi from "../api/axiosApi"
 import axios from "axios";
+import Bookdata from "../data.json"
 
 
 type User = {
@@ -59,7 +60,7 @@ export default function ProtectedLayout() {
 
   return (
 	< UserContext.Provider value={{user, updateUser}}>
-		<Sidebar2 placeholder="Enter usernaame" data={[]}/>
+		<Sidebar2 placeholder="Enter usernaame" data={Bookdata}/>
   		<Outlet />
 	</ UserContext.Provider>
   )

@@ -27,12 +27,14 @@ model User {
 	totalgames	Int @default(0)
 	winrate		Float @default(0)
 	games		gameHistory[]
+	link		String @default("")
 	updatedAt   DateTime @updatedAt
 
 	rooms				MemberShip[]
 	sentfriendship		FriendShip[]					@relation("initiatefriendship")
 	receivedfrienship	FriendShip[]					@relation("acceptfriendship")
 	Message				Message[]
+	online				Boolean							@default(false)
 }
 
 // add score and mode later
@@ -83,6 +85,7 @@ model Message {
 	senderId		Int
 	room			Room			@relation(fields: [roomId], references: [id])
 	roomId			Int
+	content			String
 	sentTime		DateTime		@default(now())
 }
 
@@ -101,6 +104,9 @@ model Room {
 	passwd			String?
 	users			MemberShip[]
 	messages 		Message[]
+
+	createdAt		DateTime		@default(now())
+	updatedAt		DateTime		@updatedAt
 }
 
 //membership
@@ -119,6 +125,9 @@ model MemberShip {
 	muted			Boolean			@default(false)
 	muteTime		Int 			@default(0)
 	role			ROLE
+
+	createdAt		DateTime		@default(now())
+	banned			Boolean			@default(false)
 }
 
 

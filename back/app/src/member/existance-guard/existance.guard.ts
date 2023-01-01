@@ -10,8 +10,8 @@ export class ExistanceGuard implements CanActivate {
 	
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
-		const roomId = request.params.roomId;
-		const userId = request.user.userId;
+		const roomId = Number (request.params.roomId);
+		const userId = Number (request.user.userId);
 		const member = await this.memberService.getMember(roomId, userId);
 		return (member !== null);
   	}

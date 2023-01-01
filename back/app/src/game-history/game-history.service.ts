@@ -1,3 +1,4 @@
+import {NotFoundException} from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameHistoryDto } from './dto/gameHistoryDto';
@@ -46,14 +47,8 @@ export class GameHistoryService {
 
 	private async updatePlayerStats (result: any, playerInfo: any): Promise<any>
 	{
-		console.log(result, "result");
-		var player1 = result.find((player) => player.id === 1);
-		var player2 = result.find((player) => player.id === 2);
-
-		console.log(player1, "player1");
-		console.log(player2, "player2");
 		let db = playerInfo.players.map((info: any) => {
-			var match = info.player.id === player1.id ? player1 : player2;
+			var match = info.player.id === result[0].id ? result[0] : result[1];
 			return {
 				id: info.player.id,
 				win: match.result === gameResult.WIN ? info.player.win + 1 : info.player.win,
@@ -113,14 +108,14 @@ export class GameHistoryService {
 	}
 
 
-	async usergamerHistory(userName: string) : Promise<any>
+	async usergamerHistory(username: UpdateUserNameDto) : Promise<{}>
 	{
 		const res = await this.prisma.game.findMany({
 			where: {
 				players: {
 					some: {
 						player: {
-							username: userName,
+							username: username.username,
 						},
 					},
 				},
@@ -139,14 +134,15 @@ export class GameHistoryService {
 				}
 			},
 		});
-		// return res;
+		if (res.length === 0)
+			throw new NotFoundException('No game history found');
 		const processedResult = res.map((game) => {
 			return {
 				player1: {
 					id: game.players[0].player.id,
 					username: game.players[0].player.username,
 					level: game.players[0].player.level,
-					rank: game.players[0].player.rank,
+					avatar: game.players[0].player.avatar_url,
 					score: game.players[0].score,	
 				},
 				player2: {

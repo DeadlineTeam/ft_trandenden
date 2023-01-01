@@ -4,6 +4,17 @@ import { User } from '@prisma/client'
 import { UpdateUserNameDto } from './dto/updateUsername.dto';
 import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
+import {NotFoundException} from '@nestjs/common';
+
+function exclude<User, Key extends keyof User>(
+	user: User,
+	keys: Key[]
+  ): Omit<User, Key> {
+	for (let key of keys) {
+	  delete user[key]
+	}
+	return user
+}
 
 @Injectable()
 export class UsersService {
@@ -29,6 +40,7 @@ export class UsersService {
 	async addUserAuth(profile: any): Promise<User> {
 		const res = this.prisma.user.create({
 			data:{
+				link: `localhost:3000/profile/${profile.username}`,
 				login: profile.username,
 				fortytwoid: Number(profile.id),
 				avatar_url: profile._json.image.link,
@@ -47,11 +59,11 @@ export class UsersService {
 		return {avatar_url: filePath};
 	}
 
-	async getStats(userName: string): Promise<any>
+	async getStats(username: UpdateUserNameDto): Promise<any>
 	{
 		const res = await this.prisma.user.findUnique({
 			where: {
-				username: userName,
+				username: username.username,
 			},
 			select: {
 				win : true,
@@ -62,22 +74,30 @@ export class UsersService {
 				totalgames: true,
 			},
 		})
+		if (res === null)
+			throw new NotFoundException('User not found');
 		return res;
 	}
 
-	async getIconInfo(userName: string): Promise<any>
+	async getIconInfo(username: UpdateUserNameDto): Promise<any>
 	{
-		console.log(userName);
+		console.log("usernaaaaaame ", username);
 		const res = await this.prisma.user.findUnique({
 			where: {
-				username: userName,
+				username: username.username,
 			},
 			select: {
+				id : true,
 				level: true,
 				avatar_url: true,
 				username: true,
+				twofactor: true,
+				link: true,
 			},
 		})
+		if (res === null)
+			throw new NotFoundException('User not found');
+		console.log("usernaaaaaame ",username);
 		return res;
 	}
 
@@ -105,6 +125,8 @@ export class UsersService {
 			},
 			take: 15,
 		})
+		if (res === null)
+			throw new NotFoundException('No matches found');
 		return res;
 	}
 
@@ -116,6 +138,7 @@ export class UsersService {
 			},
 			data: {
 				username: updateUserNameDto.username,
+				link: `localhost:3000/profile/${updateUserNameDto.username}`,
 			},
 		})
 		return res;
@@ -168,6 +191,22 @@ export class UsersService {
 	}
 
 	async findByuername(username: string): Promise<User | null> {
+		return this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+		})
+	}
+	
+	async getAllUsers(id: number): Promise<User[]> {
+		const users = await this.prisma.user.findMany();
+		users.map((user) => {
+			 exclude(user, ['twofasecret']);
+		})
+		return users.filter((user) => user.id !== id);
+	}
+
+	async getByuername(username: string): Promise<User | null> {
 		return this.prisma.user.findUnique({
 			where: {
 				username: username,

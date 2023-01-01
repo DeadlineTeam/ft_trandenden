@@ -1,8 +1,7 @@
 import { PartialType, ApiProperty } from '@nestjs/swagger';
-import { UserDto } from './User.dto';
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class Update2faDto extends PartialType(UserDto){
+export class Update2faDto{
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()

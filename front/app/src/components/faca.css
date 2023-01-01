@@ -1,0 +1,58 @@
+.faBackground{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top:0%;
+    font-family:'Montserrat Alternates', sans-serif;
+    z-index: 1;
+    left: 0%;
+}
+.facontainer{
+    width: 25%;
+    height: 30%;
+    border-radius: 12px;
+    background-color: #e1dede;
+    box-shadow: rgba(0, 0, 0, 35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    margin: auto;
+    z-index: 1000;
+    position: relative;
+}
+.title{
+    font-size: smaller;
+    color: #191919;  ;
+}
+.footer{
+    position: relative;
+    flex-direction: row;
+    top: 70%;
+}
+.cancelButton{
+    position: relative;
+    cursor: pointer;
+    width: 25%;
+    margin-right: 2%;
+    left: 50% - 20%;
+    border-radius: 12px;
+    color: #191919;
+    border-color: #191919;
+    font-family:'Montserrat Alternates', sans-serif;
+    background: none;
+    background-color: none;
+}
+.continueButton{
+    position: relative;
+    cursor: pointer;
+    width: 25%;
+        border-radius: 12px;
+    color: white;
+    border-color: #191919;
+    font-family:'Montserrat Alternates', sans-serif;
+    background-color: #191919;
+}

@@ -3,10 +3,10 @@
 .chatApp {
     font-family: "Gill Sans", sans-serif;
     font-size: 15px;
-    margin-left: 10%;
-    margin-top: 10%;
-    width: 85%;
-    height: 80%;
+   margin: auto;
+   margin-top: 5%;
+    width: 60%;
+    height: 60%;
     outline: auto 10px black;
     background-color: #192125;
     display: flex;
@@ -14,6 +14,7 @@
 
 .recentMessages {
     flex: 1.5;
+    overflow-y: scroll;
 }
 
 .recentMessagesWrapper .recentMessagesTitle {
@@ -28,6 +29,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 30%;
+    gap: 5%;
 }
 
 .availableRoomsTitle {
@@ -38,6 +41,11 @@
     justify-content: center;
 }
 
+.availableRoomsWrapper {
+    overflow-y: scroll;
+    width: 100%;
+}
+
 .chatZone {
     flex: 5.5;
     background-color: #192125;
@@ -46,6 +54,7 @@
 .chatZoneWrapper {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .chatZoneTop {
@@ -78,6 +87,10 @@
 
 }
 
+.onlineFriends {
+    height: 50%;
+}
+
 .onlineFriendsAndRooms {
     flex: 2.5px;
     display: flex;
@@ -93,9 +106,22 @@
     justify-content: center;
     
 }
+.onlineFriendsWrapper {
+    overflow-y: scroll;
+    height: 100%;
+}
 
 
-.recentMessagesWrapper,.chatZoneWrapper,.onlineFriendsWrapper, .onlineFriendsAndRooms {
+.recentMessagesWrapper,.chatZoneWrapper, .onlineFriendsAndRooms {
     background-color: #192125;
     height: 100%;
+}
+
+.noConversation {
+    position: absolute;
+    top: 40%;
+    font-size: 50px;
+    color: gray;
+    text-align: center;
+    left: 10%;
 }

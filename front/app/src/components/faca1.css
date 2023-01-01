@@ -1,0 +1,11 @@
+.custom-style{
+    position: relative;
+    top: 10%;
+    width: 60%;
+    align-items: center;
+    justify-content: center;
+    color:#191919 ;
+    left: calc(10%);
+    --ReactInputVerificationCode-itemWidth : 2rem;
+    height: 10%;
+}
