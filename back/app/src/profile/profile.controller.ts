@@ -12,14 +12,14 @@ export class ProfileController {
 	constructor(private profile: ProfileService) {
 	}
 
-	@Get('iconInfo')
+	@Post('iconInfo')
 	async getIconInfo(@Body() username: UpdateUserNameDto, @Request() req) {
 		if (username.username === "me")
 			username.username = req.user.username
 			return await this.profile.getIconInfo(username);
 		}
 
-	@Get('stats')
+	@Post('stats')
 	async getStats(@Body() username: UpdateUserNameDto, @Request() req) {
 		if (username.username === "me")
 			username.username = req.user.username
@@ -27,7 +27,7 @@ export class ProfileController {
 	}
 
 	// check for null responses
-	@Get('gameHistory')
+	@Post('gameHistory')
 	async getGameHistory(@Body() username: UpdateUserNameDto, @Request() req) {
 		if (username.username === "me")
 			username.username = req.user.username
