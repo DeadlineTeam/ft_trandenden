@@ -1,16 +1,22 @@
 import React from "react";
 import './Rooms.css'
+import { useNavigate } from "react-router-dom";
 
-const Room = () => {
+const Room = ({id, roomname, roomPicture}: {id:number, roomname:string, roomPicture:string}) => {
+    const navigate = useNavigate();
+    const handleSettings = (e:any) => {
+        navigate(`/Rooms?roomId=${id}`);
+      }
     return (
         <div className="Room">
             <div className="availableRoom">
                 <div className="availableRoomImgContainer">
-                    <img className="availableRoomImg" src={require('../../SolidSnake.png')} alt="Snake" />
+                    <img className="availableRoomImg" src={require(`../../${roomPicture}`)} alt="Snake" />
                 </div>
                 <span className="availableRoomName">
-                    RoomName 1
+                    {roomname}
                 </span>
+                <button className="settingsButton" onClick={handleSettings}><img className="settingsImg" src={require('../../settings.png')} alt="" /></button>
             </div>
         </div>
     )

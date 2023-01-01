@@ -1,0 +1,17 @@
+[
+    {
+        "id":1,
+        "roomname": "Fox Hound",
+        "roomPicture": "foxHound.png"
+    },
+    {
+        "id":2,
+        "roomname": "No Frontier",
+        "roomPicture": "noFrontier.png"
+    },
+    {
+        "id":3,
+        "roomname": "Outer Heaven",
+        "roomPicture": "outerHeaven.png"
+    }
+]

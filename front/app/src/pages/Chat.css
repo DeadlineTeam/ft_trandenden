@@ -54,6 +54,7 @@
 .chatZoneWrapper {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .chatZoneTop {
@@ -114,4 +115,13 @@
 .recentMessagesWrapper,.chatZoneWrapper, .onlineFriendsAndRooms {
     background-color: #192125;
     height: 100%;
+}
+
+.noConversation {
+    position: absolute;
+    top: 40%;
+    font-size: 50px;
+    color: gray;
+    text-align: center;
+    left: 10%;
 }

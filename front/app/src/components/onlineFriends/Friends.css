@@ -8,6 +8,7 @@
     font-weight: 500;
     cursor: pointer;
     margin-top: 20px;
+    justify-content: space-between;
 }
 
 
@@ -36,4 +37,23 @@
 
 .onlineFriendName {
     color: whitesmoke;
+}
+
+.friends .settingsButton {
+    display: none;
+}
+
+.friends:hover .settingsButton {
+    display: inline;
+    cursor: pointer;
+}
+
+.offlineFriendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top: 0;
+    right: 2px;
 }
