@@ -1,0 +1,207 @@
+{
+    "private" :
+    [
+        {
+            "id":1,
+            "roomname": "Fox Hound",
+            "roomPicture": "foxHound.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "senderId": "senderId",
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":2,
+            "roomname": "No Frontier",
+            "roomPicture": "noFrontier.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":3,
+            "roomname": "Outer Heaven",
+            "roomPicture": "outerHeaven.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        }
+    ],
+    "public":
+    [
+        {
+            "id":42,
+            "roomname": "Fox Hound",
+            "roomPicture": "foxHound.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":78,
+            "roomname": "No Frontier",
+            "roomPicture": "noFrontier.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":19,
+            "roomname": "Outer Heaven",
+            "roomPicture": "outerHeaven.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        }
+    ],
+    "protected":
+    [
+        {
+            "id":12,
+            "roomname": "Fox Hound",
+            "roomPicture": "foxHound.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":29,
+            "roomname": "No Frontier",
+            "roomPicture": "noFrontier.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":35,
+            "roomname": "Outer Heaven",
+            "roomPicture": "outerHeaven.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        }
+    ],
+    "dm":
+    [
+        {
+            "id":12,
+            "roomname": "Fox Hound",
+            "roomPicture": "foxHound.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":29,
+            "roomname": "No Frontier",
+            "roomPicture": "noFrontier.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        },
+        {
+            "id":35,
+            "roomname": "Outer Heaven",
+            "roomPicture": "outerHeaven.png",
+            "messages":
+            [
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                },
+                {
+                    "id":1,
+                    "somethig":"somethin"
+                }
+            ]
+        }
+    ]
+}

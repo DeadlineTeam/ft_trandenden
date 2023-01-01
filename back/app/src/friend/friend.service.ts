@@ -11,115 +11,121 @@ export class FriendService {
 	) {}
 
 	// add a friend to the user
-	async add (userId: number, friendId: number) {
-		const friend = await this.prisma.user.findUnique ({
-			where: {
-				id: friendId
-			}
-		})
-		if (!friend)
-			throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
-		const friendship = await this.prisma.friendShip.findFirst ({
+
+	async getFriendShip (userId: number, friendId: number) {
+		return await this.prisma.friendShip.findFirst ({
 			where: {
 				InitiatorId: userId,
-				AcceptorId: friend.id
+				AcceptorId: friendId
 			}
-		})
-		if (!friendship) {
-			await this.prisma.friendShip.create ({
-				data: {
-					status: FRIENDSHIPSTATUS.PENDING,
-					InitiatorId: userId,
-					AcceptorId: friend.id,
-				}
-			})
-		}
+		});
 	}
-	//delete a friend
-	async delete (userId: number, friendId: number) {
-		const friend = await this.prisma.user.findUnique ({
-			where: {
-				id: friendId
+
+	async friendStatus (userId: number, friendId: number) {
+        const friend = await this.getFriendShip (userId, friendId);
+        if (!friend)
+            return "NOT_FRIENDS";
+        else if (friend.status === FRIENDSHIPSTATUS.BLOCKED)
+            return "BLOCKED";
+        else if (friend.status === FRIENDSHIPSTATUS.FRIEND)
+            return "FRIENDS";
+    }
+
+	async createFriendShip (userId: number, friendId: number) {
+		await this.prisma.friendShip.create ({
+			data: {
+				status: FRIENDSHIPSTATUS.FRIEND,
+				InitiatorId: userId,
+				AcceptorId: friendId,
 			}
-		})
+		});
+		await this.prisma.friendShip.create ({
+			data: {
+				status: FRIENDSHIPSTATUS.FRIEND,
+				InitiatorId: friendId,
+				AcceptorId: userId,
+			}
+		});
+	}
+
+	async add (userId: number, friendId: number) {
+		if (userId === friendId)
+			throw new HttpException ("you can't add yourself", HttpStatus.BAD_REQUEST)
+		const friend = await this.user.findById (friendId);
 		if (!friend)
 			throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
-		const friendship = await this.prisma.friendShip.findFirst ({
-			where: {
-				OR: [
-					{
-						InitiatorId: userId,
-						AcceptorId: friend.id
-					},
-					{
-						InitiatorId: friend.id,
-						AcceptorId: userId
-					}
-				]
-			}
-		})
-		if (!friendship)
-			throw new HttpException ("not friends", HttpStatus.BAD_REQUEST)
-		await this.prisma.friendShip.delete ({
-			where: {
-				id: friendship.id
-			}
-		})
+		const friendship1 = await this.getFriendShip (userId, friend.id);
+		if (friendship1)
+			throw new HttpException ("already friends", HttpStatus.BAD_REQUEST)
+		const friendship2 = await this.getFriendShip (friend.id, userId);
+		if (friendship2)
+			throw new HttpException ("already friends", HttpStatus.BAD_REQUEST)
+		return await this.createFriendShip (userId, friend.id);
 	}
+
+	// we don't need to delete a friend, we just need to block him
+	// //delete a friend
+	// async delete (userId: number, friendId: number) {
+	// 	const friend = await this.prisma.user.findUnique ({
+	// 		where: {
+	// 			id: friendId
+	// 		}
+	// 	})
+	// 	if (!friend)
+	// 		throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
+	// 	const friendship = await this.prisma.friendShip.findFirst ({
+	// 		where: {
+	// 			OR: [
+	// 				{
+	// 					InitiatorId: userId,
+	// 					AcceptorId: friend.id
+	// 				},
+	// 				{
+	// 					InitiatorId: friend.id,
+	// 					AcceptorId: userId
+	// 				}
+	// 			]
+	// 		}
+	// 	})
+	// 	if (!friendship)
+	// 		throw new HttpException ("not friends", HttpStatus.BAD_REQUEST)
+	// 	await this.prisma.friendShip.delete ({
+	// 		where: {
+	// 			id: friendship.id
+	// 		}
+	// 	})
+	// }
+
+
 	// block a friend
 	async block (userId: number, friendId: number) {
-		const friend = await this.prisma.user.findUnique ({
-			where: {
-				id: friendId
-			}
-		})
+		const friend = await this.user.findById (friendId);
 		if (!friend)
 			throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
-		const friendship = await this.prisma.friendShip.findFirst ({
-			where: {
-				OR: [
-					{
-						InitiatorId: userId,
-						AcceptorId: friend.id
-					},
-					{
-						InitiatorId: friend.id,
-						AcceptorId: userId
-					}
-				]
-			}
-		})
+		const friendship = await this.getFriendShip (userId, friend.id);
 		if (!friendship)
 				throw new HttpException ("not friends", HttpStatus.BAD_REQUEST)
 		if (friendship.status === FRIENDSHIPSTATUS.FRIEND) {
-			if (friendship.InitiatorId === userId) {
-				await this.prisma.friendShip.update({
-					where: {
-						id: friendship.id
-					},
-					data: {
-						status: FRIENDSHIPSTATUS.BLOCKED
-					}
-				})
-			}
+			await this.prisma.friendShip.update({
+				where: {
+					id: friendship.id
+				},
+				data: {
+					status: FRIENDSHIPSTATUS.BLOCKED
+				}
+			})
+		}
+		else {
+			throw new HttpException ("already blocked", HttpStatus.BAD_REQUEST)
 		}
 
 	}
 	// unblock a friend
-	async unblok (userId: number, friendId: number) {
-		const friend = await this.prisma.user.findUnique ({
-			where: {
-				id: friendId
-			}
-		})
+	async unblock (userId: number, friendId: number) {
+		const friend = await this.user.findById (friendId);
 		if (!friend)
 			throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
-		const friendship = await this.prisma.friendShip.findFirst ({
-			where: {
-				InitiatorId: userId,
-				AcceptorId: friend.id
-			}
-		})
+		const friendship = await this.getFriendShip (userId, friend.id);
 		if (!friendship)
 				throw new HttpException ("not friends", HttpStatus.BAD_REQUEST)
 		if (friendship.status === FRIENDSHIPSTATUS.BLOCKED) {
@@ -132,60 +138,30 @@ export class FriendService {
 				}
 			})
 		}
+		else {
+			throw new HttpException ("already unblocked", HttpStatus.BAD_REQUEST)
+		}
 	}
 
 	async getall (userId: number) {
 		const friends = await this.prisma.friendShip.findMany ({
 			where: {
 				InitiatorId: userId,
-				status: FRIENDSHIPSTATUS.FRIEND
 			},
-			include: {
-				Acceptor: true
-			}
 		})
-		const friends2 = await this.prisma.friendShip.findMany ({
-			where: {
-				AcceptorId: userId,
-				status: FRIENDSHIPSTATUS.FRIEND
-			},
-			include: {
-				Initiator: true
-			}
-		})
-		return (
-			friends.map ((friend) => friend.Acceptor)
-			.concat (friends2.map ((friend) => friend.Initiator))
-			.map ((friend) => {
-				return {
-					id: friend.id,
-					username: friend.username,
-					profilePicture: friend.avatar_url
-				}
-			}))
+		return (friends.map ((friend) => friend.AcceptorId))
 	}
 
 	async getStatus (userId: number, friendId: number) {
-		const friends = await this.prisma.friendShip.findFirst ({
-			where: {
-				OR: [
-					{
-						InitiatorId: userId,
-						AcceptorId: friendId,
-					},
-					{
-						InitiatorId: friendId,
-						AcceptorId: userId,
-					}
-				]
-			},
-		})
-		if (!friends)
+		const friend = await this.user.findById(friendId)
+		if (!friend)
+			throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
+		
+		const friendship = await this.getFriendShip (userId, friend.id);
+		if (!friendship)
 			return "not friends"
-		else if (friends.status === FRIENDSHIPSTATUS.BLOCKED)
+		else if (friendship.status === FRIENDSHIPSTATUS.BLOCKED)
 			return "blocked"
-		else if (friends.status === FRIENDSHIPSTATUS.PENDING)
-			return "pending"
 	}
 
 	async BlockedFriends (userId: number) {

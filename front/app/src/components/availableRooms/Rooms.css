@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
 
 
+
 .availableRoom {
     display: flex;
     align-items: center;
     font-weight: 500;
     cursor: pointer;
     margin-top: 20px;
+    justify-content: space-between;
 }
 
 .availableRoomImgContainer {
@@ -24,4 +26,22 @@
 
 .availableRoomName {
     color: whitesmoke;
+}
+
+.settingsImg {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid white ;
+}
+
+
+.Room .settingsButton {
+    display: none;
+}
+
+.Room:hover .settingsButton {
+    display: inline;
+    cursor: pointer;
 }

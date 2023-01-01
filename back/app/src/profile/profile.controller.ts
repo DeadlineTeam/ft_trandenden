@@ -14,9 +14,7 @@ export class ProfileController {
 
 	@Post('iconInfo')
 	async getIconInfo(@Body() username: UpdateUserNameDto, @Request() req) {
-		if (username.username === "me")
-			username.username = req.user.username
-			return await this.profile.getIconInfo(username);
+			return await this.profile.getIconInfo(username, {userId: req.user.userId, username: req.user.username});
 		}
 
 	@Post('stats')

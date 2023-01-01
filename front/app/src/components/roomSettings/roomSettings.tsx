@@ -12,7 +12,7 @@ const RoomSettings = () => {
 
 
     useEffect(() => {
-        axios.get("/localDb.json").then((response) =>{
+        axios.get("/users.json").then((response) =>{
           setFriends(response.data);
           console.log(response.data);
         })
@@ -22,7 +22,7 @@ const RoomSettings = () => {
       }, []);
     
       useEffect(() => {
-        axios.get("/localDb.json").then((response) =>{
+        axios.get("/users.json").then((response) =>{
           setMembers(response.data);
           console.log(response.data);
         })

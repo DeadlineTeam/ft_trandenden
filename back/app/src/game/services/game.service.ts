@@ -6,7 +6,7 @@ import { Pong } from "./match.service";
 import { GameGateway } from "../game.gateway";
 import { PrismaService } from "src/prisma/prisma.service";
 import { gameMode } from "@prisma/client";
-
+import { GameHistoryService } from "src/game-history/game-history.service";
 
 type Queue = {
 	Normal: Array<Socket>
@@ -40,6 +40,7 @@ export class GameService {
 		@Inject(forwardRef(() => GameGateway))
 		private readonly gateWay: GameGateway,
 		private readonly prisma: PrismaService,
+		private readonly gameHistoryService: GameHistoryService
 	) {}
 
 	queues: Queue = { Normal: [], Ultimate: []}
@@ -102,35 +103,13 @@ export class GameService {
 			socket.emit ('end');
 		}
 	}
-
-	async endMatch (pong: Pong) {
-		GameService.emitRoom (pong, "end");
-		await this.prisma.game.create ( {
-			data: {
-				players: {
-					create: [
-						{
-							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
-							score: pong.game.players[SIDE.LEFT].score,
-							player: { connect: { id : pong.game.players[SIDE.LEFT].socket.data.id }, }
-						},
-						{
-							mode: pong.mode === 'Normal'? gameMode.CLASSIC: gameMode.ULTIMATE,
-							score: pong.game.players[SIDE.RIGHT].score,
-							player: { connect: { id : pong.game.players[SIDE.RIGHT].socket.data.id}, }
-						}
-					]
-				}
-			},
-		})
-		this.matches.delete (pong.id);
-		this.LiveGameBroadcast ();
-	}
 	
 	leaveMatch (socket: Socket): void {
 		const match: Pong = this.findMatch (socket);
-		if (match)
-			this.endMatch (match);
+		if (match) {
+			GameService.emitRoom (match, "end");
+			this.matches.delete (match.id);
+		}
 		else {
 			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id)
 			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id)
@@ -189,11 +168,26 @@ export class GameService {
 				match.reset ();
 			}
 			if (match.isFinished ()) {
-				this.endMatch (match);
+				const game = match.game;
+				const mode = match.mode;
+				this.matches.delete (match.id);
+				GameService.emitRoom (match, "end");
+				console.log ("saving game", match.id)
+				await this.gameHistoryService.addGameHistory (
+					{
+						player1: { id: game.players[0].socket.data.id},
+						player2: { id: game.players[1].socket.data.id},
+						player1Score: game.players[0].score,
+						player2Score: game.players[1].score,
+						gameMode: mode == "Ultimate"? "ULTIMATE": "CLASSIC",
+				});
+				this.LiveGameBroadcast ();
+				break;
 			}
 			else {
 				GameService.emitRoom (match, "ball", match.game.ball.position)
 			}
 		}
 	}
-}
+
+}	

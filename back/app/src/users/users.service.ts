@@ -40,6 +40,7 @@ export class UsersService {
 	async addUserAuth(profile: any): Promise<User> {
 		const res = this.prisma.user.create({
 			data:{
+				link: `localhost:3000/profile/${profile.username}`,
 				login: profile.username,
 				fortytwoid: Number(profile.id),
 				avatar_url: profile._json.image.link,
@@ -80,19 +81,23 @@ export class UsersService {
 
 	async getIconInfo(username: UpdateUserNameDto): Promise<any>
 	{
-		console.log(username);
+		console.log("usernaaaaaame ", username);
 		const res = await this.prisma.user.findUnique({
 			where: {
 				username: username.username,
 			},
 			select: {
+				id : true,
 				level: true,
 				avatar_url: true,
 				username: true,
+				twofactor: true,
+				link: true,
 			},
 		})
 		if (res === null)
 			throw new NotFoundException('User not found');
+		console.log("usernaaaaaame ",username);
 		return res;
 	}
 
@@ -133,6 +138,7 @@ export class UsersService {
 			},
 			data: {
 				username: updateUserNameDto.username,
+				link: `localhost:3000/profile/${updateUserNameDto.username}`,
 			},
 		})
 		return res;
@@ -198,5 +204,13 @@ export class UsersService {
 			 exclude(user, ['twofasecret']);
 		})
 		return users.filter((user) => user.id !== id);
+	}
+
+	async getByuername(username: string): Promise<User | null> {
+		return this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+		})
 	}
 }
