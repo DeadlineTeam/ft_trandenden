@@ -80,7 +80,7 @@ export class UsersService {
 
 	async getIconInfo(username: UpdateUserNameDto): Promise<any>
 	{
-		console.log(username);
+		console.log("usernaaaaaame ", username);
 		const res = await this.prisma.user.findUnique({
 			where: {
 				username: username.username,
@@ -93,6 +93,7 @@ export class UsersService {
 		})
 		if (res === null)
 			throw new NotFoundException('User not found');
+		console.log("usernaaaaaame ",username);
 		return res;
 	}
 
@@ -198,5 +199,13 @@ export class UsersService {
 			 exclude(user, ['twofasecret']);
 		})
 		return users.filter((user) => user.id !== id);
+	}
+
+	async getByuername(username: string): Promise<User | null> {
+		return this.prisma.user.findUnique({
+			where: {
+				username: username,
+			},
+		})
 	}
 }

@@ -21,6 +21,16 @@ export class FriendService {
 		});
 	}
 
+	async friendStatus (userId: number, friendId: number) {
+        const friend = await this.getFriendShip (userId, friendId);
+        if (!friend)
+            return "NOT_FRIENDS";
+        else if (friend.status === FRIENDSHIPSTATUS.BLOCKED)
+            return "BLOCKED";
+        else if (friend.status === FRIENDSHIPSTATUS.FRIEND)
+            return "FRIENDS";
+    }
+
 	async createFriendShip (userId: number, friendId: number) {
 		await this.prisma.friendShip.create ({
 			data: {
