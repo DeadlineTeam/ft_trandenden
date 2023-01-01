@@ -27,6 +27,7 @@ model User {
 	totalgames	Int @default(0)
 	winrate		Float @default(0)
 	games		gameHistory[]
+	link		String @default("")
 	updatedAt   DateTime @updatedAt
 
 	rooms				MemberShip[]

@@ -40,6 +40,7 @@ export class UsersService {
 	async addUserAuth(profile: any): Promise<User> {
 		const res = this.prisma.user.create({
 			data:{
+				link: `localhost:3000/profile/${profile.username}`,
 				login: profile.username,
 				fortytwoid: Number(profile.id),
 				avatar_url: profile._json.image.link,
@@ -86,9 +87,12 @@ export class UsersService {
 				username: username.username,
 			},
 			select: {
+				id : true,
 				level: true,
 				avatar_url: true,
 				username: true,
+				twofactor: true,
+				link: true,
 			},
 		})
 		if (res === null)
@@ -134,6 +138,7 @@ export class UsersService {
 			},
 			data: {
 				username: updateUserNameDto.username,
+				link: `localhost:3000/profile/${updateUserNameDto.username}`,
 			},
 		})
 		return res;
