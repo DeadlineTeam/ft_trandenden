@@ -140,7 +140,7 @@ border-radius: 10px;
 }
 .level{
     position: absolute;
-    top:80%;
+    top:85%;
     width:30%;
     text-align: center;
     font-family:'Montserrat Alternates', sans-serif;
@@ -168,3 +168,126 @@ border-radius: 10px;
     left:5%;
     top :50%;
 }
+.matchhistory{
+    position: relative;
+    flex-direction: column;
+    top: 60%;
+    height: 50%;
+    width: 100%;
+}
+.datahistoryitem{
+    height: 15%;
+    width: 80%;
+    align-items: center;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.user1img{
+    position: relative;
+    height: 100%;
+    width: 5%;
+}
+.usernamehistory{
+
+    position: absolute;
+    left: 7%;
+    top: 55%;
+    font-size: xx-small;
+    font-weight: 200;
+}
+.result{
+    position: absolute;
+    flex-direction: column;
+    width: 20%;
+    left:40%;
+    text-align: center;
+    align-items: center;
+    font-size: xx-small;
+    font-weight: 200;
+    height: 100%;
+}
+.score{
+    position: absolute;
+    font-size: xx-small;
+    align-items: center;
+    left: 42%;
+    top: 45%;
+}
+.user2img{
+    position: relative;
+    height: 100%;
+    width: 5%;
+    left: 80%;
+}
+.usernamehistory2{
+
+    position: absolute;
+    left: 82.5%;
+    top: 55%;
+    font-size: xx-small;
+    font-weight: 200;
+}
+.levelbar{
+    position: relative;
+    top: 75%;
+    width: 50%;
+    left: 25%;
+    border-radius:10px;
+    height: 3px;
+
+}
+.matchhistory1{
+    position: relative;
+    top: 18%;
+    height: 70%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.matchhistory1::-webkit-scrollbar{
+    display: none;
+  }
+.pop
+{
+    position: relative;
+    left :0%;
+}
+.fixed_header tbody{
+    display:block;
+    overflow:auto;
+    height:200px;
+    width:100%;
+  }
+  .fixed_header thead tr{
+    display:block;
+  }
+  .addbutton{
+    position: relative;
+    left : 80%;
+    top: 5%;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+
+  }
+
+
+  @media (max-width: 700px) {
+    .firstpart{
+        flex-direction: column;
+        width: 50px;
+        height: 50px;
+    }
+    .stats{
+        flex-direction: column;
+        height: 70%;
+        width: 100%;
+    }
+    .profi{
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        height: 40%;
+    }
+  }

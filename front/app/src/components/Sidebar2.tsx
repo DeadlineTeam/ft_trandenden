@@ -4,7 +4,8 @@ import {Sidebardata} from './Sidebardata'
 import {AiOutlineSearch} from 'react-icons/ai'
 import styled from 'styled-components'
 import { Link } from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios'
 import './Sb.css'
 
 const Navbar = styled.div`
@@ -86,19 +87,29 @@ type props = {
     data: Array<any>;
   }
 const Sidebar2 = ({placeholder, data}:props) => {
+
+
+const url3 = "http://localhost:3001/users/all"
+axios.get(url3,{withCredentials: true}).then((response2) =>{
+  console.log(response2.data)
+  setTrudata(response2.data)
+})
+const [truedata, setTrudata] = useState(Array<any>())
+
     const [close, setClose] = useState(false)
     const showSidebar = () => setClose(!close)
     const [filtredData, setFiltredData] = useState(Array<any>()); 
     const len:Number = filtredData.length;
     let op:Number;
     const handleFilter = (event:React.FormEvent& { target: HTMLInputElement }) =>{
-        const searchWord = event.target.value
-        console.log(searchWord.length)
-
-        const newfilter =  data.filter((value) => {
-            return value.name.includes(searchWord)
+        let searchWord :string;
+        searchWord = event.target.value
+        
+        const newfilter =  truedata.filter((value) => { 
+            return value.username.includes(searchWord)
         })
-        if (Object.keys(newfilter).length == 0)
+        console.log(searchWord.length)
+        if (searchWord.length == 0)
         {
             setFiltredData([]);
         }
@@ -106,7 +117,6 @@ const Sidebar2 = ({placeholder, data}:props) => {
             setFiltredData(newfilter);
 
     }
-    console.log(len);
     return (
     
     <>
@@ -129,7 +139,7 @@ const Sidebar2 = ({placeholder, data}:props) => {
       <div className="dataInputs">
         { filtredData.map((value, key)=>{
             return <a className='dataitem' href={value.link}>
-              <p>{value.name}</p>
+              <p>{value.username}</p>
               </a>;
         }) }
       </div>)}
