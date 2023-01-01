@@ -47,14 +47,8 @@ export class GameHistoryService {
 
 	private async updatePlayerStats (result: any, playerInfo: any): Promise<any>
 	{
-		console.log(result, "result");
-		var player1 = result.find((player) => player.id === 1);
-		var player2 = result.find((player) => player.id === 2);
-
-		console.log(player1, "player1");
-		console.log(player2, "player2");
 		let db = playerInfo.players.map((info: any) => {
-			var match = info.player.id === player1.id ? player1 : player2;
+			var match = info.player.id === result[0].id ? result[0] : result[1];
 			return {
 				id: info.player.id,
 				win: match.result === gameResult.WIN ? info.player.win + 1 : info.player.win,
