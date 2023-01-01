@@ -21,6 +21,7 @@
     "react-scripts": "5.0.1",
     "socket.io-client": "^4.5.4",
     "styled-components": "^5.3.6",
+    "timeago.js": "^4.0.2",
     "tough-cookie": "^4.1.2",
     "typescript": "^4.9.3",
     "web-vitals": "^2.1.4"
