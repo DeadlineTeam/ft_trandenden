@@ -70,4 +70,13 @@ export class AuthController {
 	async turnOffTa(@Request() req) {
 		await this.usersService.turnOffTwofa(req.user.userId);
 	}
+
+	// check if the user is set to login using 2fa code
+	@Get('2fa/')
+	async check2fa(@Request() req: Req) {
+		if (req.cookies['TfaCookie'] == null)
+			throw new UnauthorizedException('invalid cookieee');
+		// ok response
+		return {status: 200};
+	}
 }
