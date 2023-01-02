@@ -30,7 +30,7 @@ export class AuthController {
 		res.redirect(redirect_url);
 	}
 
-	@Post("2fa/generate")
+	@Get("2fa/generate")
 	@UseGuards(JwtAuthGuard)
 	async register(@Request() req, @Response() res: Res) {
 		const otpauthUrl  = await this.twofaService.generateSecret(req.user.userId, req.user.username);

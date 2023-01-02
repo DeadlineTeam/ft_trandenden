@@ -22,7 +22,7 @@ const App:React.FC = () => {
         		<Route path="/DashBoard"element={<DashBoard/>}/>
         		<Route path="/Rooms"element={<Rooms/>}/>
         		<Route path="/Chat"element={<Chat/>}/>
-        		<Route path="/Myprofile"element={<Myprofile/>}/>
+        		<Route path="/profile/:id"element={<Myprofile/>}/>
         		<Route path="/Settings"element={<Settings/>}/>
 				<Route path="/Game" element= {<GameComponent/>}/>
 			</Route>

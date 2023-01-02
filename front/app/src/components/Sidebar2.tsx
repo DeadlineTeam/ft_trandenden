@@ -1,10 +1,12 @@
 import React from 'react'
-import * as FaIcons from 'react-icons/fa' 
-import {Sidebardata} from './Sidebardata'
-import {AiOutlineSearch} from 'react-icons/ai'
-import styled from 'styled-components'
 import { Link } from "react-router-dom";
-import { useState } from 'react';
+import * as FaIcons from 'react-icons/fa'
+import { Sidebardata } from './Sidebardata'
+import { AiOutlineSearch } from 'react-icons/ai'
+import styled from 'styled-components'
+
+import { useState, useEffect } from 'react';
+import axios from 'axios'
 import './Sb.css'
 
 const Navbar = styled.div`
@@ -31,13 +33,13 @@ const MenuIconClose = styled(Link)`
     color: #ffffff;
 `
 
-const SidebarMenu = styled.div<{close: boolean}>`
+const SidebarMenu = styled.div<{ close: boolean }>`
     width: 200px;
     height: 100vh;
     background-color: #41474A;
     position: fixed;
     top: 0;
-    left: ${({ close}) => close ? '0' : '-100%'};
+    left: ${({ close }) => close ? '0' : '-100%'};
     transition: .6s;
 `
 
@@ -82,80 +84,95 @@ const LinkSpann = styled.span`
     marginLeft: '30px'
 `
 type props = {
-    placeholder:string;
+    placeholder: string;
     data: Array<any>;
-  }
-const Sidebar2 = ({placeholder, data}:props) => {
+}
+const Sidebar2 = ({ placeholder, data }: props) => {
+
+
+    const [truedata, setTrudata] = useState(Array<any>())
+
     const [close, setClose] = useState(false)
     const showSidebar = () => setClose(!close)
-    const [filtredData, setFiltredData] = useState(Array<any>()); 
-    const len:Number = filtredData.length;
-    let op:Number;
-    const handleFilter = (event:React.FormEvent& { target: HTMLInputElement }) =>{
-        const searchWord = event.target.value
-        console.log(searchWord.length)
+    const [filtredData, setFiltredData] = useState(Array<any>());
+    const len: Number = filtredData.length;
+    let op: Number;
+    const handleFilter = (event: React.FormEvent & { target: HTMLInputElement }) => {
+        
+    const url3 = "http://localhost:3001/users/all"
+    axios.get(url3, { withCredentials: true }).then((response2) => {
+        setTrudata(response2.data)
+    })
+        let searchWord: string;
+        searchWord = event.target.value
 
-        const newfilter =  data.filter((value) => {
-            return value.name.includes(searchWord)
+        const newfilter = truedata.filter((value) => {
+            return value.username.includes(searchWord)
         })
-        if (Object.keys(newfilter).length == 0)
-        {
+        console.log(searchWord.length)
+        if (searchWord.length == 0) {
             setFiltredData([]);
         }
         else
             setFiltredData(newfilter);
 
     }
-    console.log(len);
     return (
-    
-    <>
-    <Navbar>
-    <MenuIconOpen to="#" onClick={showSidebar}>
-            <FaIcons.FaBars/>
-        </MenuIconOpen>
-    <div className='searchbar'>
-        
-    <div className="searchInputs">
-        <input type="text" placeholder={placeholder} onChange={handleFilter}/>
-        <div className='searchicon'>
-          <AiOutlineSearch/>
-        </div>
-      
-      </div>
 
-      { filtredData.length != 0 &&
-        (
-      <div className="dataInputs">
-        { filtredData.map((value, key)=>{
-            return <a className='dataitem' href={value.link}>
-              <p>{value.name}</p>
-              </a>;
-        }) }
-      </div>)}
-      </div>
-    </Navbar>
+        <>
+            <Navbar>
+                <MenuIconOpen to="#" onClick={showSidebar}>
+                    <FaIcons.FaBars />
+                </MenuIconOpen>
+                <div className='searchbar'>
 
-    <SidebarMenu close={close}>
+                    <div className="searchInputs">
+                        <input type="text" placeholder={placeholder} onChange={handleFilter} />
+                        <div className='searchicon'>
+                            <AiOutlineSearch />
+                        </div>
+
+                    </div>
+
+                    {filtredData.length != 0 &&
+                        (
+                            <div className="dataInputs">
+                                {filtredData.map((value, key) =>
+                                <Link to={"profile/"+value.username}>
+                                 <p className='dataitem'>
+                                    {value.username}
+                                </p>
+                                    </Link>
+                                //  <p className='dataitem' onClick={e => {
+                                //     window.location.href = value.username || "";
+                                // }}>
+                                //     {value.username}
+                                // </p>
+                                )}
+                            </div>)}
+                </div>
+            </Navbar>
+
+            <SidebarMenu close={close}>
                 <MenuIconClose to="#" onClick={showSidebar}>
-            <FaIcons.FaTimes/>
-        </MenuIconClose>
-        
-        {Sidebardata.map((item, index) =>{
-            return(
-                <MenuItems key={index}>
-                    <MenuItemLinks to={item.path}>
-                        {item.icon}
-                        <span style={{marginLeft: '30px'}}>{item.name}</span>
-                    </MenuItemLinks>
-                </MenuItems>
-            )
-        })
+                    <FaIcons.FaTimes />
+                </MenuIconClose>
 
-        }
-    </SidebarMenu>
-    </>
-  )
+                {Sidebardata.map((item, index) => {
+                    return (
+                        <MenuItems key={index}>
+                            <MenuItemLinks to={item.path}>
+                                {item.icon}
+                                <span style={{ marginLeft: '30px' }}>{item.name}</span>
+                            </MenuItemLinks>
+                        </MenuItems>
+                    )
+                })
+
+                }
+            </SidebarMenu>
+        </>
+    )
 }
 
 export default Sidebar2

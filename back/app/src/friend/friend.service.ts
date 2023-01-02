@@ -147,9 +147,29 @@ export class FriendService {
 		const friends = await this.prisma.friendShip.findMany ({
 			where: {
 				InitiatorId: userId,
+				status: FRIENDSHIPSTATUS.FRIEND
 			},
+			// include: {
+			// 	Acceptor: true
+			// }
+			select: {
+				Acceptor: {
+					select: {
+						id: true,
+						username: true,
+						avatar_url: true,
+						online: true,
+						inGame: true
+					}
+				}
+			}
 		})
-		return (friends.map ((friend) => friend.AcceptorId))
+
+		let friendDto = []
+		for (const friend of friends) {
+			friendDto.push ({...friend.Acceptor})
+		}
+		return friendDto;
 	}
 
 	async getStatus (userId: number, friendId: number) {

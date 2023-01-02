@@ -7,7 +7,7 @@ import {AiOutlineSetting} from 'react-icons/ai'
 
 export const Sidebardata=[
     {
-        path:"/Home",
+        path:"/",
         name:"Home",
         icon:<AiOutlineHome/>
     },
@@ -27,7 +27,7 @@ export const Sidebardata=[
         icon:<BsChatLeftText/>
     },
     {
-        path:"/Myprofile",
+        path:"/profile/me",
         name:"Myprofile",
         icon:<RiAccountCircleLine/>
     }, 

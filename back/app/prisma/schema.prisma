@@ -35,6 +35,7 @@ model User {
 	receivedfrienship	FriendShip[]					@relation("acceptfriendship")
 	Message				Message[]
 	online				Boolean							@default(false)
+	inGame				Boolean							@default(false)
 }
 
 // add score and mode later
@@ -146,3 +147,5 @@ model FriendShip {
 	AcceptorId     			Int
 	status					FRIENDSHIPSTATUS
 }
+
+

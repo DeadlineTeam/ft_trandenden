@@ -142,7 +142,7 @@ export class GameHistoryService {
 					id: game.players[0].player.id,
 					username: game.players[0].player.username,
 					level: game.players[0].player.level,
-					rank: game.players[0].player.rank,
+					avatar: game.players[0].player.avatar_url,
 					score: game.players[0].score,	
 				},
 				player2: {
