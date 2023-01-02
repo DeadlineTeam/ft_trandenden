@@ -10,6 +10,7 @@ import { Express } from 'express';
 import { editFilename, imageFileFilter } from './utils/upload';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {ForbiddenException} from '@nestjs/common';
+import {BadRequestException} from '@nestjs/common';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -25,7 +26,9 @@ export class UsersController {
 		fileFilter: imageFileFilter,
 	}),)
 	async updateAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
-		console.log(">>>>>",req.user.userId);
+		console.log(req.user.userId);
+		if (!file)
+			throw new BadRequestException("error uploading file");
 		return await this.userService.updateAvatar(req.user.userId, file.path);
 	}
 
