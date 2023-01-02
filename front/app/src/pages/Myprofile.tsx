@@ -137,6 +137,7 @@ return (
 		<div className='full'>
 		<div className='firstpart'>
 		<div className='profi'>
+
       {itsme &&(
     <button className = 'addbutton'>
       <div className='itembutton'></div>
