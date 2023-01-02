@@ -7,10 +7,11 @@ import './faca.css'
 interface props{
   closemodel : React.Dispatch<React.SetStateAction<boolean>>
   openmodel1 : React.Dispatch<React.SetStateAction<boolean>>;
+  settoggled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
-const Faca = ({closemodel,openmodel1}:props) => {
+const Faca = ({closemodel,openmodel1,settoggled}:props) => {
   const [qrcode, setGrcode] = useState("")
   const [img, setimg] = useState()
   const handlemodel1 = () =>{
@@ -27,7 +28,7 @@ const Faca = ({closemodel,openmodel1}:props) => {
           <img className='settingsimg' src={"http://localhost:3001/2fa/generate"}/>
           <div className='footer'>
           
-          <button className='cancelButton' onClick={() => closemodel(false)}>Cancel </button>
+          <button className='cancelButton' onClick={() => {closemodel(false);settoggled(false)} }>Cancel </button>
           <button className='continueButton' onClick={handlemodel1}>Continue </button>
           </div>
         </div>
