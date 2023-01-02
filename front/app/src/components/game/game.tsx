@@ -11,7 +11,6 @@ import { gameSocketContext } from "../../contexts/socket";
 import { useContext } from "react";
 
 
-
 enum STATE {
 	WAITING,
 	PLAYING,
@@ -202,32 +201,41 @@ function GameCanvas ({width, height}: Icanvas) {
 		score: 0,
 		Side: SIDE.RIGHT
 	})
+	const [quiries, setQuiries] = useState (new URLSearchParams (useLocation().search))
+
 	const socket = useContext (gameSocketContext);
-
-	const search = useLocation().search;
-	
-	const mode = new URLSearchParams(search).get('mode');
-	const watch = new URLSearchParams (search).get ('watch')
-
-
+	const queue = quiries.get ('mode');
+	const invite = quiries.get ('invite');
 
 
 	useEffect (() => {
-		if (mode) {
-			if (mode !== 'Normal' && mode !== 'Ultimate') {
-				navigate ("/")
-			}
-			else {
-				socket.emit ("join", mode)
-			}
-		}
-		else if (watch) {
-			socket.emit ("watch", watch)
-		}
-		else {
-			///// don't know what to put here
+
+		let size = 0;
+		quiries.forEach ((value, key) => {
+			size++;
+		})
+		if (size != 1) {
+			navigate ("/Home")
 		}
 
+		quiries.forEach ((value, key) => {
+			if (key !== 'mode' && key !== 'watch' && key !== 'invite') {
+				navigate ("/Home")
+			}
+			if (key === 'mode') {
+				if (value !== 'Normal' && value !== 'Ultimate')
+					navigate ("/Home")
+				else {
+					socket.emit ('join', value)
+				}
+			}
+			if (key === 'watch') {
+				socket.emit ('watch', value)
+			}
+			if (key === 'invite') {
+				socket.emit (key, value);
+			}
+		})
 
 		socket.on ("leftPlayer", (data) => {
 			console.log ("left", data);
@@ -269,7 +277,7 @@ function GameCanvas ({width, height}: Icanvas) {
 
 		socket.on ('end', () => {
 			game.end ()
-			navigate ("/");
+			navigate ("/Home");
 		})
 
 		socket.on ('ball', (position) => {
@@ -305,7 +313,7 @@ function GameCanvas ({width, height}: Icanvas) {
 		
 	}
 	const keyPressed = (p5: p5Types) => {
-		if (mode) {
+		if (queue || invite) {
 			if (p5.keyCode === p5.UP_ARROW) {
 				socket.emit ("input", "up")
 			}
@@ -313,11 +321,11 @@ function GameCanvas ({width, height}: Icanvas) {
 				socket.emit ("input", "down")
 			}
 			if (p5.keyCode === p5.RIGHT_ARROW) {
-				if (mode === "Ultimate")
+				if (queue === "Ultimate")
 					socket.emit ("input", "right")
 			}
 			if (p5.keyCode === p5.LEFT_ARROW) {
-				if (mode === "Ultimate")
+				if (queue === "Ultimate")
 					socket.emit ("input", "left")
 			}
 		}
@@ -354,7 +362,6 @@ const GameComponent: React.FC<any> = () => {
 	return  (
 			<div className="GameContainer">
 				<h1>Pong</h1>
-				
 				<div className="game" ref={pRef}>
 					{width && <GameCanvas width={width} height={width / 2}/>}
 				</div>
