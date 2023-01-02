@@ -213,4 +213,61 @@ export class UsersService {
 			},
 		})
 	}
+
+	async setOnline (id: number, status: boolean) {
+		return await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				online: status,
+			},
+		})
+	}
+
+	async setInGame (id: number, status: boolean) {
+		return await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				inGame: status,
+			},
+		})
+	}
+
+	async getOnlineStatus (id: number) {
+		return await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+			select: {
+				online: true,
+			},
+		})
+	}
+
+	async getInGameStatus (id: number) {
+		return await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+			select: {
+				inGame: true,
+			},
+		})
+	}
+
+	async getStatus (id: number) {
+		return await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+			select: {
+				online: true,
+				inGame: true,
+			},
+		})
+	}
+
 }
