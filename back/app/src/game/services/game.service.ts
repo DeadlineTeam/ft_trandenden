@@ -128,11 +128,11 @@ export class GameService {
 			GameService.emitRoom (match, "end");
 			this.matches.delete (match.id);
 			this.LiveGameBroadcast ();
-			const match = this.findMatchById (socket.data.id);
+			const anothermatch = this.findMatchById (socket.data.id);
 			const inqueue = 
 				this.queues.Normal.find ((s) => s.data.id === socket.data.id) ||
 				this.queues.Ultimate.find ((s) => s.data.id === socket.data.id);
-			if (!inqueue && !match) {
+			if (!inqueue && !anothermatch) {
 				this.onlineService.setInGame (socket.data.id, false);
 			}
 		}
