@@ -11,6 +11,7 @@ import {AuthDeclinedExceptionFilter} from './auth-execption.filter';
 import { TwofaService } from './2fa.service';
 import { Update2faDto } from "src/users/dto/update2fa.dto";
 import { UnauthorizedException } from '@nestjs/common';
+import {ConfigService} from "@nestjs/config";
 
 
 @Controller()
@@ -18,6 +19,7 @@ export class AuthController {
 	constructor (private authService:AuthService,
 				private usersService: UsersService,
 				private twofaService: TwofaService,
+				private configService: ConfigService
 				) {}
 
 	@UseGuards(FortyTwoAuthGuard)
@@ -62,7 +64,7 @@ export class AuthController {
 		const user = this.usersService.findByuername(username);
 		const cookie = await this.authService.login(user, true);
 		res.clearCookie('TfaCookie');
-		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true}).redirect("http://localhost:3000/");
+		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true}).redirect(this.configService.get('FRONTENDURL'));
 	}
 
 	@Get('2fa/turn-off')
