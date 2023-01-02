@@ -7,7 +7,9 @@ import {
 							} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { OnlineService } from './online.service';
+import { UsersService } from 'src/users/users.service';
+import { Inject, forwardRef } from '@nestjs/common';
 					
 @WebSocketGateway({
 	cors: {
@@ -18,8 +20,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 })
 export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor (
+				@Inject (forwardRef (() => OnlineService))
+				private readonly onlineService: OnlineService,
 				private readonly authService: AuthService,
-				private readonly prisma: PrismaService,
+				private readonly userService: UsersService,
 				) {}
 
 	@WebSocketServer ()
@@ -32,30 +36,19 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return false;
 		}
 		try {
-			const user = this.prisma.user.findUnique ({
-				where: {
-					id: payload.sub
-				},
-			})
+			const user = await this.userService.findById (payload.sub);
 			if (!user) {
 				client.disconnect ();
 				return false;
 			}
-			await this.prisma.user.update ({
-				where: {
-					id: payload.sub
-				},
-				data: {
-					online: true
-				}
-			})
+			await this.onlineService.setOnline (payload.sub, true);
+			client.data.id = payload.sub;
+			client.join (payload.sub.toString ());
+			
 		} catch (e) {
 			client.disconnect ();
 			return ;
 		}
-		client.data.id = payload.sub;
-		client.join (payload.sub.toString ());
-		this.server.emit (`online${payload.sub}`);
 	}
 
 	
@@ -66,21 +59,12 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		client.leave (client.data.id.toString ());
 		const room = this.server.adapter.rooms.get (client.data.id.toString ());
-		console.log ("leaaaaved")
 		if (room == undefined) {
 			try {
-				await this.prisma.user.update ({
-					where: {
-						id: client.data.id
-					},
-					data: {
-						online: false
-					}
-				})
+				this.onlineService.setOnline (client.data.id, false);
 			} catch (e) {
 				return ;
 			}
-			this.server.emit (`offline${client.data.id}`);
 		}
 	}
 }
