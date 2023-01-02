@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-
+import {UnauthorizedException} from '@nestjs/common';
 
 const getAuthCookie = (req) => {
 	  if (req && req.cookies) {
@@ -26,7 +26,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
 	console.log("playload == ", payload);
+	if (payload == null)
+		throw new UnauthorizedException();
 	const username = (await this.usersService.findById(payload.sub)).username;
+	if (username == null)
+		throw new UnauthorizedException();
     return { userId: payload.sub, isTauth: payload.isTwoFactorAuthenticated, username: username };
   }
 }
