@@ -13,7 +13,7 @@ cursor: pointer;
 text-indent: -9999px;  
 width: 250px;  
 height: 125px;  
-background-color: ${({ checked }) => (checked ? "#192125" :  "#9da2b3")};  
+background-color: ${({ checked }) => (checked ? "#192125" : "#9da2b3")};  
 display: block;  
 border-radius: 100px;  
 position: relative;
@@ -54,61 +54,64 @@ const dataUrlToBlob = (dataurl: string): Blob => {
 }
 
 const Settings = () => {
- 
+
   // useEffect(()=>
+
+  var [username1, setUsername] = useState("");
+  const [avatarurl, setAvatarurl] = useState("")
+  const [img, setImg] = useState("");
+  const [openmodel, setOpenmodel] = useState(false)
+  const [name, setName] = useState('');
+  const [openmodel1, setOpenmodel1] = useState(false);
+  const [updated, setUpdated] = useState(true);
+  let username: string = "Flen ben Flen"
+  useEffect(() => {
+    console.log("executed");
     const url4 = "http://localhost:3001/profile/iconInfo/"
-    axios.post(url4, {username: "me"},{withCredentials: true}).then((response3) =>{
+    axios.post(url4, { username: "me" }, { withCredentials: true }).then((response3) => {
       console.log(response3.data)
       setAvatarurl(response3.data.avatar_url)
-      setImg(avatarurl)
+      setImg(response3.data.avatar_url)
+      console.log('>>', response3.data.avatar_url)
       setUsername(response3.data.username)
-  
-    })
-  
- 
-  var [username1, setUsername] = useState("");
-  const [avatarurl,setAvatarurl] = useState("")
-  var file1:string
-  const  [img, setImg] = useState("");
-  const  [openmodel, setOpenmodel] = useState(false)
-  let file:FileList ;
-  const [name, setName] = useState('');
-  let username:string = "Flen ben Flen"
 
-  function handleFileChange(event: any|null) {
-    const file: File = event.target.files[0];
-  
-    const reader: FileReader = new FileReader();
-    reader.onload = function(event:any) {
-      const dataUrl:string = event.target.result;
-      const img1 = dataUrlToBlob(dataUrl)
-      console.log(img1)
-     // const url4 = "http://localhost:3001/users/Avatar"
-     // axios.post(url4, {img1},{withCredentials: true}).then((response3) =>{
-      //})
-    }
-    reader.readAsDataURL(file);
+    })
+  }, [updated])
+
+
+  function handleFileChange(event: any | null) {
+    // const file: File = event.target.files[0];
+
+    console.log("im here i just ccamed here ")
+    const data = new FormData();
+    data.append('file', event.target.files[0], event.target.files[0].name);
+    const url4 = "http://localhost:3001/users/Avatar"
+    axios.post(url4, data, { withCredentials: true }).then((response3) => {
+      setImg(response3.data.avatar_url);
+    }).catch((err) => {
+      console.log(err);
+    })
   }
-  const handlename = (event:React.FormEvent& { target: HTMLInputElement }) =>{
+  const handlename = (event: React.FormEvent & { target: HTMLInputElement }) => {
     setName(event.target.value);
   }
- 
-  const [openmodel1,setOpenmodel1] = useState(false)
 
-  const uploadfile= () =>{
+
+
+  const uploadfile = () => {
     var e = document.getElementById('inputfile')
   }
   const [toggled, setToggled] = useState(true)
-  const handletoggled = () =>{
-    if(toggled == false)
+  const handletoggled = () => {
+    if (toggled == false)
       setOpenmodel(!openmodel)
 
     setToggled(!toggled)
   }
 
-  const handlesubmit = () =>{
+  const handlesubmit = () => {
     const url3 = "http://localhost:3001/users/username"
-    axios.post(url3, {username: name},{withCredentials: true}).then((response2) =>{
+    axios.post(url3, { username: name }, { withCredentials: true }).then((response2) => {
 
     })
   }
@@ -116,27 +119,27 @@ const Settings = () => {
   console.log("im here")
   console.log(openmodel1)
   return (
-    <div>        <h1 style={{padding:"20px 20px", fontSize:"25px" ,color: "white", fontFamily:"'Montserrat Alternates', sans-serif", fontWeight:"400"}}>Settings</h1>
-    <div className="milieu">
+    <div>        <h1 style={{ padding: "20px 20px", fontSize: "25px", color: "white", fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: "400" }}>Settings</h1>
+      <div className="milieu">
         <img className="img" id='img' src={img} alt="sqdqs" width="50vw" height="50vh" />
-        <input type='file' id='inputfile' accept='.jpg' onChange={handleFileChange} className='imagechange'/>
+        <input type='file' id='inputfile' accept='.jpg' onChange={handleFileChange} className='imagechange' />
         <p className='username' >{username1}</p>
         <form className='fm' onSubmit={handlesubmit}>
-            <div  className="User" >username :</div>
-            <input type='text' value={name} onChange={handlename} placeholder={username}className="settingsinput"/>
-            <div className='switchee'>
+          <div className="User" >username :</div>
+          <input type='text' value={name} onChange={handlename} placeholder={username} className="settingsinput" />
+          <div className='switchee'>
             <p className='tfa'>two factor authentication</p>
 
-            <Switcher toggled = {toggled} onToggled={handletoggled} />
-            </div>    
-            {openmodel && <Faca closemodel ={setOpenmodel} openmodel1={setOpenmodel1}/> }
-            {openmodel1 && <Faca1 closemodel = {setOpenmodel1} />}
-            <button type='submit' onSubmit={handlesubmit} className='input-submit'> Sauvegarder</button>
-            
+            <Switcher toggled={toggled} onToggled={handletoggled} />
+          </div>
+          {openmodel && <Faca closemodel={setOpenmodel} openmodel1={setOpenmodel1} />}
+          {openmodel1 && <Faca1 closemodel={setOpenmodel1} />}
+          <button type='submit' onSubmit={handlesubmit} className='input-submit'> Sauvegarder</button>
+
         </form>
+      </div>
     </div>
-    </div>
-   
+
   )
 }
 

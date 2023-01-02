@@ -17,6 +17,7 @@ const App:React.FC = () => {
       <BrowserRouter>
          <Routes>
         	<Route path="/login" element={<Login />} />
+			
 			<Route path="/" element={<ProtectedLayout />} >
         		<Route index={true} element={<Home/>}/>
         		<Route path="/DashBoard"element={<DashBoard/>}/>

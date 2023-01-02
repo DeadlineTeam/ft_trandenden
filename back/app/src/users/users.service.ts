@@ -1,33 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import {PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client'
 import { UpdateUserNameDto } from './dto/updateUsername.dto';
 import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
-import {NotFoundException} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 function exclude<User, Key extends keyof User>(
 	user: User,
 	keys: Key[]
-  ): Omit<User, Key> {
+): Omit<User, Key> {
 	for (let key of keys) {
-	  delete user[key]
+		delete user[key]
 	}
 	return user
 }
 
 @Injectable()
 export class UsersService {
-	constructor(private prisma: PrismaService) {}
+	constructor(private prisma: PrismaService) { }
 
-	async findById (id: number): Promise<User | null> {
+	async findById(id: number): Promise<User | null> {
 		return this.prisma.user.findUnique({
 			where: {
 				id: id
 			}
 		})
 	}
-	
+
 	async findbylogin(login: string): Promise<User | null> {
 		const res = this.prisma.user.findUnique({
 			where: {
@@ -39,7 +39,7 @@ export class UsersService {
 
 	async addUserAuth(profile: any): Promise<User> {
 		const res = this.prisma.user.create({
-			data:{
+			data: {
 				link: `localhost:3000/profile/${profile.username}`,
 				login: profile.username,
 				fortytwoid: Number(profile.id),
@@ -51,22 +51,20 @@ export class UsersService {
 		return res;
 	}
 
-	async updateAvatar(id: number, filePath: string): Promise<any>
-	{
+	async updateAvatar(id: number, filePath: string): Promise<any> {
 		console.log(id);
 		console.log(filePath)
-		console.log(await this.prisma.user.update({where: {id} , data: {avatar_url: filePath},}));
-		return {avatar_url: filePath};
+		console.log(await this.prisma.user.update({ where: { id }, data: { avatar_url: `http://localhost:3001/${filePath}` }, }));
+		return { avatar_url: `http://localhost:3001/${filePath}` };
 	}
 
-	async getStats(username: UpdateUserNameDto): Promise<any>
-	{
+	async getStats(username: UpdateUserNameDto): Promise<any> {
 		const res = await this.prisma.user.findUnique({
 			where: {
 				username: username.username,
 			},
 			select: {
-				win : true,
+				win: true,
 				loss: true,
 				rank: true,
 				rankavatar: true,
@@ -79,15 +77,14 @@ export class UsersService {
 		return res;
 	}
 
-	async getIconInfo(username: UpdateUserNameDto): Promise<any>
-	{
+	async getIconInfo(username: UpdateUserNameDto): Promise<any> {
 		console.log("usernaaaaaame ", username);
 		const res = await this.prisma.user.findUnique({
 			where: {
 				username: username.username,
 			},
 			select: {
-				id : true,
+				id: true,
 				level: true,
 				avatar_url: true,
 				username: true,
@@ -97,26 +94,25 @@ export class UsersService {
 		})
 		if (res === null)
 			throw new NotFoundException('User not found');
-		console.log("usernaaaaaame ",username);
+		console.log("usernaaaaaame ", username);
 		return res;
 	}
 
-	async leaderboard(): Promise<any>
-	{
+	async leaderboard(): Promise<any> {
 		const res = await this.prisma.user.findMany({
 			select: {
 				avatar_url: true,
 				username: true,
 				level: true,
 				winrate: true,
-				games :{
+				games: {
 					select: {
 						result: true,
 					},
 					orderBy: {
 						createdAt: 'desc',
 					},
-					take:3
+					take: 3
 				},
 				totalgames: true,
 			},
@@ -130,8 +126,7 @@ export class UsersService {
 		return res;
 	}
 
-	async updateUsername(userId: number, updateUserNameDto: UpdateUserNameDto): Promise<any>
-	{
+	async updateUsername(userId: number, updateUserNameDto: UpdateUserNameDto): Promise<any> {
 		const res = await this.prisma.user.update({
 			where: {
 				id: userId,
@@ -144,15 +139,13 @@ export class UsersService {
 		return res;
 	}
 
-	async logout(res: Response): Promise<any>
-	{
-	return res.status(HttpStatus.OK)
-		.clearCookie('Authorization', {httpOnly: true})
-		.send({'message': 'logout'});
+	async logout(res: Response): Promise<any> {
+		return res.status(HttpStatus.OK)
+			.clearCookie('Authorization', { httpOnly: true })
+			.send({ 'message': 'logout' });
 	}
 
-	async setTwofaSecret(userId: number, secret: string): Promise<any>
-	{
+	async setTwofaSecret(userId: number, secret: string): Promise<any> {
 		const res = await this.prisma.user.update({
 			where: {
 				id: userId,
@@ -164,8 +157,7 @@ export class UsersService {
 		return res;
 	}
 
-	async turnOnTwofa(userId: number): Promise<any>
-	{
+	async turnOnTwofa(userId: number): Promise<any> {
 		const res = await this.prisma.user.update({
 			where: {
 				id: userId,
@@ -177,8 +169,7 @@ export class UsersService {
 		return res;
 	}
 
-	async turnOffTwofa(userId: number): Promise<any>
-	{
+	async turnOffTwofa(userId: number): Promise<any> {
 		const res = await this.prisma.user.update({
 			where: {
 				id: userId,
@@ -197,11 +188,11 @@ export class UsersService {
 			},
 		})
 	}
-	
+
 	async getAllUsers(id: number): Promise<User[]> {
 		const users = await this.prisma.user.findMany();
 		users.map((user) => {
-			 exclude(user, ['twofasecret']);
+			exclude(user, ['twofasecret']);
 		})
 		return users.filter((user) => user.id !== id);
 	}
