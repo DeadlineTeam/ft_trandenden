@@ -5,6 +5,7 @@ import { Server, Socket } from "socket.io";
 import { AuthService } from "src/auth/auth.service";
 import { GameService, LiveMatch } from "./services/game.service";
 import { UsersService } from "src/users/users.service";
+import { OnlineService } from "src/online/online.service";
 
 @WebSocketGateway ({
 	cors: {
@@ -20,7 +21,8 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 		@Inject(forwardRef(() => GameService))
 		private readonly gameService: GameService,
 		private readonly authService: AuthService,
-		private readonly userService: UsersService
+		private readonly userService: UsersService,
+		private readonly onlineService: OnlineService,
 	) {}
 		
 	@WebSocketServer ()
@@ -43,9 +45,17 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 	}
 
 	@SubscribeMessage ("join")
-	joinQueue (@ConnectedSocket () client: Socket, @MessageBody () mode: string) {
+	async joinQueue (@ConnectedSocket () client: Socket, @MessageBody () mode: string) {
+		// check if the user is already in a game
+		const status = await this.userService.getStatus (client.data.id);
+		if (status.inGame === true){
+			client.emit ("end");
+			return ;
+		}
 		this.gameService.joinQueue (client, mode);
+		this.onlineService.setInGame (client.data.id, true);
 	}
+
 	@SubscribeMessage ("leave")
 	leaveQueue (@ConnectedSocket () client: Socket) {
 		this.gameService.leaveMatch (client);
@@ -76,5 +86,8 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 		this.server.to (GameGateway.LiveGameRoom).emit (GameGateway.LiveGameRoom, liveMatches);
 	}
 
-
+	@SubscribeMessage ("invite")
+	invite (@ConnectedSocket () client: Socket, @MessageBody () id: string) {
+		this.gameService.gameInvite (client, id);
+	}
 }

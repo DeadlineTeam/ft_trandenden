@@ -11,7 +11,9 @@ import Login from "./pages/Login"
 import GameComponent from './components/game/game';
 import './App.css';
 
+
 const App:React.FC = () => {
+
   return (  
     <div className="App">
       <BrowserRouter>
@@ -21,6 +23,7 @@ const App:React.FC = () => {
 			<Route path="/" element={<ProtectedLayout />} >
         		<Route index={true} element={<Home/>}/>
         		<Route path="/DashBoard"element={<DashBoard/>}/>
+				<Route path="/Home"element={<Home/>}/>
         		<Route path="/Rooms"element={<Rooms/>}/>
         		<Route path="/Chat"element={<Chat/>}/>
         		<Route path="/profile/:id"element={<Myprofile/>}/>

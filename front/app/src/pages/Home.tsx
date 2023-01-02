@@ -7,23 +7,23 @@ import { useContext } from "react"
 import axios from "axios"
 
 import { useEffect, useState} from "react";
-import { onlineSocketContext } from "../contexts/socket";
+// import { onlineSocketContext } from "../contexts/socket";
 
 const Home = () => {
 	const user = useContext (UserContext);
-	const socket = useContext (onlineSocketContext);
-	useEffect (() => {
-		socket.on ('online2',  () => {
-			console.log ("online2")
-		})
-		socket.on ('offline2', () => {
-			console.log ('offline2')
-		})
-		return () => {
-			socket.off ('online1')
-			socket.off ('offline1')
-		}
-	}, [])
+	// const socket = useContext (onlineSocketContext);
+	// useEffect (() => {
+	// 	socket.on ('online2',  () => {
+	// 		console.log ("online2")
+	// 	})
+	// 	socket.on ('offline2', () => {
+	// 		console.log ('offline2')
+	// 	})
+	// 	return () => {
+	// 		socket.off ('online1')
+	// 		socket.off ('offline1')
+	// 	}
+	// }, [])
 
   	return (
 	<div className='fullhome'>

@@ -10,7 +10,7 @@ type IMode = {
 function GameMode (props: IMode) {
 	const mode: string = "Img" + props.mode + "Mode";
 	const navigate = useNavigate ()
-	const handleClick = (mode: string) => navigate ('/Game?mode=' + props.mode)
+	const handleClick = () => navigate ('/Game?mode=' + props.mode)
 	return (
 		<div className='mode'>
 			<img 
@@ -21,7 +21,7 @@ function GameMode (props: IMode) {
 				height={"100%"}
 				
 			/>
-			<div className="modebg" onClick={()=> handleClick (props.mode)}>
+			<div className="modebg" onClick={handleClick}>
 				<p className="modename">{props.mode + " Mode"}</p>
 			</div>
 		</div>
