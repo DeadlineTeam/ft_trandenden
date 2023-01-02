@@ -90,10 +90,6 @@ type props = {
 const Sidebar2 = ({ placeholder, data }: props) => {
 
 
-    const url3 = "http://localhost:3001/users/all"
-    axios.get(url3, { withCredentials: true }).then((response2) => {
-        setTrudata(response2.data)
-    })
     const [truedata, setTrudata] = useState(Array<any>())
 
     const [close, setClose] = useState(false)
@@ -102,6 +98,11 @@ const Sidebar2 = ({ placeholder, data }: props) => {
     const len: Number = filtredData.length;
     let op: Number;
     const handleFilter = (event: React.FormEvent & { target: HTMLInputElement }) => {
+        
+    const url3 = "http://localhost:3001/users/all"
+    axios.get(url3, { withCredentials: true }).then((response2) => {
+        setTrudata(response2.data)
+    })
         let searchWord: string;
         searchWord = event.target.value
 
