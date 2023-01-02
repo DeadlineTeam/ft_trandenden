@@ -4,10 +4,13 @@ import ReactInputVerificationCode from 'react-input-verification-code';
 import axios from 'axios';
 interface props{
     closemodel : React.Dispatch<React.SetStateAction<boolean>>
+    settoggled: React.Dispatch<React.SetStateAction<boolean>>;
+    openmodel2 :React.Dispatch<React.SetStateAction<boolean>>;
+    ssucces: React.Dispatch<React.SetStateAction<boolean>>;
   }
   
   
-const Faca1 = ({closemodel}:props) => {
+const Faca1 = ({closemodel,openmodel2 ,ssucces, settoggled}:props) => {
     const [value, setValue] = useState("");
     const [complete, isComplete] = useState(false);
     const handlecomplete = () =>
@@ -26,11 +29,14 @@ const Faca1 = ({closemodel}:props) => {
     const handlecode = (event:any) =>{
       event.preventDefault();
      console.log("valuuuuuue", value) 
+     openmodel2(true)
 	  axios.post("http://localhost:3001/2fa/turn-on",{"twofasecret": value},{withCredentials: true}).then((response) =>{
         console.log(response.data)
+        ssucces(true)
         closemodel(false)
       }).catch(error=>{
         if (error.response)
+        settoggled(false)
         closemodel(false)
       })  
     }
@@ -48,7 +54,7 @@ const Faca1 = ({closemodel}:props) => {
             <ReactInputVerificationCode autoFocus={true} placeholder='' value={value} onChange={handlevalue}  length={6} />
             </div>
           <div className='footer'>
-          <button className='cancelButton'  onClick={() => closemodel(false)}>Cancel </button>
+          <button className='cancelButton'  onClick={() => {closemodel(false);settoggled(false)}}>Cancel </button>
             <button className='continueButton' disabled={complete ? false:true} onClick={handlecode}>Continue </button>
           </div>
         </div>
