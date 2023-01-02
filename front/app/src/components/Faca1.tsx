@@ -25,7 +25,8 @@ const Faca1 = ({closemodel}:props) => {
     const clearValue = () => setValue("");
     const handlecode = (event:any) =>{
       event.preventDefault();
-      axios.post("http://localhost:3001/2fa/turn-on",{value},{withCredentials: true}).then((response) =>{
+     console.log("valuuuuuue", value) 
+	  axios.post("http://localhost:3001/2fa/turn-on",{"twofasecret": value},{withCredentials: true}).then((response) =>{
         console.log(response.data)
         closemodel(false)
       }).catch(error=>{
