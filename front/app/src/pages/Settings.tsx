@@ -56,7 +56,6 @@ const dataUrlToBlob = (dataurl: string): Blob => {
 
 const Settings = () => {
 
-  // useEffect(()=>
   const [authen, setAuth] = useState(false)
   var [username1, setUsername] = useState("");
   const [avatarurl, setAvatarurl] = useState("")
@@ -67,7 +66,6 @@ const Settings = () => {
   const [openmodel1, setOpenmodel1] = useState(false);
   const [openmodel2, setOpenmodel2] = useState(false);
   const [success, setSucces] = useState(false);
-
   const [updated, setUpdated] = useState(true);
   let username: string = "Flen ben Flen"
   useEffect(() => {
@@ -86,8 +84,6 @@ const Settings = () => {
 
 
   function handleFileChange(event: any | null) {
-    // const file: File = event.target.files[0];
-
     console.log("im here i just ccamed here ")
     const data = new FormData();
     data.append('file', event.target.files[0], event.target.files[0].name);
@@ -101,30 +97,23 @@ const Settings = () => {
   const handlename = (event: React.FormEvent & { target: HTMLInputElement }) => {
     setName(event.target.value);
   }
-
-
-
-  const uploadfile = () => {
-    var e = document.getElementById('inputfile')
-  }
   const handletoggled = () => {
     if (toggled == false)
       setOpenmodel(!openmodel)
 
     setToggled(!toggled)
   }
-
   const handlesubmit = () => {
     const url3 = "http://localhost:3001/users/username"
     axios.post(url3, { username: name }, { withCredentials: true }).then((response2) => {
-
     })
   }
   console.log(openmodel)
   console.log("im here")
   console.log(openmodel1)
   return (
-    <div>        <h1 style={{ padding: "20px 20px", fontSize: "25px", color: "white", fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: "400" }}>Settings</h1>
+    <div> 
+      <h1 style={{ padding: "20px 20px", fontSize: "25px", color: "white", fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: "400" }}>Settings</h1>
       <div className="milieu">
         <img className="img" id='img' src={img} alt="sqdqs" width="50vw" height="50vh" />
         <input type='file' id='inputfile' accept='.jpg' onChange={handleFileChange} className='imagechange' />
@@ -134,14 +123,12 @@ const Settings = () => {
           <input type='text' value={name} onChange={handlename} placeholder={username} className="settingsinput" />
           <div className='switchee'>
             <p className='tfa'>two factor authentication</p>
-
             <Switcher toggled={toggled} onToggled={handletoggled} />
           </div>
           {openmodel && <Faca closemodel={setOpenmodel} openmodel1={setOpenmodel1} settoggled={setToggled} />}
           {openmodel1 && <Faca1 closemodel={setOpenmodel1} openmodel2={setOpenmodel2}  ssucces={setSucces} settoggled={setToggled} />}
           {openmodel2 && <Faca2 closemodel={setOpenmodel2} ssucces={success} />}
           <button type='submit' onSubmit={handlesubmit} className='input-submit'> Sauvegarder</button>
-
         </form>
       </div>
     </div>

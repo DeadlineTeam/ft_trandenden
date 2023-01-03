@@ -25,43 +25,37 @@ const Faca1 = ({closemodel,openmodel2 ,ssucces, settoggled}:props) => {
         setValue(data);
         isComplete(false)
       }
-    const clearValue = () => setValue("");
     const handlecode = (event:any) =>{
       event.preventDefault();
-     console.log("valuuuuuue", value) 
-     openmodel2(true)
-	  axios.post("http://localhost:3001/2fa/turn-on",{"twofasecret": value},{withCredentials: true}).then((response) =>{
+      console.log("valuuuuuue", value) 
+      openmodel2(true)
+	    axios.post("http://localhost:3001/2fa/turn-on",{"twofasecret": value},{withCredentials: true})
+      .then((response) =>{
         console.log(response.data)
         ssucces(true)
         closemodel(false)
-      }).catch(error=>{
+        })
+      .catch(error=>{
         if (error.response)
-        settoggled(false)
+          settoggled(false)
         closemodel(false)
       })  
     }
-    console.log(complete);
-    console.log(value.length)
-    console.log(value)
   return (
-
     <div className='faBackground'>
         <div className='facontainer'>
-            
-        <h1 className='title'>Enter Password
-          </h1>
-            <div className="custom-style">
-            <ReactInputVerificationCode autoFocus={true} placeholder='' value={value} onChange={handlevalue}  length={6} />
+          <h1 className='title'>Enter Password
+            </h1>
+              <div className="custom-style">
+                <ReactInputVerificationCode autoFocus={true} placeholder='' value={value} onChange={handlevalue}  length={6} />
+              </div>
+            <div className='footer'>
+              <button className='cancelButton'  onClick={() => {closemodel(false);settoggled(false)}}>Cancel </button>
+              <button className='continueButton' disabled={complete ? false:true} onClick={handlecode}>Continue </button>
             </div>
-          <div className='footer'>
-          <button className='cancelButton'  onClick={() => {closemodel(false);settoggled(false)}}>Cancel </button>
-            <button className='continueButton' disabled={complete ? false:true} onClick={handlecode}>Continue </button>
-          </div>
         </div>
-
     </div>
   )
-  
 }
 
 export default Faca1

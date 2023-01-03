@@ -17,20 +17,17 @@ const Searchbar = ({placeholder, data}:props) => {
         <div className='searchicon'>
           <AiOutlineSearch/>
         </div>
-      
       </div>
-
       {
-      filtredData.length != 0 &&
-        (
-      <div className="dataInputs">
-        { data.map((value, key)=>{
-            return <a className='dataitem' href={value.link}>
-              <p>{value.index}</p>
-              </a>;
-        }) }
-      </div>)}
-
+        filtredData.length != 0 &&
+          (
+            <div className="dataInputs">
+              {data.map((value, key)=>{
+                return  <a className='dataitem' href={value.link}>
+                            <p>{value.index}</p>
+                        </a>;
+                }) }
+            </div>)}
     </div>
   )
 }

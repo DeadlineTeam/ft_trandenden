@@ -11,29 +11,24 @@ interface props{
   }
   
 const Faca2 = ({closemodel, ssucces}:props) => {
-    const handlecode = (event:any) =>{
-        closemodel(false)
-        event.preventDefault();
-    }
+  const handlecode = (event:any) =>{
+      closemodel(false)
+      event.preventDefault();
+  }
   return (
 
     <div className='faBackground'>
         <div className='facontainer'>
-            
-        <h1 className='title'>Enter Password
-          </h1>
-         
-            <div >
-                <FaIcons.FaLockOpen/>
-            </div>
+          <h1 className='title'>Enter Password</h1>
+          <div >
+              <FaIcons.FaLockOpen/>
+          </div>
           <div className='footer'>
             <button className='continueButton' onClick={handlecode}>Close </button>
           </div>
         </div>
-
     </div>
   )
-  
 }
 
 export default Faca2
