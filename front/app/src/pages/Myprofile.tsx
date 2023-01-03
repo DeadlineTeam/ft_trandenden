@@ -6,7 +6,7 @@ import { createContext, useContext } from 'react';
 import { useEffect, useState } from 'react'
 import { UserContext } from '../components/ProtectedLayout'
 import axios from 'axios'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { array } from 'prop-types';
 import {IoMdPersonAdd} from 'react-icons/io'
 import {ImBlocked} from 'react-icons/im'
@@ -77,6 +77,7 @@ const Myprofile = () => {
   	const [winrate1, setWinrate] = useState(0)
   	const user = useContext(UserContext)
 	const [render, setRender] = useState (false);
+	const navigate = useNavigate();
 
   	useEffect(()=>{
     	var stri = window.location.pathname.split("/",3)[2];
@@ -90,7 +91,9 @@ const Myprofile = () => {
 			setUsername(response.data.username)
 			setFriendship(response.data.friendship)
 			setId(response.data.id)
-      	})
+      	}).catch(()=>{
+			navigate("/Notfound")
+		})
       	
 		const url3 = "http://localhost:3001/profile/gameHistory"
       	axios.post(url3, {username: stri},{withCredentials: true}).then((response2) =>{

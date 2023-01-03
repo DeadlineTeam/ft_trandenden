@@ -11,7 +11,7 @@ import Login from "./pages/Login"
 import GameComponent from './components/game/game';
 import './App.css';
 import TwoFaCode from './pages/TwoFaCode';
-
+import Notfound from './pages/Notfound';
 
 
 const App:React.FC = () => {
@@ -31,7 +31,7 @@ const App:React.FC = () => {
         		<Route path="/profile/:id"element={<Myprofile/>}/>
         		<Route path="/Settings"element={<Settings/>}/>
 				<Route path="/Game" element= {<GameComponent/>}/>
-				<Route path="*" element={<div>404</div>} />
+				<Route path="*" element={<Notfound/>} />
 			</Route>
 			
 			
