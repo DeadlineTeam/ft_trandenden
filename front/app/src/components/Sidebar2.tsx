@@ -131,7 +131,6 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                         <div className='searchicon'>
                             <AiOutlineSearch />
                         </div>
-
                     </div>
 
                     {filtredData.length != 0 &&
@@ -139,15 +138,10 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                             <div className="dataInputs">
                                 {filtredData.map((value, key) =>
                                 <Link to={"profile/"+value.username}>
-                                 <p className='dataitem'>
-                                    {value.username}
-                                </p>
-                                    </Link>
-                                //  <p className='dataitem' onClick={e => {
-                                //     window.location.href = value.username || "";
-                                // }}>
-                                //     {value.username}
-                                // </p>
+                                    <p className='dataitem'>
+                                        {value.username}
+                                    </p>
+                                </Link>
                                 )}
                             </div>)}
                 </div>
@@ -157,7 +151,6 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                 <MenuIconClose to="#" onClick={showSidebar}>
                     <FaIcons.FaTimes />
                 </MenuIconClose>
-
                 {Sidebardata.map((item, index) => {
                     return (
                         <MenuItems key={index}>
@@ -168,7 +161,6 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                         </MenuItems>
                     )
                 })
-
                 }
             </SidebarMenu>
         </>
