@@ -8,7 +8,6 @@ const Navbar:React.FC = () => {
             <li className="boardil">leaderBoard</li>
             <li className="boardil">Settings</li>
             <li className="boardil">Profile</li>
-
         </ul>
     </div>
   )

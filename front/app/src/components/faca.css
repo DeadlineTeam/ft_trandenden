@@ -12,6 +12,7 @@
     left: 0%;
 }
 .facontainer{
+    position: absolute;
     width: 25%;
     height: 30%;
     border-radius: 12px;
@@ -21,6 +22,7 @@
     flex-direction: column;
     padding: 25px;
     margin: auto;
+    gap: 10%;
     z-index: 1000;
     position: relative;
 }
@@ -31,7 +33,9 @@
 .footer{
     position: relative;
     flex-direction: row;
-    top: 70%;
+    top: 20%;
+    height: 10%;
+
 }
 .cancelButton{
     position: relative;
@@ -47,7 +51,7 @@
     background-color: none;
 }
 .continueButton{
-    position: relative;
+    position: absolute;
     cursor: pointer;
     width: 25%;
         border-radius: 12px;
@@ -55,4 +59,11 @@
     border-color: #191919;
     font-family:'Montserrat Alternates', sans-serif;
     background-color: #191919;
+}
+.settingsimg{
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@200;300;400;500&display=swap');
+
 .searchbar{
 
 }
@@ -63,3 +65,23 @@
 #clearBtn {
     cursor: pointer;
   }
+.ButtonLogOut{
+  position: relative;
+  top: 55%;
+  width: 100%;
+  background:none;
+  color: white;
+  font-family:'Montserrat Alternates', sans-serif;
+  font-weight: 700;
+  font-size: large;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  text-align: center;
+
+}
+.Logouticon{
+  height: 2em;
+  width: 5em;
+
+}

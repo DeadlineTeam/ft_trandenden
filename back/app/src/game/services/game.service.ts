@@ -4,9 +4,13 @@ import { Interval } from "@nestjs/schedule";
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { Pong } from "./match.service";
 import { GameGateway } from "../game.gateway";
-import { PrismaService } from "src/prisma/prisma.service";
-import { gameMode } from "@prisma/client";
 import { GameHistoryService } from "src/game-history/game-history.service";
+import { UsersService } from "src/users/users.service";
+import { HttpException } from "@nestjs/common";
+import { HttpStatus } from "@nestjs/common";
+import { OnlineService } from "src/online/online.service";
+
+import { GameInvite } from "src/online/types/gameInvite";
 
 type Queue = {
 	Normal: Array<Socket>
@@ -39,12 +43,16 @@ export class GameService {
 	constructor (
 		@Inject(forwardRef(() => GameGateway))
 		private readonly gateWay: GameGateway,
-		private readonly prisma: PrismaService,
-		private readonly gameHistoryService: GameHistoryService
+		private readonly gameHistoryService: GameHistoryService,
+		private readonly userService: UsersService,
+		private readonly onlineService: OnlineService,
 	) {}
 
 	queues: Queue = { Normal: [], Ultimate: []}
+
 	matches: Map<string, Pong> = new Map ();
+
+	matchesWithInvites: Map<string, Pong> = new Map (); 
 
 	static emitRoom (match: Pong, event: string, ...args: any): void {
 		for (const p of match.game.players)
@@ -55,6 +63,7 @@ export class GameService {
 
 
 	async startMatch (match: Pong) {
+		
 		this.matches.set (match.id, match);
 		this.LiveGameBroadcast ();
 	}
@@ -104,15 +113,41 @@ export class GameService {
 		}
 	}
 	
+	findMatchById (id: number) {
+		for (const match of this.matches.values ()) {
+			for (const p of match.game.players) {
+				if (p.socket.data.id === id)
+					return match;
+			}
+		}
+	}
+
 	leaveMatch (socket: Socket): void {
 		const match: Pong = this.findMatch (socket);
 		if (match) {
 			GameService.emitRoom (match, "end");
 			this.matches.delete (match.id);
+			this.LiveGameBroadcast ();
+			const anothermatch = this.findMatchById (socket.data.id);
+			const inqueue = 
+				this.queues.Normal.find ((s) => s.data.id === socket.data.id) ||
+				this.queues.Ultimate.find ((s) => s.data.id === socket.data.id);
+			if (!inqueue && !anothermatch) {
+				this.onlineService.setInGame (socket.data.id, false);
+			}
 		}
 		else {
 			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id)
 			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id)
+		}
+		for (const match of this.matchesWithInvites.values ()) {
+			const players = match.game.players;
+			players.forEach ((p) => {
+				if (p.socket.id === socket.id) {
+					p.socket.emit ("end");
+					this.matchesWithInvites.delete (match.id);
+				}
+			})
 		}
 	}
 	
@@ -190,4 +225,102 @@ export class GameService {
 		}
 	}
 
+	async invite (inviterId: number, invitee: number) {
+		// check if the userId is online
+		// and not in a match
+		// create a match and send the gameId to both the players
+		// for the requester as post request response
+		// for the invitee as a notification with the gameId
+		// if the invitee accepts the invitation by clicking on accept button
+		// he will be redirected to the game page /Game?accept=gameId
+		// if he clicked on cancel button, he will send a post request to
+		// /game/reject/:gameId and the inviter needs to be removed from the match
+		// and the match needs to be deleted
+		// else if the invitee does not respond within 30 seconds, the match needs to be deleted
+		// and the inviter needs to be notified that the invitee did not respond
+		// if the invitee accepts the invitation, he needs to be redirected to /Game?accept=gameId
+
+		const user = await  this.userService.findById (invitee);
+		const inviter = await this.userService.findById (inviterId);
+
+		if (!user) {
+			throw new HttpException ('User not found', HttpStatus.NOT_FOUND);
+		}
+		// const online = await this.userService.getOnlineStatus (invitee);
+		// if (!online.online) {
+		// 	throw new HttpException ('User is not online', HttpStatus.NOT_FOUND);
+		// }
+		// const inGame = await this.userService.getInGameStatus (invitee);
+		// console.log ("status --->", invitee, inGame, online)
+		// if (inGame) {
+		// 	throw new HttpException ('User is in a game', HttpStatus.BAD_REQUEST);
+		// }
+
+		const status = await this.userService.getStatus (invitee);
+		if (!status.online) {
+			throw new HttpException ('User is not online', HttpStatus.NOT_FOUND);
+		}
+		if (status.inGame) {
+			throw new HttpException ('User is in a game', HttpStatus.BAD_REQUEST);
+		}
+
+		// let's try to create a match
+		const match = new Pong ('Normal');
+		this.matchesWithInvites.set (match.id, match);
+		
+		// let's notify the other user
+		this.onlineService.notify (invitee, "GameInvite",
+		{
+			id: match.id,
+			inviter: inviter.username,
+			mode: "Normal"
+		} as GameInvite);
+
+		// let's send the gameId to the requester
+		return { gameId: match.id };
+	}
+
+
+	gameInvite (socket: Socket, gameId: string) {
+		const match = this.matchesWithInvites.get (gameId);
+		if (!match) {
+			socket.emit ("end");
+			// send a notification to the requester that
+			// the invitee did not respond
+			//
+			return;
+		}
+		else {
+			if (match.game.players.length === 2) {
+				socket.emit ("end");
+				return;
+			}
+			match.addPlayer (socket);
+			if (match.game.players.length === 1) {
+				socket.emit ("leftPlayer", socket.data)
+			}
+			else {
+				match.game.players.forEach((p) => {
+					p.socket.emit ("leftPlayer", match.game.players[0].socket.data)
+					p.socket.emit ("rightPlayer", match.game.players[1].socket.data)
+				})
+			}
+			if (match.game.players.length === 2) {
+				this.matches.set (match.id, match);
+				this.matchesWithInvites.delete (match.id);
+				this.LiveGameBroadcast ();
+			}
+		}
+	}
+
+	decline (gameId: string) {
+		const match = this.matchesWithInvites.get (gameId);
+		if (match) {
+			const inviterSocket = match.game.players[0].socket;
+			this.onlineService.notify (inviterSocket.data.id, "GameInviteDeclined", { id: match.id });
+			inviterSocket.emit ("end");
+			this.matchesWithInvites.delete (match.id);
+		}
+	}
+	
 }	

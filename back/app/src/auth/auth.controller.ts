@@ -11,6 +11,7 @@ import {AuthDeclinedExceptionFilter} from './auth-execption.filter';
 import { TwofaService } from './2fa.service';
 import { Update2faDto } from "src/users/dto/update2fa.dto";
 import { UnauthorizedException } from '@nestjs/common';
+import {ConfigService} from "@nestjs/config";
 
 
 @Controller()
@@ -18,6 +19,7 @@ export class AuthController {
 	constructor (private authService:AuthService,
 				private usersService: UsersService,
 				private twofaService: TwofaService,
+				private configService: ConfigService
 				) {}
 
 	@UseGuards(FortyTwoAuthGuard)
@@ -30,7 +32,7 @@ export class AuthController {
 		res.redirect(redirect_url);
 	}
 
-	@Post("2fa/generate")
+	@Get("2fa/generate")
 	@UseGuards(JwtAuthGuard)
 	async register(@Request() req, @Response() res: Res) {
 		const otpauthUrl  = await this.twofaService.generateSecret(req.user.userId, req.user.username);
@@ -55,19 +57,35 @@ export class AuthController {
 			throw new UnauthorizedException('invalid cookieee');
 		const username = await this.twofaService.verifyTwoFaKey(req.cookies['TfaCookie'].split(' ')[1]);
 		if (username == null)
+		{
+			res.clearCookie('TfaCookie');
 			throw new UnauthorizedException('invalid cccookie');
+		}
 		const isVerified = await this.twofaService.verifyToken(username, tfaCode.twofasecret);
 		if (!isVerified)
+		{
+			res.clearCookie('TfaCookie');
 			throw new UnauthorizedException('user Not foud Or Wrong authentication code');
-		const user = this.usersService.findByuername(username);
+		}
+		const user = await this.usersService.findByuername(username);
 		const cookie = await this.authService.login(user, true);
 		res.clearCookie('TfaCookie');
-		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true}).redirect("http://localhost:3000/");
+		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true});
+		res.send ({status: "ok"})
 	}
 
 	@Get('2fa/turn-off')
 	@UseGuards(JwtAuthGuard)
 	async turnOffTa(@Request() req) {
 		await this.usersService.turnOffTwofa(req.user.userId);
+	}
+
+	// check if the user is set to login using 2fa code
+	@Get('2fa/')
+	async check2fa(@Request() req: Req) {
+		if (req.cookies['TfaCookie'] == null)
+			throw new UnauthorizedException('invalid cookieee');
+		// ok response
+		return {status: 200};
 	}
 }

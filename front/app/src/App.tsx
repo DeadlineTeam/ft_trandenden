@@ -10,24 +10,32 @@ import Settings from './pages/Settings';
 import Login from "./pages/Login"
 import GameComponent from './components/game/game';
 import './App.css';
+import TwoFaCode from './pages/TwoFaCode';
+
+
 
 const App:React.FC = () => {
+
   return (  
     <div className="App">
       <BrowserRouter>
          <Routes>
         	<Route path="/login" element={<Login />} />
+			<Route path="/2fa" element={<TwoFaCode/>} />
 			<Route path="/" element={<ProtectedLayout />} >
         		<Route index={true} element={<Home/>}/>
         		<Route path="/DashBoard"element={<DashBoard/>}/>
+				<Route path="/Home"element={<Home/>}/>
         		<Route path="/Rooms"element={<Rooms/>}/>
         		<Route path="/Chat"element={<Chat/>}/>
-        		<Route path="/Myprofile/:id"element={<Myprofile/>}/>
+        		<Route path="/profile/:id"element={<Myprofile/>}/>
         		<Route path="/Settings"element={<Settings/>}/>
 				<Route path="/Game" element= {<GameComponent/>}/>
+				<Route path="*" element={<div>404</div>} />
 			</Route>
+			
+			
 			{/* we neeed a 404 page */}
-			{/* <Route path="*" element={<div>404</div>} /> */}
         </Routes>
      </BrowserRouter>
     </div>
