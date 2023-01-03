@@ -4,10 +4,12 @@ import * as FaIcons from 'react-icons/fa'
 import { Sidebardata } from './Sidebardata'
 import { AiOutlineSearch } from 'react-icons/ai'
 import styled from 'styled-components'
-
 import { useState, useEffect } from 'react';
 import axios from 'axios'
 import './Sb.css'
+import { useNavigate } from 'react-router-dom';
+import {BiLogOut} from 'react-icons/bi'
+
 
 const Navbar = styled.div`
     display: flex;
@@ -88,33 +90,36 @@ type props = {
     data: Array<any>;
 }
 const Sidebar2 = ({ placeholder, data }: props) => {
-
-
     const [truedata, setTrudata] = useState(Array<any>())
-
     const [close, setClose] = useState(false)
     const showSidebar = () => setClose(!close)
     const [filtredData, setFiltredData] = useState(Array<any>());
     const len: Number = filtredData.length;
+    const navigate = useNavigate ();
     let op: Number;
-    const handleFilter = (event: React.FormEvent & { target: HTMLInputElement }) => {
-        
-    const url3 = "http://localhost:3001/users/all"
-    axios.get(url3, { withCredentials: true }).then((response2) => {
-        setTrudata(response2.data)
-    })
-        let searchWord: string;
-        searchWord = event.target.value
 
-        const newfilter = truedata.filter((value) => {
-            return value.username.includes(searchWord)
+    const handleFilter = (event: React.FormEvent & { target: HTMLInputElement }) => {   
+        const url3 = "http://localhost:3001/users/all"
+        axios.get(url3, { withCredentials: true }).then((response2) => {
+            setTrudata(response2.data)
         })
-        console.log(searchWord.length)
-        if (searchWord.length == 0) {
-            setFiltredData([]);
-        }
-        else
-            setFiltredData(newfilter);
+            let searchWord: string;
+            searchWord = event.target.value
+
+            const newfilter = truedata.filter((value) => {
+                return value.username.includes(searchWord)
+            })
+            console.log(searchWord.length)
+            if (searchWord.length == 0) {
+                setFiltredData([]);
+            }
+            else
+                setFiltredData(newfilter);
+    }
+    const handlLogOut = () =>{
+        axios.get("http://localhost:3001/profile/logout", {withCredentials: true}).then((response) =>{
+            navigate ('/login');
+      	})
 
     }
     return (
@@ -162,6 +167,9 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                     )
                 })
                 }
+                <button className='ButtonLogOut' onClick={handlLogOut}>
+                    <BiLogOut className='Logouticon'/>  
+                </button>
             </SidebarMenu>
         </>
     )
