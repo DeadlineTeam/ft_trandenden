@@ -32,7 +32,7 @@ export class AuthService {
 
 	verify (token: string) {
 		try {
-			return this.jwtService.verify (token , {secret: "HelloWorld"});
+			return this.jwtService.verify (token , {secret: this.configService.get('JWT_SECRET')});
 		}
 		catch {
 			return null;
