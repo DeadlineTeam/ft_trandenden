@@ -67,10 +67,11 @@ export class AuthController {
 			res.clearCookie('TfaCookie');
 			throw new UnauthorizedException('user Not foud Or Wrong authentication code');
 		}
-		const user = this.usersService.findByuername(username);
+		const user = await this.usersService.findByuername(username);
 		const cookie = await this.authService.login(user, true);
 		res.clearCookie('TfaCookie');
-		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true}).redirect(this.configService.get('FRONTENDURL'));
+		res.cookie('Authorization', 'Bearer ' + cookie, {httpOnly: true});
+		res.send ({status: "ok"})
 	}
 
 	@Get('2fa/turn-off')
