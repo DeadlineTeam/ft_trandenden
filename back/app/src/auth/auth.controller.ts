@@ -57,10 +57,16 @@ export class AuthController {
 			throw new UnauthorizedException('invalid cookieee');
 		const username = await this.twofaService.verifyTwoFaKey(req.cookies['TfaCookie'].split(' ')[1]);
 		if (username == null)
+		{
+			res.clearCookie('TfaCookie');
 			throw new UnauthorizedException('invalid cccookie');
+		}
 		const isVerified = await this.twofaService.verifyToken(username, tfaCode.twofasecret);
 		if (!isVerified)
+		{
+			res.clearCookie('TfaCookie');
 			throw new UnauthorizedException('user Not foud Or Wrong authentication code');
+		}
 		const user = this.usersService.findByuername(username);
 		const cookie = await this.authService.login(user, true);
 		res.clearCookie('TfaCookie');
