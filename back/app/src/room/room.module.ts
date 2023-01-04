@@ -12,6 +12,7 @@ import { MemberModule } from 'src/member/member.module';
 		MemberModule
 	],
 	controllers: [RoomController],
-	providers: [RoomService]
+	providers: [RoomService],
+	exports: [RoomService]
 })
 export class RoomModule {}
