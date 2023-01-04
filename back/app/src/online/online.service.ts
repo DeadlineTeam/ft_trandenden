@@ -65,5 +65,8 @@ export class OnlineService {
 		}
 	}
 
+	logout (id: number) {
+		this.onlineGateway.server.to (id.toString ()).emit (`logout`);
+	}
 
 }

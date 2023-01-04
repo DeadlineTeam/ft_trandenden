@@ -10,6 +10,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { OnlineService } from './online.service';
 import { UsersService } from 'src/users/users.service';
 import { Inject, forwardRef } from '@nestjs/common';
+import { SubscribeMessage } from '@nestjs/websockets';
 					
 @WebSocketGateway({
 	cors: {
@@ -67,4 +68,9 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			}
 		}
 	}
+
+	logout (userId: number) {
+		this.server.to (userId.toString ()).emit ("logout");
+	}
+
 }
