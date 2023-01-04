@@ -70,8 +70,9 @@ export class GameService {
 	
 	async Matching (queue: Array<Socket>, mode: string): Promise<void> {
 
-		let pSockets: Array<Socket> = [] 
+		let pSockets: Array<Socket> = []
 		for (let i = 0; i < queue.length - 1; i++) {
+			console.log (queue[i]);
 			if (queue[i].data.id !== queue[i + 1].data.id) {
 				pSockets = queue.splice (i, 2);
 				delete queue [i];
@@ -89,8 +90,18 @@ export class GameService {
 		}
 	}
 
-	async joinQueue (socket: Socket, mode: string) {	
+	async joinQueue (socket: Socket, mode: string) {
+		console.log ("player wants to join queue");
+		const status = await this.userService.getStatus (socket.data.id);
+		if (status.inGame) {
+			socket.emit ("end");
+			return;
+		}
+		else {
+			this.onlineService.setInGame (socket.data.id, true);
+		}
 		socket.emit ('leftPlayer', socket.data)
+		console.log ("heeeeeeere");
 		this.queues[mode].push (socket)
 		this.Matching (this.queues[mode], mode);
 	}
@@ -122,23 +133,20 @@ export class GameService {
 		}
 	}
 
+
 	leaveMatch (socket: Socket): void {
+		console.log ("player wants to leave match");
 		const match: Pong = this.findMatch (socket);
 		if (match) {
 			GameService.emitRoom (match, "end");
 			this.matches.delete (match.id);
 			this.LiveGameBroadcast ();
-			const anothermatch = this.findMatchById (socket.data.id);
-			const inqueue = 
-				this.queues.Normal.find ((s) => s.data.id === socket.data.id) ||
-				this.queues.Ultimate.find ((s) => s.data.id === socket.data.id);
-			if (!inqueue && !anothermatch) {
-				this.onlineService.setInGame (socket.data.id, false);
-			}
+			this.onlineService.setInGame (socket.data.id, false);
 		}
 		else {
-			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id)
-			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id)
+			this.onlineService.setInGame (socket.data.id, false);
+			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id);
+			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id);
 		}
 		for (const match of this.matchesWithInvites.values ()) {
 			const players = match.game.players;
@@ -146,6 +154,7 @@ export class GameService {
 				if (p.socket.id === socket.id) {
 					p.socket.emit ("end");
 					this.matchesWithInvites.delete (match.id);
+					this.onlineService.setInGame (p.socket.data.id, false);
 				}
 			})
 		}
@@ -226,35 +235,12 @@ export class GameService {
 	}
 
 	async invite (inviterId: number, invitee: number) {
-		// check if the userId is online
-		// and not in a match
-		// create a match and send the gameId to both the players
-		// for the requester as post request response
-		// for the invitee as a notification with the gameId
-		// if the invitee accepts the invitation by clicking on accept button
-		// he will be redirected to the game page /Game?accept=gameId
-		// if he clicked on cancel button, he will send a post request to
-		// /game/reject/:gameId and the inviter needs to be removed from the match
-		// and the match needs to be deleted
-		// else if the invitee does not respond within 30 seconds, the match needs to be deleted
-		// and the inviter needs to be notified that the invitee did not respond
-		// if the invitee accepts the invitation, he needs to be redirected to /Game?accept=gameId
-
 		const user = await  this.userService.findById (invitee);
 		const inviter = await this.userService.findById (inviterId);
 
 		if (!user) {
 			throw new HttpException ('User not found', HttpStatus.NOT_FOUND);
 		}
-		// const online = await this.userService.getOnlineStatus (invitee);
-		// if (!online.online) {
-		// 	throw new HttpException ('User is not online', HttpStatus.NOT_FOUND);
-		// }
-		// const inGame = await this.userService.getInGameStatus (invitee);
-		// console.log ("status --->", invitee, inGame, online)
-		// if (inGame) {
-		// 	throw new HttpException ('User is in a game', HttpStatus.BAD_REQUEST);
-		// }
 
 		const status = await this.userService.getStatus (invitee);
 		if (!status.online) {

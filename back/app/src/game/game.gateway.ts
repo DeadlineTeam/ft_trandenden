@@ -53,7 +53,6 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 			return ;
 		}
 		this.gameService.joinQueue (client, mode);
-		this.onlineService.setInGame (client.data.id, true);
 	}
 
 	@SubscribeMessage ("leave")
