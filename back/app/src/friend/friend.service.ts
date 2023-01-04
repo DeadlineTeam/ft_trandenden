@@ -2,12 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { FRIENDSHIPSTATUS } from '@prisma/client'
+import { RoomService } from 'src/room/room.service';
 
 @Injectable()
 export class FriendService {
 	constructor (
 		private readonly prisma: PrismaService,
 		private readonly user: UsersService,
+		private readonly room: RoomService
 	) {}
 
 	// add a friend to the user
@@ -46,6 +48,7 @@ export class FriendService {
 				AcceptorId: userId,
 			}
 		});
+		await this.room.createDM (userId, friendId);
 	}
 
 	async add (userId: number, friendId: number) {
