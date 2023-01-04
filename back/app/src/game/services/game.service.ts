@@ -91,7 +91,6 @@ export class GameService {
 	}
 
 	async joinQueue (socket: Socket, mode: string) {
-		console.log ("player wants to join queue");
 		const status = await this.userService.getStatus (socket.data.id);
 		if (status.inGame) {
 			socket.emit ("end");
@@ -101,7 +100,6 @@ export class GameService {
 			this.onlineService.setInGame (socket.data.id, true);
 		}
 		socket.emit ('leftPlayer', socket.data)
-		console.log ("heeeeeeere");
 		this.queues[mode].push (socket)
 		this.Matching (this.queues[mode], mode);
 	}
@@ -135,7 +133,6 @@ export class GameService {
 
 
 	leaveMatch (socket: Socket): void {
-		console.log ("player wants to leave match");
 		const match: Pong = this.findMatch (socket);
 		if (match) {
 			GameService.emitRoom (match, "end");
