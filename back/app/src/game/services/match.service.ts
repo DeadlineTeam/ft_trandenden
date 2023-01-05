@@ -63,6 +63,14 @@ export class Pong {
 		}
 		return false
 	}
+
+	isWatching (client: Socket): boolean {
+		for (const w of this.game.watchers) {
+			if (w.id === client.id)
+				return true
+		}
+		return false
+	}
 	handleInput (side: SIDE, input: string): void {
 		let speed: number = this.game.players[side].paddle.speed;
 		const dimensions: Vector = this.game.players[side].paddle.dimension;
@@ -166,7 +174,7 @@ export class Pong {
 	}
 
 	isFinished (): boolean {
-		const Score = 6;
+		const Score = 30;
 		return ((this.game.players[SIDE.RIGHT].score == Score) || (this.game.players[SIDE.LEFT].score == Score))
 	}
 };

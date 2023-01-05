@@ -1,7 +1,6 @@
 import { useEffect, useState, createContext, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar2 from "./Sidebar2";
-import axiosApi from "../api/axiosApi"
 import axios from "axios";
 import Bookdata from "../data.json"
 
@@ -58,18 +57,14 @@ export default function ProtectedLayout() {
 
 	useEffect (() => {
 		onlineSocket.on ("notification", (notification) => {
-			console.log ("notification --------------->", notification);
 			if (notification.type === "GameInvite")
 				toast (<GameInviteNotif UserName = {notification.message.inviter} GameId= {notification.message.id}/>)
 			if (notification.type === "GameInviteDeclined") {
-				console.log ("GameInviteDeclined --------------->", notification);
 				toast (`Game Invitation declined`)
-			
 			}
 		})
 
 		onlineSocket.on ("logout", () => {
-			console.log ("logout --------------->");
 			navigate ("/login");
 		})
 

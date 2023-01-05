@@ -22,12 +22,10 @@ export class GameController {
 	async accept (@Param ('id') id: string) {
 		if (!this.gameService.matchesWithInvites.has (id))
 			throw new HttpException ('Invalid invite', 400);
-		return "accepted"
 	}
 
 	@Post ('/decline/:id')
 	async decline (@Param ('id') id: string) {
 		this.gameService.decline (id);
-		throw new  HttpException ('declined', 400);
 	}
 }

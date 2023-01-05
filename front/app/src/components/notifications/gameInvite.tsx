@@ -14,7 +14,7 @@ export function GameInviteNotif (props: GameInviteNotifProps) {
 	const [action, setAction] = useState (false);
 	const navigate = useNavigate ();
 
-	useEffect ( () => {
+	useEffect (() => {
 		return () => {
 			if (!action) {
 				axios.post (`http://localhost:3001/game/decline/${props.GameId}`, {}, {
@@ -30,7 +30,6 @@ export function GameInviteNotif (props: GameInviteNotifProps) {
 			withCredentials: true
 		}).then (() => {
 			navigate (`/Game?invite=${props.GameId}`);
-			
 		}).catch (() => {
 			toast (`${props.UserName} quitted the game`)
 		})

@@ -12,6 +12,7 @@ import {IoMdPersonAdd} from 'react-icons/io'
 import {ImBlocked} from 'react-icons/im'
 import {CgUnblock} from 'react-icons/cg'
 import { Console } from 'console';
+import { toast } from 'react-toastify';
 const Historitem = styled.div<{close: boolean}>`
 display: flex;
 height: 12%;
@@ -131,6 +132,18 @@ const Myprofile = () => {
 		})
 	}
 
+
+	////// invite to game button for testing
+	////// remove it later
+	const inviteToGame = () => {
+		const url = `http://localhost:3001/game/invite/${id}`
+		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
+			navigate(`/Game?invite=${response.data.gameId}`)
+		}).catch ((error) => {
+			toast (error.response.data.message)
+		})
+	}
+
 	var  intvalue = Math.floor(leveluser)
 	let level = leveluser;
 	let levelbar = level - intvalue;
@@ -171,6 +184,14 @@ return (
     		  <CgUnblock/>
     		</button>)
 			}
+
+
+			<button className = 'addbutton' onClick={inviteToGame}>
+    		  <div className='itembutton' ></div>
+    		  <ImBlocked/>
+    		</button>
+			
+			
 			<img className='Profileimg' src={myimage} />
 			<p className='name'>{name}</p>
 			<p className='nickname'>#{nickname}</p>

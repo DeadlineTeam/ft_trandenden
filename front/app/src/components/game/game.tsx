@@ -201,12 +201,13 @@ function GameCanvas ({width, height}: Icanvas) {
 		score: 0,
 		Side: SIDE.RIGHT
 	})
-	const [quiries, setQuiries] = useState (new URLSearchParams (useLocation().search))
+
+	const location = useLocation();
+	const [quiries, setQuiries] = useState (new URLSearchParams (location.search))
 
 	const socket = useContext (gameSocketContext);
 	const queue = quiries.get ('mode');
 	const invite = quiries.get ('invite');
-
 
 	useEffect (() => {
 
@@ -238,7 +239,6 @@ function GameCanvas ({width, height}: Icanvas) {
 		})
 
 		socket.on ("leftPlayer", (data) => {
-			console.log ("left", data);
 			setLeftPlayer (player => {
 				return {
 					...player,
@@ -249,7 +249,6 @@ function GameCanvas ({width, height}: Icanvas) {
 		})
 
 		socket.on ("rightPlayer", (data) => {
-			console.log ("right", data);
 			setRightPlayer (player => {
 				return {
 					...player,
@@ -291,7 +290,7 @@ function GameCanvas ({width, height}: Icanvas) {
 		return () => {
 			socket.emit ("leave");
 			socket.off ('leftPlayer')
-			socket.off ('righPlayer')
+			socket.off ('rightPlayer')
 			socket.off ('score')
 			socket.off ('end')
 			socket.off ('ball')
