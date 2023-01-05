@@ -40,7 +40,6 @@ export class WsAuthGuard implements CanActivate{
 			const user = await this.userService.findById (Number(decoded?.sub));
 			if (!user)
 				return false;
-			console.log (user);
 		}
 		catch (e) {
 			return false;
@@ -48,5 +47,7 @@ export class WsAuthGuard implements CanActivate{
 		return true;
 	}
 }
+
+
 
 

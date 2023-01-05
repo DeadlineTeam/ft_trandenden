@@ -66,10 +66,14 @@ export default function ProtectedLayout() {
 		})
 
 		onlineSocket.emit ("login");
+		onlineSocket.on("logout", () => {
+			navigate ("/login");
+		})
 		
 		return () => {
 			onlineSocket.emit ("logout");
 			onlineSocket.off ("notification");
+			onlineSocket.off ("logout");
 		}
 	}, [])
 
