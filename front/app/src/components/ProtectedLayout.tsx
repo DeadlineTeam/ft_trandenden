@@ -56,6 +56,7 @@ export default function ProtectedLayout() {
 	}, []);
 
 	useEffect (() => {
+		
 		onlineSocket.on ("notification", (notification) => {
 			if (notification.type === "GameInvite")
 				toast (<GameInviteNotif UserName = {notification.message.inviter} GameId= {notification.message.id}/>)
@@ -64,15 +65,11 @@ export default function ProtectedLayout() {
 			}
 		})
 
-		onlineSocket.on ("logout", () => {
-			navigate ("/login");
-		})
-
+		onlineSocket.emit ("login");
+		
 		return () => {
-			onlineSocket.disconnect();
+			onlineSocket.emit ("logout");
 			onlineSocket.off ("notification");
-			onlineSocket.off ("logout");
-
 		}
 	}, [])
 
