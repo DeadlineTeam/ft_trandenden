@@ -5,13 +5,17 @@ import {
 		WebSocketServer,
 		ConnectedSocket,
 							} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { OnlineService } from './online.service';
 import { UsersService } from 'src/users/users.service';
 import { Inject, forwardRef } from '@nestjs/common';
-import { SubscribeMessage } from '@nestjs/websockets';
-					
+
+import { WsAuthGuardConnect } from "src/auth/ws-auth.guard";
+import { WsAuthGuard } from "src/auth/ws-auth.guard";
+import { UseGuards } from "@nestjs/common";
+import { SubscribeMessage } from "@nestjs/websockets";
+
 @WebSocketGateway({
 	cors: {
 		origin: 'http://localhost:3000',
@@ -31,46 +35,35 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	server;
 
 	async handleConnection (@ConnectedSocket () client: Socket) {
-		const payload 	= this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""))
-		if (!payload) {
-			client.disconnect ();
-			return false;
-		}
+		const wsAuthGuard = new WsAuthGuardConnect(this.authService, this.userService);
 		try {
-			const user = await this.userService.findById (payload.sub);
-			if (!user) {
-				client.disconnect ();
-				return false;
-			}
-			await this.onlineService.setOnline (payload.sub, true);
-			client.data.id = payload.sub;
-			client.join (payload.sub.toString ());
-			
-		} catch (e) {
+			await wsAuthGuard.canActivate (client);
+		}
+		catch (e) {
 			client.disconnect ();
 			return ;
 		}
 	}
 
 	
+	@UseGuards(WsAuthGuard)
+	handleDisconnect(client: Socket) {}
 
-	async handleDisconnect(client: Socket) {
-		if (!client.data.id) {
-			return ;
-		}
+
+	@UseGuards(WsAuthGuard)
+	@SubscribeMessage ("logout")
+	logout (client: Socket) {
 		client.leave (client.data.id.toString ());
 		const room = this.server.adapter.rooms.get (client.data.id.toString ());
-		if (room == undefined) {
-			try {
-				this.onlineService.setOnline (client.data.id, false);
-			} catch (e) {
-				return ;
-			}
+		if (!room) {
+			this.onlineService.setOnline (client.data.id, false);
 		}
 	}
 
-	logout (userId: number) {
-		this.server.to (userId.toString ()).emit ("logout");
+	@UseGuards(WsAuthGuard)
+	@SubscribeMessage ("login")
+	async login (client: Socket) {
+		await this.onlineService.setOnline (client.data.id, true);
+		client.join (client.data.id.toString ());
 	}
-
 }
