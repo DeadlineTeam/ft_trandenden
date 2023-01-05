@@ -43,7 +43,6 @@ export class ProfileService {
 	}
 
 	async logout(res: Res, userId: number) {
-
 		this.online.logout(userId);
 		return this.users.logout(res);
 	}

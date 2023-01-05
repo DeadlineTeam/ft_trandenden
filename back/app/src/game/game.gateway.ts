@@ -1,12 +1,13 @@
 import { ConnectedSocket, WebSocketGateway, OnGatewayDisconnect, OnGatewayConnection } from "@nestjs/websockets";
 import { WebSocketServer, SubscribeMessage, MessageBody } from "@nestjs/websockets"
-import { Inject, forwardRef} from "@nestjs/common";
+import { Inject, forwardRef, ExecutionContext} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { AuthService } from "src/auth/auth.service";
 import { GameService, LiveMatch } from "./services/game.service";
 import { UsersService } from "src/users/users.service";
-import { OnlineService } from "src/online/online.service";
-
+import { WsAuthGuardConnect } from "src/auth/ws-auth.guard";
+import { WsAuthGuard } from "src/auth/ws-auth.guard";
+import { UseGuards } from "@nestjs/common";
 @WebSocketGateway ({
 	cors: {
 		origin: 'http://localhost:3000',
@@ -22,31 +23,31 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 		private readonly gameService: GameService,
 		private readonly authService: AuthService,
 		private readonly userService: UsersService,
-		private readonly onlineService: OnlineService,
 	) {}
 		
 	@WebSocketServer ()
 	server: Server;
 	
 	static LiveGameRoom: string = "LiveGames";
-		
+	
+
 	async handleConnection(@ConnectedSocket () client: Socket) {		
-		const payload = this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""))
-		if (!payload) {
+		const wsAuthGuard = new WsAuthGuardConnect(this.authService, this.userService);
+		try {
+			await wsAuthGuard.canActivate (client);
+		}
+		catch (e) {
 			client.disconnect ();
 			return ;
 		}
-		const user = await this.userService.findById (Number (payload.sub));
-		client.data =  user;
+
 	}
 
-	handleDisconnect(@ConnectedSocket () client: Socket) {
-		this.gameService.leaveMatch (client)
-	}
+	handleDisconnect(@ConnectedSocket () client: Socket) {}
 
+	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("join")
 	async joinQueue (@ConnectedSocket () client: Socket, @MessageBody () mode: string) {
-		// check if the user is already in a game
 		const status = await this.userService.getStatus (client.data.id);
 		if (status.inGame === true){
 			client.emit ("end");
@@ -55,38 +56,50 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 		this.gameService.joinQueue (client, mode);
 	}
 
+	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("leave")
 	leaveQueue (@ConnectedSocket () client: Socket) {
 		this.gameService.leaveMatch (client);
 	}
-	
+
+	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("input")
 	handleInput (@ConnectedSocket () client: Socket, @MessageBody () data: string): void {
 		this.gameService.handleInput (client, data);
 	}
 
+	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("watch")
-	watchGame (@ConnectedSocket () client: Socket, @MessageBody () id: string) {
+	async watchGame (@ConnectedSocket () client: Socket, @MessageBody () id: string) {
+		const status = await this.userService.getStatus (client.data.id);
+		if (status.inGame === true){
+			client.emit ("end");
+			return ;
+		}
 		this.gameService.watchGame (client, id);
 	}
 
+	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("LiveGames")
 	joinRoomForBroadcast (@ConnectedSocket () client: Socket) {
 		client.join (GameGateway.LiveGameRoom);
 		this.gameService.LiveGameBroadcast ()
-
 	}
+
+	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("noBroadcast")
 	leaveBroadcastRoom (@ConnectedSocket () client: Socket) {
 		client.leave (GameGateway.LiveGameRoom)
 	}
 
-	broadCastLiveGames (liveMatches: LiveMatch []) {
-		this.server.to (GameGateway.LiveGameRoom).emit (GameGateway.LiveGameRoom, liveMatches);
-	}
-
+	
+	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("invite")
 	invite (@ConnectedSocket () client: Socket, @MessageBody () id: string) {
 		this.gameService.gameInvite (client, id);
+	}
+
+	broadCastLiveGames (liveMatches: LiveMatch []) {
+		this.server.to (GameGateway.LiveGameRoom).emit (GameGateway.LiveGameRoom, liveMatches);
 	}
 }
