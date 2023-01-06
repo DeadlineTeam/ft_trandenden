@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './createRoom.css'
 import SaveButton from './saveButton'
 import CancelButton from './cancelButton'
@@ -6,87 +6,143 @@ import RoomNameField from './roomName'
 import AccessMode from './accessMode'
 import PasswordField from './passwordField'
 import axios from "axios"
-import {useNavigate} from 'react-router-dom'
+
+import { AiOutlinePlusSquare } from 'react-icons/ai'
+import { AiOutlineMinusSquare } from 'react-icons/ai'
+
+import { toast } from 'react-toastify'
 
 
-const CreateRoom = () => {
-  const [roomName, setRoomName] = React.useState("");
-  const [visibility, setAccessMode] = React.useState('Public');
-  const [password, setPassword] = React.useState("");
-  const [friends, setFriends] = React.useState([]);
-  
+type CreateRoomProps = {
+	handleCancel: () => void;
+}
 
-  useEffect(() => {
-    axios.get("/localDb.json").then((response) =>{
-      setFriends(response.data);
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }, []);
-  
-  
-  const navigate = useNavigate();
-  const handleCancel = (e:any) => {
-    navigate('/Chat');
-  };
+type FriendProps = {
+	id: number;
+	avatar_url: string;
+	username: string;
+	addToList: (id: number) => void;
+	removeFromList: (id: number) => void;
+}
+
+const Friend = (props: FriendProps) => {
+	const [added, setAdded] = useState(false);
+
+	const addToList = () => {
+		props.addToList(props.id);
+		setAdded(true);
+	}
+	const removeFromList = () => {
+		props.removeFromList(props.id);
+		setAdded(false);
+	}
+
+	return (
+		<div className="membeR" key={props.id}>
+			<img className="membeRImg" src={props.avatar_url} alt="Snake"/>
+			<span className="membeRName">{props.username}</span>
+			{
+				!added && <button onClick={addToList}>
+					<AiOutlinePlusSquare/>
+				</button>
+			}
+			{
+				added && <button onClick={removeFromList}>
+					<AiOutlineMinusSquare/>
+				</button>
+			}
+	  	</div>
+	)
+}
 
 
-  const formIsFilled = () => {
-    if (visibility === 'Protected') {
-      return roomName !== '' && password !== '';
-    }
-    return roomName !== '';
-  }
-  const handleSubmit = (e:any) => {
-    e.preventDefault();
-    const formData = {
-      name: roomName,
-      visibility: visibility,
-      password: password,
-      users: friends
-    };
+type friendDto = {
+	id: number;
+	username: string;
+	avatar_url: string;
+	online: boolean;
+	inGame: boolean;
+}
 
+const CreateRoom = (props: CreateRoomProps) => {
+	const [roomName, setRoomName] = React.useState("");
+	const [visibility, setAccessMode] = React.useState('Public');
+	const [password, setPassword] = React.useState("");
 
+	const [friends, setFriends] = useState <friendDto []> ([]);
+	const [users, setUsers] = useState <number []> ([]);
 
-    console.log(formData)
-    axios.post('http://localhost:3001/room/create', formData,  { withCredentials: true, })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  };
+	useEffect (() => {
+		axios.get ('http://localhost:3001/friend/all', { withCredentials: true, })
+		.then ((response) => {
+			setFriends (response.data);
+		}).catch (() => {})
+	}, [])
+
+	
+	const AddToList = (id: number) => {
+		setUsers (users => [...users, id]);
+	}
+	
+	const RemoveFromList = (id: number) => {
+		setUsers (users.filter (user => user !== id));
+	}
+
+	const handleSubmit = (e: any) => {
+		e.preventDefault();
+		const formData = {
+			name: roomName,
+			visibility: visibility,
+			password: password,
+			users: users,
+		};
+
+    	axios.post('http://localhost:3001/room/create', formData,  { withCredentials: true, })
+    	.then((response) => {
+			toast.success('Room created successfully');
+			props.handleCancel();
+			console.log(response);
+    	})
+    	.catch(e => {
+    		toast.error(e.response.data.message);
+    	});
+		console.log(formData);
+	};
+
     return (
-      <form className="container">
-        <div className="child1">
-          <div className="child1Title">Create Room</div>
-        </div>
-        <div className="child2">
-          <img src={require('../../SolidSnake.png')} alt="" />
-        </div>
-        <RoomNameField roomName={roomName} setRoomName={setRoomName}/>
-        <AccessMode visibility={visibility} setAccessMode={setAccessMode}/>
-        <PasswordField password={password} setPassword={setPassword} visibility={visibility}/>
-        <div className="child6">
-          <p>Add Members :</p>
-          <div className="child6SelectMembers">
-            {friends.map((friend:any) => (
-              <div className="membeR" key={friend.id}>
-                <img className="membeRImg" src={require(`../../${friend.profilePicture}`)} alt="Snake"/>
-                <span className="membeRName">{friend.username}</span>
-                <button><img src={require('../../addIcon.png')} alt="" /></button>
-              </div>
-            ) )}
-          </div>
-        </div>
-        <div className="child7">
-          <CancelButton handleCancel={handleCancel}/>
-          <SaveButton handleSubmit={handleSubmit} formIsFilled={formIsFilled}/>
-        </div>
-      </form>
+		<form className="container">
+		  	<div className="child1">
+		  		<div className="child1Title">Create Room</div>
+		  	</div>
+		  	<div className="child2">
+		  		<img src={require('../../SolidSnake.png')} alt="" />
+		  	</div>
+		  	<RoomNameField roomName={roomName} setRoomName={setRoomName}/>
+		  	<AccessMode visibility={visibility} setAccessMode={setAccessMode}/>
+		  	<PasswordField password={password} setPassword={setPassword} visibility={visibility}/>
+		  	<div className="child6">
+		  		<p>Add Members :</p>
+		  		<div className="child6SelectMembers">
+					{
+						friends.map (
+							(friend: friendDto) => 
+							<Friend 
+								id={friend.id}
+								key={friend.id}
+								avatar_url={friend.avatar_url} 
+								username={friend.username}
+								addToList={AddToList}
+								removeFromList={RemoveFromList}
+							/>
+						)
+					}
+		  		</div>
+		  	</div>
+		  	<div className="child7">
+		  	  <CancelButton handleCancel={props.handleCancel}/>
+		  	  <SaveButton handleSubmit={handleSubmit} />
+		  	</div>
+		</form>
     )
 }
 
