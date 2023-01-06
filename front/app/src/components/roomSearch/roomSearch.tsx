@@ -17,6 +17,10 @@ type RoomSearchProps = {
 	refresh: () => void;
 }
 
+type SearchProps = {
+	handleCreateRoom: () => void;
+}
+
 
 
 
@@ -26,10 +30,10 @@ const Room = (props: RoomSearchProps) => {
 	const joinRoom = () => {
 		axios.post (`http://localhost:3001/room/join/${props.id}`, {password: password}, { withCredentials: true })
 		.then ( () => {
-			toast (`successfully joined ${props.name}`)
+			toast.success (`successfully joined ${props.name}`)
 			props.refresh ();
 		}).catch (e => {
-			toast (e.response.data.message)
+			toast.error (e.response.data.message)
 		})
 	}
 
@@ -53,7 +57,8 @@ const Room = (props: RoomSearchProps) => {
 	)
 }
 
-const RoomSearch = () => {
+
+const RoomSearch = (props: SearchProps) => {
 	const [searchValue, setSearchValue] = useState('');
 	const [rooms, setRooms] = useState<RoomSearchProps []> ();
 	const [update, setUpdate] = useState (false);
@@ -78,9 +83,9 @@ const RoomSearch = () => {
 	return (
 		<div className="roomSearch">
 			<div className="roomSearchBar">
-				<input type="text" className='input' onChange={e => setSearchValue (e.target.value)}/>
+				<input type="text" className='input'  placeholder= "search for a room" onChange={e => setSearchValue (e.target.value)}/>
 				<div className="roomSearchCreateRoom">
-					<button className='Buttoncreat'>
+					<button className='Buttoncreat' onClick={props.handleCreateRoom}>
 						<IoMdAddCircle className='creatbutton'/>
 						 </button>
 				</div>
