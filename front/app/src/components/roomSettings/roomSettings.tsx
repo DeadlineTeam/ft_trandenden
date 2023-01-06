@@ -14,7 +14,6 @@ const RoomSettings = () => {
     useEffect(() => {
         axios.get("/users.json").then((response) =>{
           setFriends(response.data);
-          console.log(response.data);
         })
         .catch(error => {
           console.log(error);
@@ -24,7 +23,6 @@ const RoomSettings = () => {
       useEffect(() => {
         axios.get("/users.json").then((response) =>{
           setMembers(response.data);
-          console.log(response.data);
         })
         .catch(error => {
           console.log(error);
