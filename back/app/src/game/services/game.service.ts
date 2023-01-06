@@ -140,6 +140,9 @@ export class GameService {
 				match.game.players.forEach ((p) => {
 					this.onlineService.setInGame (p.socket.data.id, false);
 				})
+				match.game.watchers.forEach ((w) => {
+					this.onlineService.setInGame (w.data.id, false);
+				})
 				GameService.emitRoom (match, "end");
 				this.matches.delete (match.id);
 				this.LiveGameBroadcast ();
@@ -253,6 +256,9 @@ export class GameService {
 				});
 				this.onlineService.setInGame (game.players[0].socket.data.id, false);
 				this.onlineService.setInGame (game.players[1].socket.data.id, false);
+				for (const watcherSocket  of game.watchers) {
+					this.onlineService.setInGame (watcherSocket.data.id, false);
+				}
 				this.LiveGameBroadcast ();
 				break;
 			}
