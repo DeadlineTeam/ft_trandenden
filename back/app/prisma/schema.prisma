@@ -100,7 +100,7 @@ enum VISIBILITY {
 
 model Room {
 	id				Int				@id @default(autoincrement())
-	name			String
+	name			String 			@unique
 	visibility		VISIBILITY
 	passwd			String?
 	users			MemberShip[]
