@@ -5,13 +5,10 @@ const Message = ({own, message}:any) => {
     return (
         <div className={own ? "message own" : "message"}>
             <div className="messageTop">
-                <img className="messageImg" src={message.senderAvatar} alt="Snake" />
+                <img alt="Snake" loading="lazy" className="messageImg" src={message.senderAvatar}  />
                 <p className="messageText">
                     {message.content}
                 </p>
-            </div>
-            <div className="messageBottom">
-                Sometimes Ago
             </div>
         </div>
     )

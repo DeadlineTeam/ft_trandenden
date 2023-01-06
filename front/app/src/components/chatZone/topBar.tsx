@@ -1,12 +1,12 @@
 import '../../pages/Chat.css'
 import {GiGamepad} from 'react-icons/gi'
 
-const TopBar = (data:any) => {
+const TopBar = (props:any) => {
     return (
         <>
             <div className='roomfriendinfo'>
-                <img className='chatimg' src={require('../../SolidSnake.png')}/>
-                <p className='friendroomusername'> Flen Ben Flen</p>
+                <img className='chatimg' src={props.data.senderAvatar}/>
+                <p className='friendroomusername'>{props.data.senderUserName}</p>
                 <button className='gamebutton'>
                     <GiGamepad className='gameicon'/>
                 </button>

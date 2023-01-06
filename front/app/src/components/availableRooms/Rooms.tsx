@@ -1,19 +1,27 @@
 import './Rooms.css'
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
-const Room = ({roomId, roomName, setCurrentChat, setTopBarData}: {roomId:number, roomName:string, setCurrentChat:any, setTopBarData:any}) => {
+//{roomId, roomName, setCurrentChat, setTopBarData}: {roomId:number, roomName:string, setCurrentChat:any, setTopBarData:any}
+const Room = (props:any) => {
     const navigate = useNavigate();
     const handleSettings = (e:any) => {
-        navigate(`/Rooms?roomId=${roomId}`);
+        navigate(`/Rooms?roomId=${props.roomId}`);
       }
     const handleClick = async () => {
         try {
-            const res = await axios.get(`http://localhost:3001/message/${roomId}`, { withCredentials: true })
-            console.log("setCurrentChat from Room component")
-            setCurrentChat(res.data)
-            //setTopBarData();
-            console.log(res.data)
+            const res = await axios.get(`http://localhost:3001/message/${props.roomId}`, { withCredentials: true })
+            const topBarObject = Object.defineProperties({}, {
+                senderAvatar: {
+                  value: `../../meeting.png`,
+                  writable: true
+                },
+                senderUserName: {
+                    value: props.roomName,
+                    writable: true
+                }
+              });
+            props.setCurrentChat(res.data)
+            props.setTopBarData(topBarObject);
             
         } catch (error) {
             console.error(error)
@@ -23,12 +31,12 @@ const Room = ({roomId, roomName, setCurrentChat, setTopBarData}: {roomId:number,
         <div className="Room" onClick={() => handleClick()}>
             <div className="availableRoom">
                 <div className="availableRoomImgContainer">
-                    <img className="availableRoomImg" src={require(`../../meeting.png`)} alt="Snake" />
+                    <img   className="availableRoomImg" src={require(`../../meeting.png`)} alt="Snake" />
                 </div>
                 <span className="availableRoomName">
-                    {roomName}
+                    {props.roomName}
                 </span>
-                <button className="settingsButton" onClick={handleSettings}><img className="settingsImg" src={require('../../settings.png')} alt="" /></button>
+                <button className="settingsButton" onClick={handleSettings}><img   className="settingsImg" src={require('../../settings.png')} alt="" /></button>
             </div>
         </div>
     )

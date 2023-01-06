@@ -6,12 +6,22 @@ const Friends = (props:any) => {
     const handleClick = async () => {
         try {
             const concerned = (await axios.get(`http://localhost:3001/room/myrooms`, { withCredentials: true })).data.filter((room: any) => room.visibility === 'DM').filter((concerned:any) => concerned.name === `DM-${props.currentUserId}-${props.id}` || concerned.name === `DM-${props.id}-${props.currentUserId}`)
+            
             try {
                 const res2 = await axios.get(`http://localhost:3001/message/${concerned[0].id}`, { withCredentials: true })
-                console.log("setCurrentChat from Friends component")
+                
+                const topBarObject = Object.defineProperties({}, {
+                    senderAvatar: {
+                      value: props.profilePicture,
+                      writable: true
+                    },
+                    senderUserName: {
+                        value: props.username,
+                        writable: true
+                    }
+                  });
                 props.setCurrentChat(res2.data);
-                //props.setTopBarData();
-                //console.log()
+                props.setTopBarData(topBarObject);
             }
             catch (error) {
                 console.error(error)
