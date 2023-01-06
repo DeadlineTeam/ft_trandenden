@@ -152,7 +152,7 @@ export class RoomService {
 		}
 		if (room.visibility === VISIBILITY.PROTECTED) {
 			if (password === undefined || password === '') {
-				throw new HttpException (`Room with id ${roomId} is protected`, 400);
+				throw new HttpException (`${room.name} require a password`, 400);
 			}
 			const pass = await bcrypt.compare (password, room.passwd);
 			if (!pass) {
@@ -205,5 +205,38 @@ export class RoomService {
 			)
 		}
 		return roomsDto;
+	}
+
+
+
+	async searchByName (userId: number, name: string) {
+		// when the name starts with name
+		// and check if the user is a member of the room
+		// and include the membership of the user in the room
+		const rooms = await this.prisma.room.findMany({
+			where: {
+				name: {
+					startsWith: name,
+					mode: 'insensitive',
+				},
+				visibility: {
+					not: {
+						in: [VISIBILITY.DM, VISIBILITY.PRIVATE],
+					}
+				},
+				users: {
+					none: {
+						userId: userId,
+					}
+				}
+			},
+			select: {
+				id: true,
+				name: true,
+				visibility: true,
+				createdAt: true,
+			}
+		});
+		return rooms;
 	}
 }

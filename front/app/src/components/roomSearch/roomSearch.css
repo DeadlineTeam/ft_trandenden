@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+.roomSearch {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: top;
+  height: 60%;
+  width: 60%;
+  font-family: 'Montserrat Alternates', sans-serif;;
+  margin: auto;
+  margin-top: 5%;
+  background-color: #192125;
+}
+.publicicon{
+	position: absolute;
+	margin-top: 1%;
+	color: white;
+	left: 50%;
+	height: 1.5em;
+	width: 1.5em;
+}
+.creatbutton{
+	width: 1.5em;
+	height: 1.5em;
+	right: 50%;
+}
+.inputprotected{
+	position: absolute;
+	background-color: #ADADAD;
+	border-color: white;
+	border-style: solid;
+	border-radius: 5px;
+	height: 20px;
+	margin-top: 1%;
+	left: 65%;
+	height: 25px;
+	width: 10%;
+}
+.roomSearchBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 40px;
+  width: 100%;
+  background-color: #192125;
+  position: relative;
+  top: 0
+}
+.joinbutt{
+	position: absolute;
+	bottom: 0px;
+	top: 10%;
+	background-color: none;
+	width: 5em;
+	height: 2em;
+	color: white;
+	background: none;
+	border: none;
+}
+.roomJoin{
+	position: absolute;
+	left: 90%;
+	top: 20%;
+	width: 5%;
+	cursor: pointer;
+	background-color: none;
+	border : none;
+	background: none;
+
+}
+.butttton{
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+.room0 {
+  display: flex;
+  flex-direction: row;
+
+  height: 50px;
+  width: 100%;
+  background-color: #30373B;
+  position: relative;
+  top: 0;
+}
+
+.room1 {
+
+	display: flex;
+	flex-direction: row;
+	height: 50px;
+	width: 100%;
+	background-color: #192125;
+	position: relative;
+	top: 0
+}
+
+.Buttoncreat{
+	position: relative;
+	top: 20%;
+	right: 100%;
+	border: solid 1px white;
+	color: white;
+	background-color: none;
+	margin-right: 2px;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+.input{
+	position: relative;
+		background-color: #ADADAD;
+		border-color: white;
+		border-style: solid;
+		border-radius: 5px;
+		margin-left: 10%;
+		height: 20px;
+		top:20%;
+
+}
+.roomname{
+	color: white;
+	position: absolute;
+	top:15px;
+	left:5%;
+	width: 30%;
+}
+
+

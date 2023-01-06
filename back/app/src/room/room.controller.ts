@@ -33,11 +33,17 @@ export class RoomController {
 
 	@Post ('join/:roomId')
 	async joinRoom(@Req () req, @Param('roomId', ParseIntPipe) roomId: number, @Body('password') password: string) {
+		// console.log (password)
 		return this.roomService.joinRoom(req.user.userId, roomId, password);
 	}
 
 	@Post ('leave/:roomId')
 	async leaveRoom (@Req () req, @Param('roomId', ParseIntPipe) roomId: number) {
 		return this.roomService.leaveRoom(req.user.userId, roomId);
+	}
+
+	@Get ('/search/:name')
+	async searchByName (@Req () req, @Param('name') name: string) {
+		return this.roomService.searchByName(req.user.userId, name);
 	}
 }
