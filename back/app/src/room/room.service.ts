@@ -64,7 +64,7 @@ export class RoomService {
 			}
 		});
 		await this.member.addMember(room.id, ownerId);
-		await this.member.setRole(room.id, ownerId, ROLE.OWNER);
+		await this.member.setRole(room.id, ownerId, "owner");
 		for (const user of createRoomDto.users) {
 			if (user !== ownerId)
 				await this.member.addMember(room.id, user);
