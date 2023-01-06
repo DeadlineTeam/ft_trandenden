@@ -175,6 +175,20 @@ export class FriendService {
 		return friendDto;
 	}
 
+	async getfriend (userId: number, friendId: number) {
+		const friend = await this.user.findById(friendId)
+		if (!friend)
+			throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
+		let friendDto = []
+		
+		
+		friendDto.push(friend.id)
+		friendDto.push(friend.username)
+		friendDto.push(friend.avatar_url)
+		
+		return friendDto;
+	}
+
 	async getStatus (userId: number, friendId: number) {
 		const friend = await this.user.findById(friendId)
 		if (!friend)

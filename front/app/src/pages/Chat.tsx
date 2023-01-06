@@ -8,54 +8,70 @@ import Room from '../components/availableRooms/Rooms'
 import { useEffect } from 'react'
 import axios from 'axios'
 import {useNavigate } from 'react-router-dom'
-import { useContext } from 'react'
-import { UserContext } from '../components/ProtectedLayout'
-import { useRef } from 'react'
+import TopBar from '../components/chatZone/topBar'
+
+
 
 const Chat = () => {
-  const [rooms, setRooms] = React.useState([]);
+  const [currentUserId, setCurrentUserId] = React.useState('');
+  const [currentUsername, setCurrentUsername] = React.useState('');
   const [friends, setFriends] = React.useState([]);
-  const user = useContext(UserContext);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [rooms, setRooms] = React.useState([]);
+  const [dmRooms, setdmRooms] = React.useState([]);
+  const [topBarData, setTopBarData] = React.useState([]);
+
+  const [currentChat, setCurrentChat] = React.useState([]);
+
+  useEffect(() => {
+    const getCurrentUserId = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/users/id", {withCredentials: true});
+        setCurrentUserId(res.data)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCurrentUserId();
+    
+    const getCurrentUsername = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/users/username", {withCredentials: true});
+        setCurrentUsername(res.data)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCurrentUsername();
+    
+    const getFriends = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/friend/all", {withCredentials:true});
+        setFriends(res.data);
+      } catch (error) {
+        console.error(error)
+      }
+    };
+    getFriends();
+    
+    const getRooms = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/room/myrooms", { withCredentials: true });
+        setRooms((res.data).filter((r:any) => r.visibility !== 'DM'));
+        console.log("ta weraaaaa9")
+        console.log((res.data).filter((r:any) => r.visibility !== 'DM'))
+        setdmRooms((res.data).filter((r:any) => r.visibility === 'DM'))
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getRooms();
+
+  }, [])
 
   const navigate = useNavigate();
   const handleUserProfile = (e:any) => {
     navigate('/Myprofile');
   }
-
-  const handleSubmit = async (e:any) => {
-    e.preventDefault();
-    
-  };
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []); // messages
-  
-  
-  // Online Friends
-  useEffect(() => {
-    axios.get("/users.json").then((response) =>{
-      setFriends(response.data);
-      console.log("Online Friends")
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }, []);
-
-  // available Rooms
-  useEffect(() => {
-    axios.get("/rooooms.json").then((response) =>{
-      setRooms(response.data); 
-      console.log("Available Rooms")
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-  }, []);
   return (
       <div className="chatApp">
         {/* recent Messages Start */}
@@ -65,10 +81,7 @@ const Chat = () => {
               Messages
             </div>
             <div >
-                <RecentChats />
-                <RecentChats/>
-                <RecentChats/>
-                <RecentChats/>
+              { dmRooms.map((recentChat: any) => <RecentChats currentUserId={currentUserId}  roomId={recentChat.id}  setCurrentChat={setCurrentChat} setTopBarData={setTopBarData}/> )}
             </div>
           </div>  
         </div>
@@ -77,18 +90,14 @@ const Chat = () => {
         {/* chat Zone Start */}
         <div className="chatZone">
           <div className="chatZoneWrapper">
-            
-              <div className="chatZoneTop">
-                <Message own={true}/> 
-                <Message /> 
-                <Message own={true}/> 
-                <Message own={true}/>  
-
-              </div>
-              <div className="chatZoneBottom">
-                <textarea className="chatZoneInput" placeholder="write a text...." ></textarea>
-                <button onClick={handleSubmit} className="chatZoneSubmitButton">Send</button>
-              </div>
+            <TopBar data={topBarData}/>
+            <div className="chatZoneTop">
+              { currentChat.map((message:any) => (<Message own={message.senderUserName === currentUsername} message={message}/> ))}
+            </div>
+            <div className="chatZoneBottom">
+              <textarea className="chatZoneInput" placeholder="write a text...." ></textarea>
+              <button className="chatZoneSubmitButton"><img className="chatZoneSubmitButtonImg" src={require(`../send.png`)} alt="send" /></button>
+            </div>
           </div>
         </div>
         {/* chat Zone End */}
@@ -100,9 +109,7 @@ const Chat = () => {
               Friends
             </div>
             <div className="onlineFriendsWrapper">
-              {friends.map((friend:any) => (
-                <Friends id={friend.id} username={friend.username} profilePicture={friend.profilePicture} handleUserProfile={handleUserProfile}/>
-              ) )}
+              { friends.map((friend:any) => (<Friends id={friend.id} username={friend.username} profilePicture={friend.avatar_url} handleUserProfile={handleUserProfile} currentUserId={currentUserId} setCurrentChat={setCurrentChat} setTopBarData={setTopBarData}/> ))}
             </div>
           </div>
           <div className="availableRooms">
@@ -110,10 +117,7 @@ const Chat = () => {
               Rooms
             </div>
             <div className="availableRoomsWrapper">
-              {rooms.map((room:any) => (
-                <Room id={room.id} roomname={room.roomname} roomPicture={room.roomPicture} />
-              ) )}
-              
+              { rooms.map((room: any) => <Room roomId={room.id} roomName={room.name} setCurrentChat={setCurrentChat} setTopBarData={setTopBarData}/> )}
             </div>
           </div>
         </div>
@@ -122,5 +126,7 @@ const Chat = () => {
 
   )
 }
+
+
 
 export default Chat

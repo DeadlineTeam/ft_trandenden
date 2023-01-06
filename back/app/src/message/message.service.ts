@@ -53,6 +53,28 @@ export class MessageService {
 		}
 		return filteredMessages.map(this.messageFormate);
 	}
+	async getRoomUserMessages (userId:number, roomId:number, userID:number) {
+		const member = await this.member.getMember(roomId, userID);
+		if (!member) {
+			throw new HttpException('User is not a member of the room', 403);
+		}
+		const messages = await this.prisma.message.findMany({
+			where: {
+				roomId: roomId,
+				senderId: userID,
+			},
+			select: {
+				senderId:true,
+				sentTime:true,
+				content:true,
+			},
+			orderBy: {
+				sentTime: 'asc',
+			}
+		});
+
+		return messages;
+	}
 
 	async newMessage (senderId: number, message: CreateMessageDto) {
 		const room = await this.prisma.room.findFirst({

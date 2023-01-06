@@ -15,4 +15,10 @@ export class MessageController {
 	async getRoomMessages (@Req () req, @Param('roomId', ParseIntPipe) roomId: number) {
 		return this.messageService.getRoomMessages(req.user.userId , roomId);
 	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get ('/:roomId/:userID')
+	async getRoomUserMessages (@Req () req, @Param('roomId', ParseIntPipe) roomId:number, @Param('userID', ParseIntPipe) userID:number) {
+		return this.messageService.getRoomUserMessages(req.user.userId, roomId, userID);
+	}
 }

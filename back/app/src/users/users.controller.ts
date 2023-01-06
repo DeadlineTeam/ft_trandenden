@@ -48,6 +48,11 @@ export class UsersController {
 		return req.user.username;
 	}
 
+	@Get("id")
+	async getId(@Request() req) {
+		return req.user.userId;
+	}
+
 	@Get('all')
 	async getAllUsers(@Request() req) {
 		return await this.userService.getAllUsers(req.user.userId);

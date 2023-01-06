@@ -63,6 +63,10 @@ export class MemberService {
 		return await this.prisma.memberShip.findMany({
 			where: {
 				roomId: roomId
+			},
+			include : {
+				user: true,
+				
 			}
 		});
 	}

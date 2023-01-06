@@ -1,19 +1,18 @@
-import React from 'react'
 import './ChatZone.css'
 
-const Message = ({own}:any) => {
+
+const Message = ({own, message}:any) => {
     return (
         <div className={own ? "message own" : "message"}>
             <div className="messageTop">
-                <img className="messageImg" src={require('../../SolidSnake.png')} alt="Snake" />
+                <img className="messageImg" src={message.senderAvatar} alt="Snake" />
                 <p className="messageText">
-                    Hostile coming from North
+                    {message.content}
                 </p>
             </div>
             <div className="messageBottom">
-                1 hour ago
+                Sometimes Ago
             </div>
-
         </div>
     )
 }
