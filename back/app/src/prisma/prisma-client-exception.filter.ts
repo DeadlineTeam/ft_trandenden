@@ -18,7 +18,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 				const status = HttpStatus.CONFLICT;
 				response.status(status).json({
 				statusCode: status,
-				message: constraint + " already used",
+				message: constraint + " must be unique",
 				});
 				break;
 			}
