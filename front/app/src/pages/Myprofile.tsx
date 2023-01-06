@@ -15,7 +15,7 @@ import { Console } from 'console';
 import { toast } from 'react-toastify';
 const Historitem = styled.div<{close: boolean}>`
 display: flex;
-height: 12%;
+height: 35px;
 position:relative;
 flex-direction: row;
 color: ${({ close}) => close ? '#000' : '#fff'};
@@ -24,7 +24,12 @@ left: 10%;
 margin-top: 2%;
 margin-bottom: 2%;
 background-color: ${({ close}) => close ? '#fff' : '#A3A3A3'};
-`
+@media screen and (max-width: 700px) {
+    /* Styles for small screen sizes go here */
+    width: 80%;
+    height: 20px;
+  }
+`	
 
 const Usernamehis1 = styled.h1<{close: boolean}>`
 position: relative;
@@ -32,13 +37,28 @@ left: 2%;
 font-size: x-small;
 font-weight: 600;
 top:15%;
+@media screen and (max-width: 700px) {
+    /* Styles for small screen sizes go here */
+	font-size: 5px;
+font-weight: 600;
+width:20%;
+  }
 `
 const Usernamehis2 = styled.h1<{close: boolean}>`
-position: relative;
+position: absolute;
 left: 61%;
 font-size: x-small;
 font-weight: 600;
 top:15%;
+@media screen and (max-width: 700px) {
+    /* Styles for small screen sizes go here */
+    position: absolute;
+	left: calc(90% - 20px);
+    height: 20px;	
+		font-size: 5px;
+font-weight: 600;
+width:20%;
+  }
 `
 
 interface iconinfo{
@@ -186,15 +206,11 @@ return (
 			}
 
 
-			<button className = 'addbutton' onClick={inviteToGame}>
-    		  <div className='itembutton' ></div>
-    		  <ImBlocked/>
-    		</button>
+	
 			
 			
 			<img className='Profileimg' src={myimage} />
 			<p className='name'>{name}</p>
-			<p className='nickname'>#{nickname}</p>
 			<div className='levelbar'>
 			<Progress_bar progress={levelbar} />
 			</div>
@@ -234,8 +250,7 @@ return (
 		<div className='matchhistory1'>
 			{maphistory.map((value)=>{
 				return(
-						<div className='matchhistoryp'>
-							<Historitem close={true}>
+							<Historitem close={true} className="Historitem">
 								<img className='user1img' src={value.player1.avatar}/>
 								<Usernamehis1 close={value.true}>{value.player1.username}</Usernamehis1>
         						<h2 className='usernamehistory'>level {value.player1.level}</h2>
@@ -246,7 +261,7 @@ return (
 								<h2 className='usernamehistory2'>level {value.player2.level}</h2>
 					
 							</Historitem> 
-						</div>
+
 					  )}) }
 		</div>  
 </div>     
