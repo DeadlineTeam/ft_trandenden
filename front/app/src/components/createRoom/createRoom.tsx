@@ -6,6 +6,7 @@ import RoomNameField from './roomName'
 import AccessMode from './accessMode'
 import PasswordField from './passwordField'
 import axios from "axios"
+import {MdGroups} from 'react-icons/md';
 
 import { AiOutlinePlusSquare } from 'react-icons/ai'
 import { AiOutlineMinusSquare } from 'react-icons/ai'
@@ -42,13 +43,13 @@ const Friend = (props: FriendProps) => {
 			<img className="membeRImg" src={props.avatar_url} alt="Snake"/>
 			<span className="membeRName">{props.username}</span>
 			{
-				!added && <button onClick={addToList}>
-					<AiOutlinePlusSquare/>
+				!added && <button className='addremobutt1' onClick={addToList}>
+					<AiOutlinePlusSquare className='addremobutt'/>
 				</button>
 			}
 			{
-				added && <button onClick={removeFromList}>
-					<AiOutlineMinusSquare/>
+				added && <button className='addremobutt1'onClick={removeFromList}>
+					<AiOutlineMinusSquare className='addremobutt'/>
 				</button>
 			}
 	  	</div>
@@ -115,7 +116,7 @@ const CreateRoom = (props: CreateRoomProps) => {
 		  		<div className="child1Title">Create Room</div>
 		  	</div>
 		  	<div className="child2">
-		  		<img src={require('../../SolidSnake.png')} alt="" />
+		  		<MdGroups className='roomicon'/>
 		  	</div>
 		  	<RoomNameField roomName={roomName} setRoomName={setRoomName}/>
 		  	<AccessMode visibility={visibility} setAccessMode={setAccessMode}/>

@@ -70,7 +70,8 @@ const Matchhistory = () => {
 
 
 	return (
-		<div>
+		<div className='match'>
+			<h1>Live Games</h1>
 			{
 			games.map((game, index) => {
 		    	return (

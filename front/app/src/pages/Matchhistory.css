@@ -1,3 +1,8 @@
+.match{
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+}
 .usernamehistory{
 
     position: absolute;
@@ -70,4 +75,11 @@
     top: 55%;
     font-size: xx-small;
     font-weight: 200;
+}
+h1 {
+	margin: auto;
+	font-style: italic;
+	margin-top: 3%;
+	color: white;
+	font-size: large
 }

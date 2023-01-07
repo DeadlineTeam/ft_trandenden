@@ -4,7 +4,7 @@ import './createRoom.css'
 const SaveButton = ({ handleSubmit }: { handleSubmit: (e:any) => void}) => {
     return (
         <div className="child7Save">
-            <button className="btn" type="submit" onClick={handleSubmit}>
+            <button className="btn1" type="submit" onClick={handleSubmit}>
               <p>Save</p>
             </button>
         </div>
