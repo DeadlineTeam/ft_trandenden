@@ -22,10 +22,11 @@ const Faca = ({closemodel,openmodel1,settoggled}:props) => {
   return (
     <div className='faBackground'>
         <div className='facontainer'>
-            
+        <div className='Tp'>
         <h1 className='title'>scan the Qr code to recieve the code to enable 2FA
         </h1>
         <img className='settingsimg' src={"http://localhost:3001/2fa/generate"}/>
+        </div>
         <div className='footer'>
           <button className='cancelButton' onClick={() => {closemodel(false);settoggled(false)} }>Cancel </button>
           <button className='continueButton' onClick={handlemodel1}>Continue </button>

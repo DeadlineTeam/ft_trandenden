@@ -100,8 +100,12 @@ const Settings = () => {
   const handletoggled = () => {
     if (toggled == false)
       setOpenmodel(!openmodel)
+    else{
+      setToggled(!toggled)
+      axios.get("http://localhost:3001/2fa/turn-off",  { withCredentials: true }).then((response2) => {
+      })
 
-    setToggled(!toggled)
+    }
   }
   const handlesubmit = () => {
     const url3 = "http://localhost:3001/users/username"

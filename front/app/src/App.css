@@ -54,8 +54,7 @@ text-decoration: none;
   margin-left: 30px;
   padding: 0px;
 }
-.link_text{
-}
+
 .link{
   display: flex;
   color: white;
@@ -158,4 +157,3 @@ text-decoration: none;
   height: 70vh;
 
 }
-@media screen and (max-height: ma)

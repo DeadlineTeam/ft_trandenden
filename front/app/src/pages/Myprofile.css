@@ -1,7 +1,7 @@
 .full{
     display: flex;
     flex-direction: column;
-    height: 80%;
+    height: 800px;
     width: 60%;
     margin: auto;
 }
@@ -493,4 +493,9 @@ border-radius: 10px;
     
     
       }
+  }
+  @media (max-height: 1000px) {
+    body {
+      overflow-y: scroll!important;
+    }
   }
