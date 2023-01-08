@@ -157,3 +157,54 @@ text-decoration: none;
   height: 70vh;
 
 }
+@media (max-width: 700px) {
+  .searchInputs{
+    display: flex;
+    margin-left: 50%;
+  }
+  .searchbar input{
+    background-color: #252d32;
+  position: relative;
+  outline: none;
+  border: 0;
+  font-size: 10px;
+  color: white;
+  margin-top: 5px;
+  padding: 5px;
+  width: 100px;
+  }
+  .dataInputs{
+    margin-top: 30px;
+    width: 100px;
+    height: 100px;
+    background-color: #252d32;
+    overflow: hidden;
+    margin-top: 10px;
+    overflow-y: auto;
+    box-shadow: #545454;
+    margin-left: 50%;
+    z-index: 1;
+  }
+  .dataitem{
+    display: flex;
+    width: 100%;
+    height: 20px;;
+    color: white;
+    align-items: center;
+  }
+  .milieu{
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 60%;
+    font-family: 'Montserrat Alternates', sans-serif;
+    color: white;
+    height: 50vh;
+    margin: auto;
+    background-color: #192125;
+    border-radius: 10px;
+  }
+
+
+}
