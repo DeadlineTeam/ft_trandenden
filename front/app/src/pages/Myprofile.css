@@ -168,13 +168,7 @@ border-radius: 10px;
     left:5%;
     top :50%;
 }
-.matchhistory{
-    position: relative;
-    flex-direction: column;
-    top: 60%;
-    height: 50%;
-    width: 100%;
-}
+
 .datahistoryitem{
     height: 15%;
     width: 80%;

@@ -174,7 +174,7 @@ export class Pong {
 	}
 
 	isFinished (): boolean {
-		const Score = 6;
+		const Score = 10;
 		return ((this.game.players[SIDE.RIGHT].score == Score) || (this.game.players[SIDE.LEFT].score == Score))
 	}
 };

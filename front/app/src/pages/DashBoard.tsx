@@ -44,9 +44,9 @@ const DashBoard = () => {
                   <p className='itemerank'>{item.id}</p>
                 </td>
                 <td>{item.username}</td>
-                <td>{item.winrate}</td>
+                <td>{Math.floor(item.winrate * 100)} %</td>
                 <td>{item.totalgames}</td>
-                <td>12/12t</td>
+                <td>{item.win}/{item.loss}</td>
                 <td>{item.level}</td>
               </tr>
               

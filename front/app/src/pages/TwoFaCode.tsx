@@ -42,7 +42,6 @@ const TwoFaCode = () => {
           navigate("/Notfound");
           // navigate("/");
         }).catch((err) => {
-          console.log(err);
           
         });
       }

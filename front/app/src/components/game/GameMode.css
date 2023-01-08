@@ -33,8 +33,7 @@
 .mode {
     width:40%;
     height: 100%;
-    background-color: #9da2b3;
-    margin-left: 5%;
+    margin-left: 6.5%;
     border-radius: 10%;
 
 }
@@ -62,4 +61,37 @@
     font-size: large;
     font-weight: 500;
     color: white;
+}
+@media(max-width : 700px)
+{
+    .gamechoice{
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        margin-top: 3%;
+        width: 100%;
+        height: 100%;
+    }
+    .mode {
+        width:100%;
+        height: 50%;
+        margin-left: 6.5%;
+        border-radius: 10%;
+    
+    }
+    .modeImg{
+        position: absolute;
+        border-radius: 10%;
+        width:100%;
+        height: calc(50% - 20px);
+    }
+
+.modebg{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    top :0%;
+    border-radius: 10%;
+}
+    
 }
