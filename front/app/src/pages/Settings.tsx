@@ -92,7 +92,7 @@ const Settings = () => {
       setImg(response3.data.avatar_url);
     }).catch((err) => {
       console.log(err);
-    })
+    }) 
   }
   const handlename = (event: React.FormEvent & { target: HTMLInputElement }) => {
     setName(event.target.value);
@@ -124,7 +124,7 @@ const Settings = () => {
         <p className='username' >{username1}</p>
         <form className='fm' onSubmit={handlesubmit}>
           <div className="User" >username :</div>
-          <input type='text' value={name} onChange={handlename} placeholder={username} className="settingsinput" />
+          <input type='text' value={name} onChange={handlename} placeholder={username1} className="settingsinput" />
           <div className='switchee'>
             <p className='tfa'>two factor authentication</p>
             <Switcher toggled={toggled} onToggled={handletoggled} />

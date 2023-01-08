@@ -119,16 +119,20 @@ const Myprofile = () => {
 		const url3 = "http://localhost:3001/profile/gameHistory"
       	axios.post(url3, {username: stri},{withCredentials: true}).then((response2) =>{
      		setMaphistory(response2.data)
-      	})
+      	}).catch(error=>{
+			setMaphistory([])
+		})
       
 		const url4 = "http://localhost:3001/profile/stats"
       	axios.post(url4, {username: stri},{withCredentials: true}).then((response3) =>{
 			setStats (response3.data)
 			setWin(response3.data.win)
 			setLose(response3.data.loss)
-			setWinrate(response3.data.winrate * 100)
+			setWinrate(Math.floor(response3.data.winrate * 100))
 			setTotalgames(response3.data.totalgames)
-      	})
+      	}).catch(error=>{
+			
+		})
     },[location.pathname, render])
 
 
@@ -253,12 +257,12 @@ return (
 							<Historitem close={true} className="Historitem">
 								<img className='user1img' src={value.player1.avatar}/>
 								<Usernamehis1 close={value.true}>{value.player1.username}</Usernamehis1>
-        						<h2 className='usernamehistory'>level {value.player1.level}</h2>
+        						<h2 className='usernamehistory'>level {Math.floor(value.player1.level)}</h2>
 								<div className='result'>result
 								<h1 className='score'>{value.player1.score} vs {value.player2.score} </h1></div>
 								<img className='user2img' src={value.player2.avatar}/>
 								<Usernamehis2 close={value.Boolean}>{value.player2.username}</Usernamehis2>
-								<h2 className='usernamehistory2'>level {value.player2.level}</h2>
+								<h2 className='usernamehistory2'>level { Math.floor(value.player2.level)}</h2>
 					
 							</Historitem> 
 

@@ -85,3 +85,22 @@
   width: 5em;
 
 }
+@media (max-width: 700px) {
+  .searchInputs{
+    display: flex;
+    margin-left: 20%;
+  }
+  .searchbar input{
+    background-color: #252d32;
+    position: relative;
+    outline: none;
+    border: 0;
+    font-size: 10px;
+    color: white;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding: 5px;
+    width: 40%;
+  }
+
+}

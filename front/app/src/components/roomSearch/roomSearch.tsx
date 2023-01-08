@@ -26,7 +26,7 @@ type SearchProps = {
 
 const Room = (props: RoomSearchProps) => {
 	const [password, setPassword] = useState ('');
-
+	const po="Sadasdsa";
 	const joinRoom = () => {
 		axios.post (`http://localhost:3001/room/join/${props.id}`, {password: password}, { withCredentials: true })
 		.then ( () => {
