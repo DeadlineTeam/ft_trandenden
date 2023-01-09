@@ -1,11 +1,27 @@
 .custom-style{
     position: relative;
-    top: 10%;
+    top: 30%;
     width: 60%;
     align-items: center;
     justify-content: center;
     color:#191919 ;
-    left: calc(10%);
-    --ReactInputVerificationCode-itemWidth : 2rem;
+    left: 25%;
+    --ReactInputVerificationCode-itemWidth : 1.5rem;
+    --ReactInputVerificationCode-itemSpacing: 0.3rem;	
     height: 10%;
+}
+.tfaicon{
+    position: relative;
+    height: 6em;
+    width: 6em ;
+    color:#191919;
+
+    left:calc(50% - 3em); 
+}
+.tfamsg{
+    position: relative;
+    color:#191919;
+    font-size: x-small;
+    width: 120px;
+    left:calc(50% - 60px); 
 }

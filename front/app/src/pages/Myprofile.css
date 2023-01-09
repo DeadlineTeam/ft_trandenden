@@ -1,7 +1,7 @@
 .full{
     display: flex;
     flex-direction: column;
-    height: 80%;
+    height: 800px;
     width: 60%;
     margin: auto;
 }
@@ -168,13 +168,7 @@ border-radius: 10px;
     left:5%;
     top :50%;
 }
-.matchhistory{
-    position: relative;
-    flex-direction: column;
-    top: 60%;
-    height: 50%;
-    width: 100%;
-}
+
 .datahistoryitem{
     height: 15%;
     width: 80%;
@@ -493,4 +487,9 @@ border-radius: 10px;
     
     
       }
+  }
+  @media (max-height: 1000px) {
+    body {
+      overflow-y: scroll!important;
+    }
   }

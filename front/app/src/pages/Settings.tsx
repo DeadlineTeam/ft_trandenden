@@ -92,7 +92,7 @@ const Settings = () => {
       setImg(response3.data.avatar_url);
     }).catch((err) => {
       console.log(err);
-    })
+    }) 
   }
   const handlename = (event: React.FormEvent & { target: HTMLInputElement }) => {
     setName(event.target.value);
@@ -100,8 +100,12 @@ const Settings = () => {
   const handletoggled = () => {
     if (toggled == false)
       setOpenmodel(!openmodel)
+    else{
+      setToggled(!toggled)
+      axios.get("http://localhost:3001/2fa/turn-off",  { withCredentials: true }).then((response2) => {
+      })
 
-    setToggled(!toggled)
+    }
   }
   const handlesubmit = () => {
     const url3 = "http://localhost:3001/users/username"
@@ -120,7 +124,7 @@ const Settings = () => {
         <p className='username' >{username1}</p>
         <form className='fm' onSubmit={handlesubmit}>
           <div className="User" >username :</div>
-          <input type='text' value={name} onChange={handlename} placeholder={username} className="settingsinput" />
+          <input type='text' value={name} onChange={handlename} placeholder={username1} className="settingsinput" />
           <div className='switchee'>
             <p className='tfa'>two factor authentication</p>
             <Switcher toggled={toggled} onToggled={handletoggled} />

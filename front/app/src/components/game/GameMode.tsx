@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import ImgNormMode from "./NormMode.jpg"
 import ImgUltimateMode from "./UltimateMode.jpg"
+import Pizzaman from"./pizza-chen-2016-1026-05.png"
+import Pizzaman1 from"./pizzaboy.png"
 import "./GameMode.css"
 
 type IMode = {
@@ -21,6 +23,9 @@ function GameMode (props: IMode) {
 				height={"100%"}
 				
 			/>
+			<img className="modeImg" src={props.mode === "Normal"? Pizzaman: Pizzaman1} width={"100%"} 
+				height={"100%"}
+				/>
 			<div className="modebg" onClick={handleClick}>
 				<p className="modename">{props.mode + " Mode"}</p>
 			</div>

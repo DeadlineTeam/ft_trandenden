@@ -34,6 +34,7 @@ const Faca1 = ({closemodel,openmodel2 ,ssucces, settoggled}:props) => {
         console.log(response.data)
         ssucces(true)
         closemodel(false)
+        settoggled(true)
         })
       .catch(error=>{
         if (error.response)
@@ -44,10 +45,12 @@ const Faca1 = ({closemodel,openmodel2 ,ssucces, settoggled}:props) => {
   return (
     <div className='faBackground'>
         <div className='facontainer'>
+        <div className='Tp'>
           <h1 className='title'>Enter Password
             </h1>
               <div className="custom-style">
                 <ReactInputVerificationCode autoFocus={true} placeholder='' value={value} onChange={handlevalue}  length={6} />
+              </div>
               </div>
             <div className='footer'>
               <button className='cancelButton'  onClick={() => {closemodel(false);settoggled(false)}}>Cancel </button>

@@ -1,13 +1,14 @@
 .container {
-    font-family: "Gill Sans", sans-serif;
-    font-size: 20px;
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: 10px;
     margin: auto;
     margin-top: 5%;
     width: 60%;
     height: 60%;
-    outline: auto 10px black;
     background-color: #192125;
     /* Center vertically and horizontally */
+    border-radius: 5px;
+    font-weight: 900;
     display: flex;
     flex-direction: column;
     gap: 5%;
@@ -24,33 +25,39 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    font-weight: 500;
     gap: 5%;
 }
 
 .child2 img {
-    border:  solid black;
-    border-radius: 4px;
+    border-radius: 10px;
     padding: 5px;
-    width: 150px;
+    width: 200px;
 }
 
 .child3 {
     display: flex;
     justify-content: center;
+    font-weight: 500;
+
     gap: 2%;
+    
 }
 
 .inputFieldRoomName {
-    border-radius: 5%;
-    outline: auto 10px white;
+    border-radius: 5px;
+    border-color: white;
+    border-style: solid;
     background-color: #192125;
     color: whitesmoke;
 }
 
 .child4 {
     display: flex;
+    flex-direction: row;
     justify-content: center;
-    gap: 1%;
+    font-weight: 500;
+    gap: 3%;
 }
 
 .child4CheckBox {
@@ -62,29 +69,41 @@
 .child5 {
     display: flex;
     justify-content: center;
+    font-weight: 500;
     gap: 2%;
 }
 
 .inputFieldPassword {
-    border-radius: 5%;
-    outline: auto 10px white;
+    border-radius: 5px;
+    border-color: white;
+    border-style: solid;
     background-color: #192125;
     color: whitesmoke;
 }
-
+.child1Title{
+    font-size: x-large;
+}
 .child6 {
     display: flex;
     justify-content: center;
+    font-weight: 500;
     gap: 1%;
 }
 
 .child6SelectMembers {
-    outline: auto 10px white;
-    border-radius: 4px;
+
+    border-radius: 5px;
+    background-color: #293135;
     padding: 5px;
-    width: 300px;
-    height: 200px;
+    width: 150px;
+    height: 100px;
+    font-weight: 500;
     overflow-y: scroll;
+}
+.child6SelectMembers::-webkit-scrollbar{    background-color: 192125;
+    border-radius: 5px;
+    width: 2px;
+    height: 6px;
 }
 
 .membeR {
@@ -101,8 +120,8 @@
 }
 
 .membeR button img {
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
     cursor: pointer;
 }
 
@@ -111,9 +130,9 @@
 }
 
 .membeRImg {
-    width: 32px;
-    height: 32px;
-    border-radius: 50px;
+    width: 15px;
+    height: 15px;
+    border-radius: 5px;
     object-fit: cover;
     margin-right: 20px;
     border: 1px solid white ;
@@ -129,26 +148,61 @@
     display: flex;
     justify-content: center;
     gap: 1%;
+
 }
 
 .child7Cancel,.child7Save {
-    outline: auto 10px white;
-    border-radius: 4px;
-    width: 10%;
+
+    border-radius: 5px;
+    width: 15%;
     text-align: center;
 }
 .btn {
     display: block;
     position: relative;
+    border-style: solid;
+    border-color: white;
+    border-radius: 5px;
 	width: 100%;
     background-color: #192125;
     color: white;
-    font-family: "Gill Sans", sans-serif;
-    font-size: 20px;
+    font-weight: 700;
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: 10px;
+    cursor: pointer;
+}
+.btn1 {
+    display: block;
+    position: relative;
+    border-style: solid;
+    border-color: white;
+	width: 100%;
+    border-radius: 5px;
+    background-color: #192125;
+    color: #192125;
+    background-color: white;
+    font-weight: 700;
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: 10px;
     cursor: pointer;
 }
 
-
+.addremobutt{
+    height: 1em;
+    width: 1em;
+    background-color: none;
+    background: none;
+    color: white;
+}
+.addremobutt1{
+    background: none;
+    border: none;
+}
+.roomicon{
+    height: 4em;
+    width: 4em;
+    border: white;
+}
 
 
 
