@@ -88,7 +88,8 @@
 @media (max-width: 700px) {
   .searchInputs{
     display: flex;
-    margin-left: 20%;
+    margin-left: 40%;
+    width: 80%;
   }
   .searchbar input{
     background-color: #252d32;
@@ -100,7 +101,8 @@
     margin-top: 4px;
     margin-bottom: 4px;
     padding: 5px;
-    width: 40%;
+    border-radius: 50px 0px 0px 50px;
+    width: 80%;
   }
 
 }
