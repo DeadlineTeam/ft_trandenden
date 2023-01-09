@@ -30,6 +30,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer ()
 	server;
 
+	userIdToSocket: Map <number, Socket[]> = new Map ();
+
 	async handleConnection (@ConnectedSocket () client: Socket) {
 		const payload = this.authService.verify(decodeURI (client.handshake?.headers?.cookie).replace ("Authorization=Bearer ", ""));
 		if (!payload) {
@@ -42,15 +44,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		rooms.forEach(room => {
 			client.join(room.roomId.toString());
 		});
+		const idtosockets = this.userIdToSocket.get (client.data.id);
+		if (!idtosockets)
+			this.userIdToSocket.set (client.data.id, [])
+		this.userIdToSocket.get(client.data.id).push (client);
 	}
 
-	async handleDisconnect(client: Socket) {}
+	async handleDisconnect(client: Socket) {
+		this.userIdToSocket.get (client.data.id).filter (socket => socket.id !== client.id);
+	}
 
 	@SubscribeMessage('message')
-	async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: string) {
+	async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: {roomId: number, content: string}) {
+		// const createMessage = JSON.parse(data);
+		console.log (data);
 		try {
-			const createMessage = JSON.parse(data);
-			this.chatservice.createMessage(client.data.id, createMessage);
+			this.chatservice.createMessage(client.data.id, data);
 		} catch {
 		}
 	}
@@ -65,5 +74,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 			})
 		}
+	}
+
+	@SubscribeMessage ('join')
+	joinRoom (@ConnectedSocket () client: Socket, @MessageBody() data: {roomId: number}) {
+		client.join (data.roomId.toString())
+		this.userIdToSocket.get (client.data.id).forEach ((socket, key) => {
+			socket.emit ('update');
+		})
 	}
 }

@@ -8,6 +8,7 @@ import { VISIBILITY } from '@prisma/client';
 import { ROLE } from '@prisma/client';
 import { MemberService } from 'src/member/member.service';
 import { UsersService } from 'src/users/users.service';
+import { ChatService } from 'src/chat/chat.service';
 
 const visibitymap = (visibility: string) => {
 	if (visibility === 'Public') {
@@ -122,6 +123,23 @@ export class RoomService {
 			throw new HttpException (`Cannot create DM`, 400);
 		}
 	}
+
+	async findDM (senderId: number, receiverId: number) {
+		if (senderId === receiverId) {
+			throw new HttpException (`Cannot create DM with yourself`, 400);
+		}
+		const receiverIdExists = await this.user.findById(receiverId);
+		if (!receiverIdExists) {
+			throw new HttpException (`User with id ${receiverId} does not exist`, 400);
+		}
+		let DMroom = await this.findByname (`DM-${senderId}-${receiverId}`);
+		DMroom = DMroom || await this.findByname (`DM-${receiverId}-${senderId}`);
+		if (DMroom) {
+			return DMroom;
+		}
+		return null;
+	}
+	
 
 	async findByname(name: string) {
 		const room = await this.prisma.room.findFirst({
@@ -239,4 +257,6 @@ export class RoomService {
 		});
 		return rooms;
 	}
+
+	
 }

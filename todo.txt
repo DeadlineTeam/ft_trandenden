@@ -1,0 +1,268 @@
+-----------------------game ---------------------------
+
+------------------------chat----------------------------
+
+- Chat:
+	* WHY:
+		1- chat service
+		2- friends list
+	* SubComponents:
+		- ConvoZone
+		- ChatZone
+		- FriendZone
+		- RoomZone
+	* functionalities:
+		- reactivity:
+			* events:
+				- listen for:
+					* "updateList"	-> update the FriendZone and RoomZone
+					* "message"		-> the message received should be put in the right ConvoZone
+		- first Mount:
+
+---------------------------
+- OnlineOfflineStatus:
+	* WHY:
+		- display the online offline status of a user
+	* layout:
+		- green/red icon
+	* functionalities:
+		- mounting:
+			- get the user online status from the API
+		- reactivity:
+			* events:
+				- listen for:
+					* "online${friend.id}"		-> online = true;
+					* "offline${friend.id}"		-> online = false;
+		- change the icon depending on the online state
+	* props:
+		{
+			id: number
+		}
+	* states:
+		online: boolean
+
+----------------------------------
+- Friend:
+	* WHY:
+		- display friend info
+	* layout:
+		- avatar
+		- name
+		- <OnlineOfflineStatus>
+
+	* functionalities:
+		- onclick on avatar should be redirected to friend profile
+		- on click elsewhere the ChatZone should reflect the convo associated with this friend
+	
+	* props:
+		{
+			id					: number
+			avatar_url			: string
+			username			: string
+			associatedConvoId 	: number
+			setChatZoneId 		: (id: number) => void ; // callback to change the chatZone
+		}
+
+-----------------------------------
+- FriendZone:
+	* WHY:
+		1- display friends of the user
+	* subComponents:
+		- name: "Friends"
+		- Friends: Friend []
+	* functionalities:
+		- API Call to get the user's friend and their "DM" room info
+	props:
+		{
+			setChatZoneId: (id: number) => void
+		}
+
+-----------------------------------------------------
+- Room:
+	* WHY:
+		1- display room info
+	* layout:
+		- avatar: the avatar should depend on the visibility of the that room
+		- name: the name of that room
+		- leave button:
+			- leave the room
+
+		- settings button:
+			* should be displayed if the user is ("ADMIN"/"OWNER)
+			* functionalities:
+				- on click the user is directed to room settings
+	* functionalities:
+		- on click the chat zone should reflect the convo in that room
+	* props:
+		{
+			id				: number
+			name			: string
+			visibility		: string
+			userRole		: string
+			// the associated Convo Id is the same id
+			setChatZoneId	: (id: number) => void
+		}
+-------------------------------------------------------
+- RoomZone:
+	* WHY:
+		- display all the rooms the user is a member of
+	* subComponents:
+		- name: "Rooms"
+		- Rooms: Room []
+	* functionalities:
+		- on Mount call the api to get the all the rooms the user is a member of
+		- for each room create a Room Component
+
+-------------------------------------------------------
+- ConvoFriend:
+	* layout:
+		- avatar
+		- name
+		- last msg
+	props:
+		{
+			avatar_url		: string
+			name			: string
+			lastMsg			: string
+		}
+--------------------------------------------------------
+- ConvoRoom:
+	* layout:
+		- avatar: depends on the room type
+		- name
+		- last msg
+	* functionalities:
+		{
+			type			: "DM"
+			name			: string
+			lastMsg			: string
+		}
+
+------------------------------------------------------
+- ConvoZone:
+	* WHY:
+		- list all the convos of the user
+	* subComponents:
+		- name: "Messages"
+		- Convos: ConvoFriend | ConvoRoom []
+	* 
+
+------------------------------------------------------
+-GameInvite:
+	* WHY:
+		- invite a friend to a game
+	* layout:
+		- play icon button
+	* functionalities:
+		- displayability:
+			(online == true and inGame == false)	-> show
+			(otherwise)								-> hide
+		- reactivity:
+			* events:
+				- listen for:
+					* "online${props.id}"		-> set online to true;
+					* "inGame${props.id}"		-> set inGame to true;
+					* "offline${props.id}"		-> set online to false;
+					* "offGame${props.id}"		-> set inGame to false;
+	- props: 
+		{
+			id: number
+		}
+	- states:
+		online: boolean
+		inGame: boolean
+---------------------------
+- FriendInfo:
+	* WHY:
+		- display the friend info
+	* layout:
+		* avatar:
+		* name:
+		* <OnlineOfflineStatus>
+		* <GameInvite>
+
+
+-------------------------------------------------------
+- RoomInfo:
+	* WHY:
+		- display the room info
+	* layout:
+		* avatar:
+			- depends on the type of the room
+		* name
+
+---------------------------------------------------------
+- Info:
+	* WHY:
+		- display the convo infos
+	* layout:
+		- depends on the convo it represent
+		"DM" -> FriendInfo
+
+- Message:
+	* WHY:
+		- display a message
+	*layout:
+		- avatar
+		- content
+		< the msg is from the user:
+			- display in right !! without avatar
+		< the msg is from others
+			- display in  left
+
+- Messages
+	* WHY:
+		- display the messages of the convo
+	* SubComponents:
+		- Message []
+
+- SendMessage:
+	* WHY:
+		- Message Sending
+	* subComponents:
+		1- MessageInput: (input field)
+			- the user can write a message there
+		2- MessageSend: (submit button)
+			- the user can send that message to the server using chat socket
+			- including the following information:
+				- roomId: the id of the convo
+				- content: the message
+
+- ChatZone:
+	* WHY:
+		1- display the convo info
+		2- display the convo messages
+		3- message sending
+	* dependencies:
+		1- convo zone
+		2- room zone
+	* functionalities:
+		- when a user clicks on one element of the dependencies:
+			* should display the info and messages of that convo associated with that element
+			* and when a message is sent it should be sent to the associated convo Id 
+	* subComponents:
+		1- Info
+		2- Messages
+		3- SendMessage
+
+
+
+
+-------------------------friend-------------------------
+
+------------------------room--------------------------------
+- front creation room must catch the error
+- adding "search for a room " in placeholder Search Bar
+- room search should display all the available rooms the user can join
+- and the user can filter between them
+
+
+
+------------------------member------------------------------
+
+
+------------------------notification------------------------
+
+
+----------------------remaining tasks ----------------------
+- removing local host from backend and frontend
