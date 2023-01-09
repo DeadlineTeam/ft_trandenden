@@ -45,6 +45,11 @@ const SidebarMenu = styled.div<{ close: boolean }>`
     left: ${({ close }) => close ? '0' : '-100%'};
     transition: .6s;
     z-index:1000;
+    @media(max-width : 700px)
+    {
+        width:100%;
+    }
+
 `
 
 const MenuItems = styled.li`
