@@ -8,6 +8,7 @@ import { VISIBILITY } from '@prisma/client';
 import { ROLE } from '@prisma/client';
 import { MemberService } from 'src/member/member.service';
 import { UsersService } from 'src/users/users.service';
+import { Room } from '@prisma/client';
 
 const visibitymap = (visibility: string) => {
 	if (visibility === 'Public') {
@@ -238,5 +239,54 @@ export class RoomService {
 			}
 		});
 		return rooms;
+	}
+
+	async acessUserCanAcess (userId: number) : Promise<any[]>
+	{
+		const myrooms = await this.prisma.room.findMany({
+			where: {
+				visibility: {
+					not: {
+						in: [VISIBILITY.DM, VISIBILITY.PRIVATE],
+					}
+				},
+				users: {
+					none: {
+						userId: userId,
+						banned: true,
+					}
+				},
+			},
+			select : {
+				id: true,
+				name: true,
+				visibility: true,
+				users: true,
+			}
+		});
+		const res = myrooms.map((room) => {
+			return {
+				...room,
+				users: room.users.filter((user) => user.userId !== userId),
+			}
+		})
+		console.log(res);
+		const result = res.map((room) => {
+			if (room.users.length === 0) {
+				return {
+					roomid: room.id,
+					roomname: room.name,
+					roomvisibility: room.visibility,
+					notMembers: true,
+				}
+			}
+			return {
+				roomid: room.id,
+				roomname: room.name,
+				roomvisibility: room.visibility,
+				notMembers: false,
+			}
+		})
+		return result;
 	}
 }
