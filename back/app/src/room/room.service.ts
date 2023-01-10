@@ -283,24 +283,23 @@ export class RoomService {
 		const res = myrooms.map((room) => {
 			return {
 				...room,
-				users: room.users.filter((user) => user.userId !== userId),
+				users: room.users.filter((user) => user.userId == userId),
 			}
 		})
-		console.log(res);
 		const result = res.map((room) => {
 			if (room.users.length === 0) {
 				return {
 					roomid: room.id,
 					roomname: room.name,
 					roomvisibility: room.visibility,
-					notMembers: true,
+					member: false,
 				}
 			}
 			return {
 				roomid: room.id,
 				roomname: room.name,
 				roomvisibility: room.visibility,
-				notMembers: false,
+				member: true,
 			}
 		})
 		return result;
