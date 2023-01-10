@@ -19,7 +19,6 @@ export class MemberController {
 
 	
 	@UseGuards(ExistanceGuard)
-	@UseGuards(RolesGuard)
 	@Get('/:roomId/:userId/get')
 	getMember(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.getMember(roomId, userId);
@@ -33,21 +32,17 @@ export class MemberController {
 		return this.memberService.deleteMember(roomId, userId);
 	}
 
-	@UseGuards(ExistanceGuard)
-	@UseGuards(RolesGuard)
 	@Get('/:roomId/:userId/role')
 	getRole(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.getRole(roomId, userId);
 	}
 
-	@UseGuards(RolesGuard)
 	@Get ('/:roomId/all')
 	getAllMembers(@Param('roomId', ParseIntPipe) roomId: number) {
 		return this.memberService.getAllMembers(roomId);
 	}
 
 
-	@UseGuards(RolesGuard)
 	@Get ('/:roomId/owner')
 	getOwner(@Param('roomId', ParseIntPipe) roomId: number) {
 		return this.memberService.getOwner(roomId);
@@ -75,4 +70,5 @@ export class MemberController {
 	unmuteUser(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.unmuteUser(roomId, userId);
 	}
+
 }

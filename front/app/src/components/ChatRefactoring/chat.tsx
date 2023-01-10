@@ -73,6 +73,7 @@ const GameInvite = (props: UserId) => {
 	const navigate = useNavigate();
 
 	const inviteToGame = () => {
+		console.log ('invite to game', props.id);
 		const url = `http://localhost:3001/game/invite/${props.id}`
 		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
 			navigate(`/Game?invite=${response.data.gameId}`)
@@ -215,11 +216,12 @@ type RoomProps = {
 	visibility: string;
 	setChatZoneId: (id: number) => void;
 }
-
+  
 const Room = (props: RoomProps) => {
 	const [open , seTopen] = useState(false)
+
 	const LeaveRoom = () => {
-		axios.post (`http://localhost:3001/room/${props.id}/leave`, {}, {withCredentials: true})
+		axios.post (`http://localhost:3001/room/leave/${props.id}`, {}, {withCredentials: true})
 		.then ((res) => {
 			toast ('you left the room')
 		}).catch ((e) => {
@@ -231,7 +233,7 @@ const Room = (props: RoomProps) => {
 		seTopen(true);
 	}
 	const RoomSettings = () => {
-		
+
 	}
 
 	const setChatZoneId = () => {
@@ -252,6 +254,7 @@ const Room = (props: RoomProps) => {
 					<RoomSettingss close= {seTopen}/>
 					)
 				}
+
 				<button onClick={LeaveRoom}><GiExitDoor className="settingsButton"/></button>
 			</div>
 		</div>
@@ -536,9 +539,8 @@ const Chat = () => {
 	
 	
 	useEffect (() => {
-		console.log ("fetch");
 		axios.get ('http://localhost:3001/room/myrooms', {withCredentials: true}).then ((res) => {
-			let tmp: number | null = null;
+			setRoomIdToMsgs(new Map());
 			for (const room of res.data) {
 				if (room.visibility === 'DM') {
 					const splits = room.name.split('-');
@@ -559,9 +561,6 @@ const Chat = () => {
 								});
 								return prev;
 							})
-							// if (chatZoneId === null)
-							// 	setChatZoneId (room.id);
-								// tmp = room.id;
 							setDone (prev => !prev);
 						})
 					})
@@ -580,8 +579,6 @@ const Chat = () => {
 							});
 							return prev;
 						})
-						// if (chatZoneId === null)
-						// 	setChatZoneId (room.id);
 						setDone (prev => !prev);
 					})
 				}
