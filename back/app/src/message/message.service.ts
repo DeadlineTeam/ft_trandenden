@@ -15,13 +15,10 @@ export class MessageService {
 
 	messageFormate (message: any) {
 		return {
-			messageId: message.messageId,
-			roomId: message.roomId,
-			senderId: message.senderId,
-			senderUserName: message.sender.username,
-			senderAvatar: message.sender.avatar_url,
-			content: message.content,
-			sentTime: message.sentTime,
+			roomId		: message.roomId,
+			senderId	: message.senderId,
+			avatar		: message.sender.avatar_url,
+			content		: message.content,
 		};
 	}
 	async getRoomMessages(userId: number, roomId: number) {
@@ -119,7 +116,13 @@ export class MessageService {
 				},
 			},
 			include: {
-				sender: true,
+				sender: {
+					select: {
+						username: true,
+						avatar_url: true,
+						id: true,
+					}
+				}
 			}
 		})
 		return newMessage;
