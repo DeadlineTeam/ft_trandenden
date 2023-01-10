@@ -70,9 +70,20 @@ export class MemberService {
 			where: {
 				roomId: roomId
 			},
-			include : {
-				user: true,
-				
+			select: {
+				id: true,
+				roomId: true,
+				role: true,
+				muted: true,
+				muteTime: true,
+				banned: true,
+				user: {
+					select: {
+						id: true,
+						username: true,
+						avatar_url: true,
+					}
+				}
 			}
 		});
 	}
@@ -109,9 +120,6 @@ export class MemberService {
 
 	async muteUser(roomId: number, userId: number) {
 		const member = await this.getMember(roomId, userId);
-		if (member?.role === ROLE.OWNER || member?.role === ROLE.ADMIN) {
-			throw new HttpException('Cannot mute owner or admin', 400);
-		}
 		if (member?.muted === true) {
 			throw new HttpException('User is already muted', 400);
 		}
@@ -170,4 +178,27 @@ export class MemberService {
 		return members.map (member => member.userId);
 	}
 
+	async banUser (roomId: number, userId: number) {
+		return await this.prisma.memberShip.updateMany ({
+			where: {
+				roomId: roomId,
+				userId: userId
+			},
+			data: {
+				banned: true
+			}
+		})
+	}
+
+	async unbanUser (roomId: number, userId: number) {
+		return await this.prisma.memberShip.updateMany ({
+			where: {
+				roomId: roomId,
+				userId: userId
+			},
+			data: {
+				banned: false
+			}
+		})
+	}
 }

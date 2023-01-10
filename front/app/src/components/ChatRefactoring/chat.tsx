@@ -218,7 +218,22 @@ type RoomProps = {
 }
   
 const Room = (props: RoomProps) => {
-	const [open , seTopen] = useState(false)
+	const [open , seTopen]						=	useState(false)
+	const [settings, showSettings]				=	useState (false);
+	const user 									=	useContext (UserContext);
+
+	useEffect (() => {
+		axios.get (`http://localhost:3001/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
+		.then ((res) => {
+			if (res.data === 'OWNER' || res.data === 'ADMIN') {
+				console.log ('admin or owner')
+				showSettings(true);
+			}
+		}).catch ((e) => {
+			showSettings(false);
+		})
+	}, [])
+
 
 	const LeaveRoom = () => {
 		axios.post (`http://localhost:3001/room/leave/${props.id}`, {}, {withCredentials: true})
@@ -249,12 +264,8 @@ const Room = (props: RoomProps) => {
 				<span className="availableRoomName">
 					{props.name}
 				</span>
-				<button onClick={RoomSettings1}> <IoSettingsSharp/></button>
-				{open == true && (
-					<RoomSettingss close= {seTopen}/>
-					)
-				}
-
+				{settings && <button onClick={RoomSettings1}> <IoSettingsSharp/></button>}
+				{open == true && (<RoomSettingss close= {seTopen} id={props.id}/>)}
 				<button onClick={LeaveRoom}><GiExitDoor className="settingsButton"/></button>
 			</div>
 		</div>
