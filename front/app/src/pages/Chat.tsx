@@ -116,7 +116,7 @@ const Chat = () => {
           <div className="availableRooms">
             <div className="availableRoomsTitle">
               Rooms
-            </div>
+            </div> 
             <div className="availableRoomsWrapper">
               { rooms.map((room: any) => <Room roomId={room.id} roomName={room.name} setCurrentChat={setCurrentChat} setTopBarData={setTopBarData} /> )}
             </div>
