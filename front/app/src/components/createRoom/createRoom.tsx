@@ -122,7 +122,7 @@ const CreateRoom = (props: CreateRoomProps) => {
 		  	<AccessMode visibility={visibility} setAccessMode={setAccessMode}/>
 		  	<PasswordField password={password} setPassword={setPassword} visibility={visibility}/>
 		  	<div className="child6">
-		  		<p>Add Members :</p>
+		  		<p>Add Admins :</p>
 		  		<div className="child6SelectMembers">
 					{
 						friends.map (

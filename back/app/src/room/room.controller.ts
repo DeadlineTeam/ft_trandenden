@@ -49,8 +49,6 @@ export class RoomController {
 
 	@Get("/available")
 	async search(@Req() req, @Body('name') name: string) {
-		console.log("dfdsfdddfdfdfdfdfd");
-		console.log(req.user.userId);
 		return await this.roomService.acessUserCanAcess(req.user.userId);
 	}
 }
