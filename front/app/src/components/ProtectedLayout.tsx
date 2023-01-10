@@ -8,8 +8,7 @@ import Bookdata from "../data.json"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GameInviteNotif } from "./notifications/gameInvite";
-import { onlineSocketContext } from "../contexts/socket";
-import { chatSocketContext } from "../contexts/socket";
+import { gameSocketContext, onlineSocketContext, chatSocketContext} from "../contexts/socket";
 
 type User = {
 	id 			: number;
@@ -33,6 +32,7 @@ export default function ProtectedLayout() {
 	
 	const onlineSocket = useContext (onlineSocketContext);
 	const chatSocket = useContext (chatSocketContext);
+	const gameSocket = useContext (gameSocketContext);
 
 	function updateUser (user : User) {
 		setUser(user);
@@ -48,6 +48,27 @@ export default function ProtectedLayout() {
 					id: res.data.userId,
 					username: res.data.username
 				})
+				onlineSocket.disconnect ();
+
+				// connect to the socket
+				// check if it is connected 
+
+				onlineSocket.connect ();
+
+				chatSocket.disconnect ();
+				chatSocket.connect ();
+
+				gameSocket.disconnect ();
+				gameSocket.connect ();
+
+				// check if the socket is connected
+				console.log ("-------> login");
+				
+				
+				// onlineSocket.emit ("login");
+
+				
+
 				setLoading(false);
 			}).catch((err) => {
 				setLoading(false);
@@ -72,16 +93,18 @@ export default function ProtectedLayout() {
 			console.log ("update received out of chat");
 		})
 
-		onlineSocket.emit ("login");
 		onlineSocket.on("logout", () => {
 			navigate ("/login");
 		})
 		
+		
+
 		return () => {
-			onlineSocket.emit ("logout");
-			onlineSocket.off ('update');
-			onlineSocket.off ("notification");
-			onlineSocket.off ("logout");
+			// onlineSocket.emit ("logout");
+			onlineSocket.disconnect ();
+			// onlineSocket.off ('update');
+			// onlineSocket.off ("notification");
+			// onlineSocket.off ("logout");
 		}
 	}, [])
 
