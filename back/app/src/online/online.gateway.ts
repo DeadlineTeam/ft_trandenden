@@ -38,6 +38,8 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const wsAuthGuard = new WsAuthGuardConnect(this.authService, this.userService);
 		try {
 			await wsAuthGuard.canActivate (client);
+			await this.onlineService.setOnline (client.data.id, true);
+			client.join (client.data.id.toString ());
 		}
 		catch (e) {
 			client.disconnect ();
@@ -64,20 +66,22 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 
-	@UseGuards(WsAuthGuard)
-	@SubscribeMessage ("logout")
-	async logout (client: Socket) {
-		client.leave (client.data.id.toString ());
-		const room = this.server.adapter.rooms.get (client.data.id.toString ());
-		if (!room) {
-			await this.onlineService.setOnline (client.data.id, false);
-		}
-	}
+	// @UseGuards(WsAuthGuard)
+	// @SubscribeMessage ("logout")
+	// async logout (client: Socket) {
+	// 	console.log ("logout");
+	// 	client.leave (client.data.id.toString ());
+	// 	const room = this.server.adapter.rooms.get (client.data.id.toString ());
+	// 	if (!room) {
+	// 		await this.onlineService.setOnline (client.data.id, false);
+	// 	}
+	// }
 
-	@UseGuards(WsAuthGuard)
-	@SubscribeMessage ("login")
-	async login (client: Socket) {
-		await this.onlineService.setOnline (client.data.id, true);
-		client.join (client.data.id.toString ());
-	}
+	// // @UseGuards(WsAuthGuard)
+	// @SubscribeMessage ("login")
+	// async login (client: Socket) {
+	// 	console.log ("login");
+	// 	await this.onlineService.setOnline (client.data.id, true);
+	// 	client.join (client.data.id.toString ());
+	// }
 }

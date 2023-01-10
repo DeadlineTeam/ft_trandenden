@@ -50,7 +50,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (!idtosockets)
 				this.userIdToSocket.set (client.data.id, [])
 			this.userIdToSocket.get(client.data.id).push (client);
-			console.log ("chat socket");
 		}
 		catch (e) {
 			client.disconnect ();
