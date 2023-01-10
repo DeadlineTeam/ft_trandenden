@@ -49,6 +49,10 @@ export default function ProtectedLayout() {
 					username: res.data.username
 				})
 				onlineSocket.disconnect ();
+
+				// connect to the socket
+				// check if it is connected 
+
 				onlineSocket.connect ();
 
 				chatSocket.disconnect ();
@@ -56,8 +60,12 @@ export default function ProtectedLayout() {
 
 				gameSocket.disconnect ();
 				gameSocket.connect ();
+
+				// check if the socket is connected
 				console.log ("-------> login");
-				onlineSocket.emit ("login");
+				
+				
+				// onlineSocket.emit ("login");
 
 				
 
@@ -89,11 +97,14 @@ export default function ProtectedLayout() {
 			navigate ("/login");
 		})
 		
+		
+
 		return () => {
-			onlineSocket.emit ("logout");
-			onlineSocket.off ('update');
-			onlineSocket.off ("notification");
-			onlineSocket.off ("logout");
+			// onlineSocket.emit ("logout");
+			onlineSocket.disconnect ();
+			// onlineSocket.off ('update');
+			// onlineSocket.off ("notification");
+			// onlineSocket.off ("logout");
 		}
 	}, [])
 
