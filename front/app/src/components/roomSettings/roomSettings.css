@@ -1,161 +1,75 @@
-.container {
-    font-family: "Gill Sans", sans-serif;
-    font-size: 20px;
-    margin: auto;
-    margin-top: 5%;
-    width: 60%;
-    height: 60%;
-    outline: auto 10px black;
-    background-color: #192125;
-    /* Center vertically and horizontally */
-    color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 5%;
+.RoomSettingss1{
+    position: absolute;
+    width :100%;
+    height : 100%;
+    margin :auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.5);
+    
+    z-index: 99;
+}
+.RoomSettingss{
+    position: absolute;
+    width :50%;
+    height : 400px;
+    margin :auto;
+    border-radius: 15px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #191919;
+    z-index: 100;
 }
 
-.child1 {
-    position: relative;
-    margin-left: 5%;
-    margin-top: 3%
-}
 
-.child2 {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 1%;
-}
+.child6SelectMembers2 {
 
-.membersWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 100px;
-    align-items: center;
-}
-
-.child3 {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.child4 {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.membersWrapperElements {
-    outline: auto 10px white;
-    border-radius: 4px;
+    position: absolute;
+    border-radius: 5px;
+    background-color: #293135;
     padding: 5px;
-    width: 500px;
-    height: 200px;
+    width: 60%;
+    height: 250px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 500;
     overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
+}
+.child6SelectMembers2::-webkit-scrollbar{    background-color: 192125;
+    border-radius: 5px;
+    width: 2px;
+    height: 6px;
+}
+.exit{
+    position: absolute;
+    background: none;
+    left:90%;
+    top:2em;
+    border: none;
+    cursor: pointer;
+    
     
 }
-.membersWrapperElements1 {
-    outline: auto 10px white;
-    border-radius: 4px;
-    padding: 5px;
-    width: 500px;
-    height: 200px;
-    overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-
-.user {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-}
-
-.user button {
+.membeR button {
     display: block;
     position: relative;
-    margin-left: 30%;
-}
-
-.user button img {
-    width: 20px;
-    height: 20px;
+    margin-left: 5%;
     cursor: pointer;
 }
-
-.user:hover {
-    background-color: grey;
-}
-
-.userImg {
-    width: 32px;
-    height: 32px;
-    border-radius: 50px;
-    object-fit: cover;
-    margin-right: 20px;
-    border: 1px solid white ;
-}
-
-.userName {
-    font-weight: 500;
-    color: whitesmoke;
-}
-
-.child5 {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 1%;
-}
-
-.child5Cancel,.child5Save {
-    outline: auto 10px white;
-    border-radius: 4px;
-    width: 10%;
-    text-align: center;
-}
-
-.btn {
-    display: block;
-    position: relative;
-	width: 100%;
-    background-color: #192125;
+.exiticon{
     color: white;
-    font-family: "Gill Sans", sans-serif;
-    font-size: 20px;
-    cursor: pointer;
+    height: 2em;
+    width: 2em;
 }
-
-.roomMembers {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20%;
-}
-
-.roomMembersImg {
-    width: 32px;
-    height: 32px;
-    border-radius: 50px;
-    object-fit: cover;
-    margin-right: 20px;
-    border: 1px solid white ;
-}
-
-.optionsWrapper {
-    display: flex;
-    flex-direction: row;
-}
-
-.optionsWrapper img {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+.settititle{
+    position: absolute;
+    color: white;
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: large;
+    width: 150px;
+    top: 30px;
+    left: calc(50% - 75px);
 }

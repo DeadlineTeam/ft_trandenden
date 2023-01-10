@@ -13,7 +13,7 @@ import { IoSettingsSharp } from 'react-icons/io5'
 import  { FaLock } from 'react-icons/fa'
 import { MdGroups } from 'react-icons/md';
 import { GiPrivate } from 'react-icons/gi';
-
+import RoomSettingss from '../roomSettings/RoomSettingss'
 import { UserContext } from '../ProtectedLayout';
 
 import '../../pages/Chat.css';
@@ -218,20 +218,7 @@ type RoomProps = {
 }
   
 const Room = (props: RoomProps) => {
-	const [settings, showSettings] 	= useState(false);
-	const user 						= useContext(UserContext);
-
-
-	useEffect (() => {
-		axios.get (`http://localhost:3001/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
-		.then ((res) => {
-			if (res.data === 'OWNER' || res.data === 'ADMIN') {
-				showSettings(true);
-			}
-		}).catch ((e) => {
-			showSettings(false);
-		})
-	}, [])
+	const [open , seTopen] = useState(false)
 
 	const LeaveRoom = () => {
 		axios.post (`http://localhost:3001/room/leave/${props.id}`, {}, {withCredentials: true})
@@ -242,6 +229,9 @@ const Room = (props: RoomProps) => {
 		})
 	}
 
+	const RoomSettings1 = ()=>{
+		seTopen(true);
+	}
 	const RoomSettings = () => {
 
 	}
@@ -259,7 +249,12 @@ const Room = (props: RoomProps) => {
 				<span className="availableRoomName">
 					{props.name}
 				</span>
-				{ settings && <button onClick={RoomSettings}> <IoSettingsSharp/></button> }
+				<button onClick={RoomSettings1}> <IoSettingsSharp/></button>
+				{open == true && (
+					<RoomSettingss close= {seTopen}/>
+					)
+				}
+
 				<button onClick={LeaveRoom}><GiExitDoor className="settingsButton"/></button>
 			</div>
 		</div>
