@@ -9,7 +9,7 @@ import {TbArrowsJoin2} from 'react-icons/tb';
 import {IoMdAddCircle} from 'react-icons/io';
 
 type RoomSearchProps = {
-	roomid: number;
+	id: number;
 	name: string;
 	visibility: string;
 	createDate: string;
@@ -24,22 +24,14 @@ type SearchProps = {
 
 
 
-const Room = () => {
+const Room = (props: RoomSearchProps) => {
 	const [password, setPassword] = useState ('');
-	const [availablerooms, setAvailablerooms] = useState(Array<any>());
-	useEffect(()=>{
-		axios.get('http://localhost:3001/room/available', {withCredentials :true})
-		.then((response)=>{
-			console.log(response.data);
-			setAvailablerooms(response.data);
-		})
-	})
 	const po="Sadasdsa";
-	const joinRoom = (allo:number) => {
-		axios.post (`http://localhost:3001/room/join/${allo}`, {password: password}, { withCredentials: true })
+	const joinRoom = () => {
+		axios.post (`http://localhost:3001/room/join/${props.id}`, {password: password}, { withCredentials: true })
 		.then ( () => {
-			toast.success (`successfully joined ${allo}`)
-			//props.refresh ();
+			toast.success (`successfully joined ${props.name}`)
+			props.refresh ();
 		}).catch (e => {
 			toast.error (e.response.data.message)
 		})
@@ -50,26 +42,16 @@ const Room = () => {
 	}
 
 	return (
-		<div>
-			{
-				availablerooms.map((value, index)=>{
-					return(
-						<div className={index%2 === 0? "room0": "room1"}>
-						<div>
-							<p className='roomname'>{value.roomname}</p>
-						</div> 
-						{value.roomvisibility === 'PROTECTED' &&  <FaLock className='publicicon'/>}
-						{value.roomvisibility === 'PUBLIC' && <MdGroups className='publicicon'/>}
-						{value.roomvisibility === 'PROTECTED' && value.notMembers == false && <input  className ="inputprotected"placeholder="pass..." type="password" name="password" onChange={getPassword}/>}
-						{value.notMembers == false &&(
-						<div className="roomJoin">
-							<button className = "butttton" onClick={()=>joinRoom(value.id)}><TbArrowsJoin2 className='joinbutt'/></button>
-						</div>)
-						}
-					</div>
-					)
-				})
-			}
+		<div className={props.bg === 0? "room0": "room1"}>
+			<div>
+				<p className='roomname'>{props.name}</p>
+			</div> 
+			{props.visibility === 'PROTECTED' &&  <FaLock className='publicicon'/>}
+			{props.visibility === 'PUBLIC' && <MdGroups className='publicicon'/>}
+			{props.visibility === 'PROTECTED' && <input  className ="inputprotected"placeholder="pass..." type="password" name="password" onChange={getPassword}/>}
+			<div className="roomJoin">
+				<button className = "butttton"onClick={joinRoom}><TbArrowsJoin2 className='joinbutt'/></button>
+			</div>
 		</div>
 
 	)
@@ -108,7 +90,7 @@ const RoomSearch = (props: SearchProps) => {
 						 </button>
 				</div>
 			</div>
-				<Room/>
+				{rooms && rooms.map((room, index) => <Room {...room} key={index} bg={index % 2} refresh={updateComp}/> )}
 		</div>
 
 	)
