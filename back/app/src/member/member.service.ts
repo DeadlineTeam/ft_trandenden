@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { ROLE } from '@prisma/client';
+import { OnlineService } from 'src/online/online.service';
 
 const mappedType = (role: string) => {
 	switch (role) {
@@ -19,7 +20,10 @@ const mappedType = (role: string) => {
 
 @Injectable()
 export class MemberService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly online: OnlineService,
+	) {}
 
 	
 	async addMember(roomId: number, userId: number) {
@@ -32,6 +36,7 @@ export class MemberService {
 					role: ROLE.USER
 				}
 			});
+			this.online.broadcast ("update", "join", userId, roomId);
 		}
 		return member;
 	}

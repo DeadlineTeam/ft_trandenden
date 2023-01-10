@@ -49,6 +49,7 @@ const SidebarMenu = styled.div<{ close: boolean }>`
     {
         width:100%;
     }
+
 `
 
 const MenuItems = styled.li`
