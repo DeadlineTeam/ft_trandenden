@@ -73,6 +73,7 @@ const GameInvite = (props: UserId) => {
 	const navigate = useNavigate();
 
 	const inviteToGame = () => {
+		console.log ('invite to game', props.id);
 		const url = `http://localhost:3001/game/invite/${props.id}`
 		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
 			navigate(`/Game?invite=${response.data.gameId}`)
@@ -215,11 +216,25 @@ type RoomProps = {
 	visibility: string;
 	setChatZoneId: (id: number) => void;
 }
-
+  
 const Room = (props: RoomProps) => {
+	const [settings, showSettings] 	= useState(false);
+	const user 						= useContext(UserContext);
+
+
+	useEffect (() => {
+		axios.get (`http://localhost:3001/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
+		.then ((res) => {
+			if (res.data === 'OWNER' || res.data === 'ADMIN') {
+				showSettings(true);
+			}
+		}).catch ((e) => {
+			showSettings(false);
+		})
+	}, [])
 
 	const LeaveRoom = () => {
-		axios.post (`http://localhost:3001/room/${props.id}/leave`, {}, {withCredentials: true})
+		axios.post (`http://localhost:3001/room/leave/${props.id}`, {}, {withCredentials: true})
 		.then ((res) => {
 			toast ('you left the room')
 		}).catch ((e) => {
@@ -228,6 +243,7 @@ const Room = (props: RoomProps) => {
 	}
 
 	const RoomSettings = () => {
+
 	}
 
 	const setChatZoneId = () => {
@@ -243,7 +259,7 @@ const Room = (props: RoomProps) => {
 				<span className="availableRoomName">
 					{props.name}
 				</span>
-				<button onClick={RoomSettings}> <IoSettingsSharp/></button>
+				{ settings && <button onClick={RoomSettings}> <IoSettingsSharp/></button> }
 				<button onClick={LeaveRoom}><GiExitDoor className="settingsButton"/></button>
 			</div>
 		</div>
@@ -528,9 +544,8 @@ const Chat = () => {
 	
 	
 	useEffect (() => {
-		console.log ("fetch");
 		axios.get ('http://localhost:3001/room/myrooms', {withCredentials: true}).then ((res) => {
-			let tmp: number | null = null;
+			setRoomIdToMsgs(new Map());
 			for (const room of res.data) {
 				if (room.visibility === 'DM') {
 					const splits = room.name.split('-');
@@ -551,9 +566,6 @@ const Chat = () => {
 								});
 								return prev;
 							})
-							// if (chatZoneId === null)
-							// 	setChatZoneId (room.id);
-								// tmp = room.id;
 							setDone (prev => !prev);
 						})
 					})
@@ -572,8 +584,6 @@ const Chat = () => {
 							});
 							return prev;
 						})
-						// if (chatZoneId === null)
-						// 	setChatZoneId (room.id);
 						setDone (prev => !prev);
 					})
 				}

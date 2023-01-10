@@ -51,6 +51,7 @@ export class MemberService {
 	}
 
 	async deleteMember(roomId: number, userId: number) {
+		this.online.broadcast ("update", "leave", userId, roomId);
 		return await this.prisma.memberShip.deleteMany({
 			where: {
 				roomId: roomId,

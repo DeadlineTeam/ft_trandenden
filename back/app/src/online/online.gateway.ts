@@ -46,13 +46,11 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	
-	// @UseGuards(WsAuthGuard)
 	async handleDisconnect(client: Socket) {
 		
 		const wsAuthGuard = new WsAuthGuardConnect(this.authService, this.userService);
 		try {
 			await wsAuthGuard.canActivate (client);
-			console.log ("shutdown");
 			client.leave (client.data.id.toString ());
 			const room = this.server.adapter.rooms.get (client.data.id.toString ());
 			if (!room) {
@@ -69,7 +67,6 @@ export class OnlineGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("logout")
 	async logout (client: Socket) {
-		console.log ("logout");
 		client.leave (client.data.id.toString ());
 		const room = this.server.adapter.rooms.get (client.data.id.toString ());
 		if (!room) {
