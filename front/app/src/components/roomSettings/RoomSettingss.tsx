@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import "./RoomSettings.css"
+import "./roomSettings.css"
 import axios from "axios"
 import { AiOutlinePlusSquare } from 'react-icons/ai'
 import { AiOutlineMinusSquare } from 'react-icons/ai'
