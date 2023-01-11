@@ -15,6 +15,7 @@ import { MdGroups } from 'react-icons/md';
 import { GiPrivate } from 'react-icons/gi';
 import RoomSettingss from '../roomSettings/RoomSettingss'
 import { UserContext } from '../ProtectedLayout';
+import {BiSend} from 'react-icons/bi'
 
 import '../../pages/Chat.css';
 import '../availableRooms/Rooms.css';
@@ -60,7 +61,7 @@ const OnlineStatus = (props: UserId) => {
 
 	return (
 		<div>
-			{online ? <HiStatusOnline className='gameicon'/> : <HiStatusOffline className='gameicon'/>}
+			{online ? <HiStatusOnline className='onlinestatus'/> : <HiStatusOffline className='onlinestatus'/>}
 		</div>
 	)
 }
@@ -203,6 +204,7 @@ const FriendZone = (props: AvatarToConvoPointers) => {
 			<div className="onlineFriendsTitle">
 				Friends
 			</div>
+			<hr className="rmline"></hr>
 			<div className="onlineFriendsWrapper">
 				{friends.map((friend) => <Friend {...friend} key={friend.id}/>)}
 			</div>
@@ -264,9 +266,9 @@ const Room = (props: RoomProps) => {
 				<span className="availableRoomName">
 					{props.name}
 				</span>
-				{settings && <button onClick={RoomSettings1}> <IoSettingsSharp/></button>}
+				{settings && <button className="Settingsbutt" onClick={RoomSettings1}> <IoSettingsSharp className="settingsbut"/></button>}
 				{open == true && (<RoomSettingss close= {seTopen} id={props.id}/>)}
-				<button onClick={LeaveRoom}><GiExitDoor className="settingsButton"/></button>
+				<button className="leavebutt"onClick={LeaveRoom}><GiExitDoor className="leaveroom"/></button>
 			</div>
 		</div>
 	)
@@ -301,6 +303,7 @@ const RoomZone = (props: AvatarToConvoPointers) => {
 			<div className="availableRoomsTitle">
 				Rooms
 			</div>
+			<hr className="rmline1"></hr>
 			<div className="availableRoomsWrapper">
 				{rooms.map((room) => <Room {...room} key={room.id}/>)}
 			</div>
@@ -360,11 +363,25 @@ type MessageProps = {
 
 const Message = (props: MessageProps) => {
 	return (
-		<div className="message own">
-			<div className="messageTop">
-				<img className="messageImg" src={props.avatar}/>
-				<p className="messageText" >{props.content}</p>
+		<div>
+		{ props.ownMsg == true && (
+			<div className="message own1">
+				<div className="messageTop">
+					<img className="messageImg" src={props.avatar}/>
+					<p className="messageText" >{props.content}</p>
+				</div>
 			</div>
+		)
+		}
+		{ props.ownMsg == false && (
+			<div className="message own">
+				<div className="messageTop">
+					<p className="messageText" >{props.content}</p>
+					<img className="messageImg1" src={props.avatar}/>
+				</div>
+			</div>
+		)
+		}
 		</div>
 	)
 }
@@ -376,19 +393,23 @@ type SendMessageProps = {
 const SendMessage = (props: SendMessageProps) => {
 	const [message, setMessage] = useState ('');
 	const chatSocket = useContext(chatSocketContext);
+	const [value, setValue] = useState("");
 	
 	const saveMessage = (event: any) => {
 		setMessage(event.target.value)
+		setValue(event.target.value)
 	}
 	const sendMessage = () => {
 		if (message !== '') {
 			chatSocket.emit('message', {roomId: props.roomId, content: message})
+			setValue("");
 		}
+		setValue("");
 	}
 	return (
 		<div className="chatZoneBottom">
-			<textarea className="chatZoneInput" placeholder="write a text...." onChange={saveMessage}></textarea>
-			<button className="chatZoneSubmitButton" onClick={sendMessage}><img className="chatZoneSubmitButtonImg" src={require(`../../send.png`)} alt="send" /></button>
+			<textarea className="chatZoneInput"  value={value} placeholder="write a text...." onChange={saveMessage}></textarea>
+			<button className="chatZoneSubmitButton" onClick={sendMessage}><BiSend className="chatZoneSubmitButtonImg"/></button>
 		</div>
 	)
 }
@@ -516,6 +537,7 @@ const ConvoZone = (props: ConvoZoneProps) => {
 				<div className="recentMessagesTitle">
 					Messages
 				</div>
+				<hr className="rmline"></hr>
 				<div>
 					{conversation}
 				</div>

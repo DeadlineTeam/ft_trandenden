@@ -5,23 +5,23 @@
 .availableRoom {
     display: flex;
     align-items: center;
-    font-weight: 500;
+    font-weight: 700;
     cursor: pointer;
     margin-top: 20px;
-    justify-content: space-between;
 }
 
 .availableRoomImgContainer {
     position: relative;
+    color: white;
     margin-right: 10px;
+    margin-left: 20px;
 }
 
 .availableRoomImg {
-    width: 32px;
-    height: 32px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid white ;
 }
 
 .availableRoomName {
@@ -36,12 +36,33 @@
     border: 1px solid white ;
 }
 
-
-.Room .settingsButton {
-    display: none;
+.Settingsbutt{
+    margin-left: 30px;
+    background-color: none;
+    background: none;
+    border: none;
+    
 }
-
-.Room:hover .settingsButton {
+.settingsbut{
+    background: none;
+    background-color: none;
+    border: none;
+    width: 1.5em;
+    height: 1.5em;
+    color: #192125;
+}
+.Room .leaveroom {
+    display: none;
+    color: white;
+    width: 1.5em;
+    height: 1.5em;
+    
+}
+.leavebutt{
+    background: none;
+    border: none;
+}
+.Room:hover .leaveroom {
     display: inline;
     cursor: pointer;
 }
