@@ -291,16 +291,16 @@ export class RoomService {
 		const result = res.map((room) => {
 			if (room.users.length === 0) {
 				return {
-					roomid: room.id,
-					roomname: room.name,
-					roomvisibility: room.visibility,
+					id: room.id,
+					name: room.name,
+					visibility: room.visibility,
 					member: false,
 				}
 			}
 			return {
-				roomid: room.id,
-				roomname: room.name,
-				roomvisibility: room.visibility,
+				id: room.id,
+				name: room.name,
+				visibility: room.visibility,
 				member: true,
 			}
 		})

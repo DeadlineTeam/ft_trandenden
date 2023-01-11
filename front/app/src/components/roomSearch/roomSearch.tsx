@@ -8,95 +8,96 @@ import {FaLock} from 'react-icons/fa';
 import {TbArrowsJoin2} from 'react-icons/tb';
 import {IoMdAddCircle} from 'react-icons/io';
 
-type RoomSearchProps = {
-	roomid: number;
-	name: string;
-	visibility: string;
-	createDate: string;
-	bg: number;
-	refresh: () => void;
+type RoomProps = {
+	id				: number;
+	name			: string;
+	visibility		: string;
+	member			: boolean;
+	index			: boolean;
+	refresh			: () => void;
+}
+
+
+
+const Room = (props: RoomProps) => {
+	const [password, setPassword] = useState ('');
+
+
+	const joinRoom = (allo:number) => {
+		axios.post (`http://localhost:3001/room/join/${props.id}`, {password: password}, { withCredentials: true })
+		.then ( () => {
+			toast.success (`successfully joined ${props.name}`)
+			props.refresh ();
+		}).catch (e => {
+			toast.error (e.response.data.message)
+		})
+	}
+	
+	const getPassword = (e: any) => {
+		setPassword (e.target.value);
+	}
+	
+	return (
+
+		<div className={props.index? "room0": "room1"}>
+			<div>
+				<p className='roomname'>{props.name}</p>
+			</div>
+			{ props.visibility === 'PROTECTED' &&  <FaLock className='publicicon'/>}
+			{ props.visibility === 'PUBLIC' && <MdGroups className='publicicon'/>}
+			{ props.visibility === 'PROTECTED' && props.member == false && <input  className ="inputprotected" placeholder="pass..." type="password" name="password" onChange={getPassword}/>}
+			{ props.member == false && (
+				<div className="roomJoin">
+					<button className = "butttton" onClick={()=>joinRoom(props.id)}><TbArrowsJoin2 className='joinbutt'/></button>
+				</div>
+			)}
+		</div>
+
+	)
 }
 
 type SearchProps = {
 	handleCreateRoom: () => void;
 }
 
-
-
-
-const Room = () => {
-	const [password, setPassword] = useState ('');
-	const [availablerooms, setAvailablerooms] = useState(Array<any>());
-	useEffect(()=>{
-		axios.get('http://localhost:3001/room/available', {withCredentials :true})
-		.then((response)=>{
-			console.log(response.data);
-			setAvailablerooms(response.data);
-		})
-	})
-	const po="Sadasdsa";
-	const joinRoom = (allo:number) => {
-		axios.post (`http://localhost:3001/room/join/${allo}`, {password: password}, { withCredentials: true })
-		.then ( () => {
-			toast.success (`successfully joined ${allo}`)
-			//props.refresh ();
-		}).catch (e => {
-			toast.error (e.response.data.message)
-		})
-	}
-
-	const getPassword = (e: any) => {
-		setPassword (e.target.value);
-	}
-
-	return (
-		<div>
-			{
-				availablerooms.map((value, index)=>{
-					return(
-						<div className={index%2 === 0? "room0": "room1"}>
-						<div>
-							<p className='roomname'>{value.roomname}</p>
-						</div> 
-						{value.roomvisibility === 'PROTECTED' &&  <FaLock className='publicicon'/>}
-						{value.roomvisibility === 'PUBLIC' && <MdGroups className='publicicon'/>}
-						{value.roomvisibility === 'PROTECTED' && value.notMembers == false && <input  className ="inputprotected"placeholder="pass..." type="password" name="password" onChange={getPassword}/>}
-						{value.notMembers == false &&(
-						<div className="roomJoin">
-							<button className = "butttton" onClick={()=>joinRoom(value.id)}><TbArrowsJoin2 className='joinbutt'/></button>
-						</div>)
-						}
-					</div>
-					)
-				})
-			}
-		</div>
-
-	)
-}
-
-
 const RoomSearch = (props: SearchProps) => {
-	const [searchValue, setSearchValue] = useState('');
-	const [rooms, setRooms] = useState<RoomSearchProps []> ();
+	const [searchValue, setSearchValue] 		=	useState('');
+	const [rooms, setRooms] 					=	useState<RoomProps []> ([]);
+	const [filteredRooms, setFilteredRooms] 	=	useState<RoomProps []> ([]);
 	const [update, setUpdate] = useState (false);
 
+	const loadRooms = () => {
+		axios.get('http://localhost:3001/room/available', {withCredentials :true})
+		.then((response) => {
+			console.log (response.data)
+			setRooms ([]);
+			setFilteredRooms ([]);
+			response.data.forEach ((room: any, index: number) => {
+				setRooms (prev => [...prev, room]);
+				setFilteredRooms (prev => [...prev, room]);
+			})
+		})
+	}
+
+
 	useEffect (() => {
-		search ();
-	}, [update, searchValue])
+		loadRooms ();
+		setSearchValue ('');
+		console.log ('rooms reloads')
+	}, [update])
+	
+	useEffect (() => {
+		if (searchValue !== '')
+			setFilteredRooms (rooms.filter (room => room.name.toLowerCase ().includes (searchValue.toLowerCase ())));
+		else
+			setFilteredRooms (rooms);	
+	}, [searchValue])
+
 
 	const updateComp = () => {
 		setUpdate (!update);
 	}
 
-	const search = () => {
-		axios.get (`http://localhost:3001/room/search/${searchValue}`, { withCredentials: true })
-		.then ( (res) => {
-			setRooms (res.data);
-		}).catch ( (e) => {
-			setRooms ([])
-		})
-	}
 
 	return (
 		<div className="roomSearch">
@@ -105,10 +106,14 @@ const RoomSearch = (props: SearchProps) => {
 				<div className="roomSearchCreateRoom">
 					<button className='Buttoncreat' onClick={props.handleCreateRoom}>
 						<IoMdAddCircle className='creatbutton'/>
-						 </button>
+					</button>
 				</div>
 			</div>
-				<Room/>
+			<>
+			{
+				filteredRooms.map ((room, index) => <Room {...room} refresh={updateComp} index={index%2 == 0}/> )
+			}
+			</>	
 		</div>
 
 	)
