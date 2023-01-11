@@ -29,7 +29,7 @@ export class RoomService {
 		private readonly user: UsersService) {}
 
 	async create(createRoomDto: CreateRoomDto, ownerId: number) {
-		console.log (createRoomDto);
+
 		if (createRoomDto.name === undefined || createRoomDto.name === '') {
 			throw new HttpException (`Room name is required`, 400);
 		}

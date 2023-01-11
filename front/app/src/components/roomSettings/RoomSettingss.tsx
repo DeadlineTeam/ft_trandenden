@@ -13,6 +13,8 @@ import {BsFillTrashFill} from 'react-icons/bs'
 import {RiAdminFill} from 'react-icons/ri'
 import { UserContext } from '../ProtectedLayout'
 
+import { toast } from 'react-toastify';
+
 
 type UserDto = {
 	id				: number;
@@ -28,6 +30,7 @@ type memberDto = {
 	muteTime		:	number;
 	banned			:	boolean;
 	user			:	UserDto;
+	close			:	React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Member = (props: memberDto) => {
@@ -57,7 +60,8 @@ const Member = (props: memberDto) => {
 	const handleKick = () => {
 		axios.delete (`http://localhost:3001/member/${props.roomId}/${props.user.id}/delete`, { withCredentials: true, })
 		.then ((response) => {
-			console.log ("deleted")
+			toast (`${props.user.username} is kicked successfully`)
+			props.close (false);
 		}).catch ((e) => {
 			console.log (e);
 		})
@@ -145,7 +149,7 @@ const RoomSettingss = (props : RoomSettingsProps) => {
 				{
 					members.map ((member) => {
 						if (member.user.id !== user?.user.id )
-							return <Member {...member} key={member.id}/>
+							return <Member {...member} key={member.id} close={props.close}/>
 					})
 				}		
 			</div>
