@@ -28,11 +28,12 @@ export class GameHistoryService {
 	private playerRank(level: number): number
 	{
 		if (level < 1)
-			return 0;
-		if (level < 3)
 			return 1;
+		if (level < 3)
+			return 2;
 		if (level < 5)
 			return 2;
+		return 3
 	}
 
 	rankAvatar(rank: number): string
