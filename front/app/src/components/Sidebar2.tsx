@@ -9,6 +9,7 @@ import axios from 'axios'
 import './Sb.css'
 import { useNavigate } from 'react-router-dom';
 import {BiLogOut} from 'react-icons/bi'
+import {GrClose} from 'react-icons/gr'
 
 
 const Navbar = styled.div`
@@ -43,6 +44,12 @@ const SidebarMenu = styled.div<{ close: boolean }>`
     top: 0;
     left: ${({ close }) => close ? '0' : '-100%'};
     transition: .6s;
+    z-index:1000;
+    @media(max-width : 700px)
+    {
+        width:100%;
+    }
+
 `
 
 const MenuItems = styled.li`
@@ -91,15 +98,23 @@ type props = {
 }
 const Sidebar2 = ({ placeholder, data }: props) => {
     const [truedata, setTrudata] = useState(Array<any>())
+    const [search, setSerach] = useState(false);
     const [close, setClose] = useState(false)
     const showSidebar = () => setClose(!close)
     const [filtredData, setFiltredData] = useState(Array<any>());
     const len: Number = filtredData.length;
+    const [value, setValue]= useState("");
     const navigate = useNavigate ();
     let op: Number;
+     const clearfilter =() =>{
+        setFiltredData([])
+        setValue("");
+        setSerach(false);
 
+     }
     const handleFilter = (event: React.FormEvent & { target: HTMLInputElement }) => {   
         const url3 = "http://localhost:3001/users/all"
+        setValue(event.target.value);
         axios.get(url3, { withCredentials: true }).then((response2) => {
             setTrudata(response2.data)
         })
@@ -112,15 +127,26 @@ const Sidebar2 = ({ placeholder, data }: props) => {
             console.log(searchWord.length)
             if (searchWord.length == 0) {
                 setFiltredData([]);
+                setSerach(false);
             }
             else
+            {
+                setSerach(true);
                 setFiltredData(newfilter);
+            }
     }
     const handlLogOut = () =>{
         axios.get("http://localhost:3001/profile/logout", {withCredentials: true}).then((response) =>{
             navigate ('/login');
       	})
+    
 
+    }
+    const handlesearch = ()=>{
+        console.log("im hereeee")
+        setValue("");
+        setSerach(false);
+        setFiltredData([])
     }
     return (
 
@@ -132,10 +158,17 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                 <div className='searchbar'>
 
                     <div className="searchInputs">
-                        <input type="text" placeholder={placeholder} onChange={handleFilter} />
-                        <div className='searchicon'>
+                        <input type="text" value={value} placeholder={placeholder} onChange={handleFilter} />
+                        {search ==false &&(<div className='searchicon'>
                             <AiOutlineSearch />
-                        </div>
+                        </div>)}
+                        {
+                            search == true &&(
+                                <div className='searchicon'>
+                            <GrClose onClick={clearfilter} />
+                         </div>
+                            )
+                        }
                     </div>
 
                     {filtredData.length != 0 &&
@@ -143,7 +176,7 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                             <div className="dataInputs">
                                 {filtredData.map((value, key) =>
                                 <Link to={"profile/"+value.username}>
-                                    <p className='dataitem'>
+                                    <p onClick={handlesearch}  className='dataitem'>
                                         {value.username}
                                     </p>
                                 </Link>
@@ -158,10 +191,10 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                 </MenuIconClose>
                 {Sidebardata.map((item, index) => {
                     return (
-                        <MenuItems key={index}>
+                        <MenuItems  key={index}>
                             <MenuItemLinks to={item.path}>
                                 {item.icon}
-                                <span style={{ marginLeft: '30px' }}>{item.name}</span>
+                                <span  style={{ marginLeft: '30px' }}>{item.name}</span>
                             </MenuItemLinks>
                         </MenuItems>
                     )

@@ -105,6 +105,8 @@ export class UsersService {
 				username: true,
 				level: true,
 				winrate: true,
+				win: true,
+				loss: true,
 				games: {
 					select: {
 						result: true,

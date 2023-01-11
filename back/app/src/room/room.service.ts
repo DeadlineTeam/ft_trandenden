@@ -29,7 +29,7 @@ export class RoomService {
 		private readonly user: UsersService) {}
 
 	async create(createRoomDto: CreateRoomDto, ownerId: number) {
-		console.log (createRoomDto);
+
 		if (createRoomDto.name === undefined || createRoomDto.name === '') {
 			throw new HttpException (`Room name is required`, 400);
 		}
@@ -64,10 +64,12 @@ export class RoomService {
 			}
 		});
 		await this.member.addMember(room.id, ownerId);
-		await this.member.setRole(room.id, ownerId, ROLE.OWNER);
+		await this.member.setRole(room.id, ownerId, "owner");
 		for (const user of createRoomDto.users) {
-			if (user !== ownerId)
+			if (user !== ownerId) {
 				await this.member.addMember(room.id, user);
+				await this.member.setRole (room.id, user, "admin")
+			}
 		}
 		return {id: room.id, name: room.name, visibility: room.visibility};
 	}
@@ -123,6 +125,23 @@ export class RoomService {
 		}
 	}
 
+	async findDM (senderId: number, receiverId: number) {
+		if (senderId === receiverId) {
+			throw new HttpException (`Cannot create DM with yourself`, 400);
+		}
+		const receiverIdExists = await this.user.findById(receiverId);
+		if (!receiverIdExists) {
+			throw new HttpException (`User with id ${receiverId} does not exist`, 400);
+		}
+		let DMroom = await this.findByname (`DM-${senderId}-${receiverId}`);
+		DMroom = DMroom || await this.findByname (`DM-${receiverId}-${senderId}`);
+		if (DMroom) {
+			return DMroom;
+		}
+		return null;
+	}
+	
+
 	async findByname(name: string) {
 		const room = await this.prisma.room.findFirst({
 			where: {
@@ -152,7 +171,7 @@ export class RoomService {
 		}
 		if (room.visibility === VISIBILITY.PROTECTED) {
 			if (password === undefined || password === '') {
-				throw new HttpException (`Room with id ${roomId} is protected`, 400);
+				throw new HttpException (`${room.name} require a password`, 400);
 			}
 			const pass = await bcrypt.compare (password, room.passwd);
 			if (!pass) {
@@ -205,5 +224,86 @@ export class RoomService {
 			)
 		}
 		return roomsDto;
+	}
+
+
+
+	async searchByName (userId: number, name: string) {
+		// when the name starts with name
+		// and check if the user is a member of the room
+		// and include the membership of the user in the room
+		const rooms = await this.prisma.room.findMany({
+			where: {
+				name: {
+					startsWith: name,
+					mode: 'insensitive',
+				},
+				visibility: {
+					not: {
+						in: [VISIBILITY.DM, VISIBILITY.PRIVATE],
+					}
+				},
+				users: {
+					none: {
+						userId: userId,
+					}
+				}
+			},
+			select: {
+				id: true,
+				name: true,
+				visibility: true,
+				createdAt: true,
+			}
+		});
+		return rooms;
+	}
+
+	async acessUserCanAcess (userId: number) : Promise<any[]>
+	{
+		const myrooms = await this.prisma.room.findMany({
+			where: {
+				visibility: {
+					not: {
+						in: [VISIBILITY.DM, VISIBILITY.PRIVATE],
+					}
+				},
+				users: {
+					none: {
+						userId: userId,
+						banned: true,
+					}
+				},
+			},
+			select : {
+				id: true,
+				name: true,
+				visibility: true,
+				users: true,
+			}
+		});
+		const res = myrooms.map((room) => {
+			return {
+				...room,
+				users: room.users.filter((user) => user.userId == userId),
+			}
+		})
+		const result = res.map((room) => {
+			if (room.users.length === 0) {
+				return {
+					id: room.id,
+					name: room.name,
+					visibility: room.visibility,
+					member: false,
+				}
+			}
+			return {
+				id: room.id,
+				name: room.name,
+				visibility: room.visibility,
+				member: true,
+			}
+		})
+		return result;
 	}
 }

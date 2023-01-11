@@ -31,7 +31,6 @@ export class ChatService {
 			const broadcastTo = await this.member.getMembersIds (message.roomId);
 			const broadcastToUnblocked = broadcastTo.filter (id => !blockedFriends.includes (id));
 			const messageFormated = this.message.messageFormate (newMessage);
-			console.log (broadcastToUnblocked);
 			this.chatGateway.broadcastToRoom ("message", message.roomId, broadcastToUnblocked, messageFormated);
 		}
 	}

@@ -6,15 +6,16 @@ import { createContext, useContext } from 'react';
 import { useEffect, useState } from 'react'
 import { UserContext } from '../components/ProtectedLayout'
 import axios from 'axios'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { array } from 'prop-types';
 import {IoMdPersonAdd} from 'react-icons/io'
 import {ImBlocked} from 'react-icons/im'
 import {CgUnblock} from 'react-icons/cg'
 import { Console } from 'console';
+import { toast } from 'react-toastify';
 const Historitem = styled.div<{close: boolean}>`
 display: flex;
-height: 12%;
+height: 35px;
 position:relative;
 flex-direction: row;
 color: ${({ close}) => close ? '#000' : '#fff'};
@@ -23,7 +24,12 @@ left: 10%;
 margin-top: 2%;
 margin-bottom: 2%;
 background-color: ${({ close}) => close ? '#fff' : '#A3A3A3'};
-`
+@media screen and (max-width: 700px) {
+    /* Styles for small screen sizes go here */
+    width: 80%;
+    height: 20px;
+  }
+`	
 
 const Usernamehis1 = styled.h1<{close: boolean}>`
 position: relative;
@@ -31,13 +37,28 @@ left: 2%;
 font-size: x-small;
 font-weight: 600;
 top:15%;
+@media screen and (max-width: 700px) {
+    /* Styles for small screen sizes go here */
+	font-size: 5px;
+font-weight: 600;
+width:20%;
+  }
 `
 const Usernamehis2 = styled.h1<{close: boolean}>`
-position: relative;
+position: absolute;
 left: 61%;
 font-size: x-small;
 font-weight: 600;
 top:15%;
+@media screen and (max-width: 700px) {
+    /* Styles for small screen sizes go here */
+    position: absolute;
+	left: calc(90% - 20px);
+    height: 20px;	
+		font-size: 5px;
+font-weight: 600;
+width:20%;
+  }
 `
 
 interface iconinfo{
@@ -77,6 +98,7 @@ const Myprofile = () => {
   	const [winrate1, setWinrate] = useState(0)
   	const user = useContext(UserContext)
 	const [render, setRender] = useState (false);
+	const navigate = useNavigate();
 
   	useEffect(()=>{
     	var stri = window.location.pathname.split("/",3)[2];
@@ -90,21 +112,27 @@ const Myprofile = () => {
 			setUsername(response.data.username)
 			setFriendship(response.data.friendship)
 			setId(response.data.id)
-      	})
+      	}).catch(()=>{
+			navigate("/Notfound")
+		})
       	
 		const url3 = "http://localhost:3001/profile/gameHistory"
       	axios.post(url3, {username: stri},{withCredentials: true}).then((response2) =>{
      		setMaphistory(response2.data)
-      	})
+      	}).catch(error=>{
+			setMaphistory([])
+		})
       
 		const url4 = "http://localhost:3001/profile/stats"
       	axios.post(url4, {username: stri},{withCredentials: true}).then((response3) =>{
 			setStats (response3.data)
 			setWin(response3.data.win)
 			setLose(response3.data.loss)
-			setWinrate(response3.data.winrate * 100)
+			setWinrate(Math.floor(response3.data.winrate * 100))
 			setTotalgames(response3.data.totalgames)
-      	})
+      	}).catch(error=>{
+			
+		})
     },[location.pathname, render])
 
 
@@ -125,6 +153,18 @@ const Myprofile = () => {
 		const url4 = "http://localhost:3001/"
 		axios.post(`${url4}friend/${id}/unblock`, {},{withCredentials: true}).then((response2) =>{
 			setRender (!render);
+		})
+	}
+
+
+	////// invite to game button for testing
+	////// remove it later
+	const inviteToGame = () => {
+		const url = `http://localhost:3001/game/invite/${id}`
+		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
+			navigate(`/Game?invite=${response.data.gameId}`)
+		}).catch ((error) => {
+			toast (error.response.data.message)
 		})
 	}
 
@@ -168,9 +208,13 @@ return (
     		  <CgUnblock/>
     		</button>)
 			}
+
+
+	
+			
+			
 			<img className='Profileimg' src={myimage} />
 			<p className='name'>{name}</p>
-			<p className='nickname'>#{nickname}</p>
 			<div className='levelbar'>
 			<Progress_bar progress={levelbar} />
 			</div>
@@ -210,19 +254,18 @@ return (
 		<div className='matchhistory1'>
 			{maphistory.map((value)=>{
 				return(
-						<div className='matchhistoryp'>
-							<Historitem close={true}>
+							<Historitem close={true} className="Historitem">
 								<img className='user1img' src={value.player1.avatar}/>
 								<Usernamehis1 close={value.true}>{value.player1.username}</Usernamehis1>
-        						<h2 className='usernamehistory'>level {value.player1.level}</h2>
+        						<h2 className='usernamehistory'>level {Math.floor(value.player1.level)}</h2>
 								<div className='result'>result
 								<h1 className='score'>{value.player1.score} vs {value.player2.score} </h1></div>
 								<img className='user2img' src={value.player2.avatar}/>
 								<Usernamehis2 close={value.Boolean}>{value.player2.username}</Usernamehis2>
-								<h2 className='usernamehistory2'>level {value.player2.level}</h2>
+								<h2 className='usernamehistory2'>level { Math.floor(value.player2.level)}</h2>
 					
 							</Historitem> 
-						</div>
+
 					  )}) }
 		</div>  
 </div>     

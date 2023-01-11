@@ -10,3 +10,53 @@
     font-family: 'Merriweather Sans', sans-serif;
     margin: auto;
 }
+@media(max-width : 700px)
+{
+    .gamechoice{
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        margin-top: 3%;
+        width: 100%;
+        gap: 20px;
+        height: 100%;
+    }
+    .mode {
+        width:100%;
+        height: 50%;
+        margin-left: 6.5%;
+        border-radius: 10%;
+    
+    }
+    .modeImg{
+        position: absolute;
+        border-radius: 10%;
+        width:100%;
+        height: calc(50% - 10px);
+    }
+
+.modebg{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    top :0%;
+    border-radius: 10%;
+    background-color: rgba(0, 0, 0, 0.5)
+}
+.gamechoose h1 {
+	margin: auto;
+	font-style: italic;
+	margin-top: 3%;
+	color: white;
+	font-size: small;
+}
+.modename{
+    position: absolute;
+    top :80%;
+    left: 50%;
+    font-style: italic;
+    font-size: small;
+    font-weight: 500;
+    color: white;
+}
+}

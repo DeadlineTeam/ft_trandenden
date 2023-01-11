@@ -15,13 +15,10 @@ export class MessageService {
 
 	messageFormate (message: any) {
 		return {
-			messageId: message.messageId,
-			roomId: message.roomId,
-			senderId: message.senderId,
-			senderUserName: message.sender.username,
-			senderAvatar: message.sender.avatar_url,
-			content: message.content,
-			sentTime: message.sentTime,
+			roomId		: message.roomId,
+			senderId	: message.senderId,
+			avatar		: message.sender.avatar_url,
+			content		: message.content,
 		};
 	}
 	async getRoomMessages(userId: number, roomId: number) {
@@ -52,6 +49,28 @@ export class MessageService {
 			}
 		}
 		return filteredMessages.map(this.messageFormate);
+	}
+	async getRoomUserMessages (userId:number, roomId:number, userID:number) {
+		const member = await this.member.getMember(roomId, userID);
+		if (!member) {
+			throw new HttpException('User is not a member of the room', 403);
+		}
+		const messages = await this.prisma.message.findMany({
+			where: {
+				roomId: roomId,
+				senderId: userID,
+			},
+			select: {
+				senderId:true,
+				sentTime:true,
+				content:true,
+			},
+			orderBy: {
+				sentTime: 'asc',
+			}
+		});
+
+		return messages;
 	}
 
 	async newMessage (senderId: number, message: CreateMessageDto) {
@@ -97,7 +116,13 @@ export class MessageService {
 				},
 			},
 			include: {
-				sender: true,
+				sender: {
+					select: {
+						username: true,
+						avatar_url: true,
+						id: true,
+					}
+				}
 			}
 		})
 		return newMessage;

@@ -1,14 +1,26 @@
-import React from 'react'
 import CreateRoom from '../components/createRoom/createRoom'
-import RoomSettings from '../components/roomSettings/roomSettings'
+import RoomsSearch from '../components/roomSearch/roomSearch'
+import { useState } from 'react'
+
 
 const Rooms = () => {
-  return (
-    <>
-      {/* <CreateRoom/> */}
-      <RoomSettings/>
-    </>
-  )
+	const [visibleComponent, setVisibleComponent] = useState('RoomSearch')
+
+	const handleCancel = () => {
+		setVisibleComponent('RoomSearch')
+	}
+
+	const handleCreateRoom = () => {
+		setVisibleComponent('CreateRoom')
+	}
+	
+	return (
+		<>
+			{visibleComponent === 'RoomSearch' && <RoomsSearch handleCreateRoom={handleCreateRoom}/>}
+			{visibleComponent === 'CreateRoom' && <CreateRoom handleCancel={handleCancel}/>}
+		
+		</>
+	)
 }
 
 export default Rooms

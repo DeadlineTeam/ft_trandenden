@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { ROLE } from '@prisma/client';
+import { OnlineService } from 'src/online/online.service';
 
 const mappedType = (role: string) => {
 	switch (role) {
@@ -19,7 +20,10 @@ const mappedType = (role: string) => {
 
 @Injectable()
 export class MemberService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly online: OnlineService,
+	) {}
 
 	
 	async addMember(roomId: number, userId: number) {
@@ -32,6 +36,7 @@ export class MemberService {
 					role: ROLE.USER
 				}
 			});
+			this.online.broadcast ("update", "join", userId, roomId);
 		}
 		return member;
 	}
@@ -46,6 +51,7 @@ export class MemberService {
 	}
 
 	async deleteMember(roomId: number, userId: number) {
+		this.online.broadcast ("update", "leave", userId, roomId);
 		return await this.prisma.memberShip.deleteMany({
 			where: {
 				roomId: roomId,
@@ -63,6 +69,21 @@ export class MemberService {
 		return await this.prisma.memberShip.findMany({
 			where: {
 				roomId: roomId
+			},
+			select: {
+				id: true,
+				roomId: true,
+				role: true,
+				muted: true,
+				muteTime: true,
+				banned: true,
+				user: {
+					select: {
+						id: true,
+						username: true,
+						avatar_url: true,
+					}
+				}
 			}
 		});
 	}
@@ -99,9 +120,6 @@ export class MemberService {
 
 	async muteUser(roomId: number, userId: number) {
 		const member = await this.getMember(roomId, userId);
-		if (member?.role === ROLE.OWNER || member?.role === ROLE.ADMIN) {
-			throw new HttpException('Cannot mute owner or admin', 400);
-		}
 		if (member?.muted === true) {
 			throw new HttpException('User is already muted', 400);
 		}
@@ -160,4 +178,27 @@ export class MemberService {
 		return members.map (member => member.userId);
 	}
 
+	async banUser (roomId: number, userId: number) {
+		return await this.prisma.memberShip.updateMany ({
+			where: {
+				roomId: roomId,
+				userId: userId
+			},
+			data: {
+				banned: true
+			}
+		})
+	}
+
+	async unbanUser (roomId: number, userId: number) {
+		return await this.prisma.memberShip.updateMany ({
+			where: {
+				roomId: roomId,
+				userId: userId
+			},
+			data: {
+				banned: false
+			}
+		})
+	}
 }

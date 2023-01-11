@@ -6,6 +6,7 @@ import { UpdateUserNameDto } from 'src/users/dto/updateUsername.dto';
 import { Response as Res} from 'express';
 import {FriendService} from 'src/friend/friend.service';
 import {Request as Req} from 'express';
+import { OnlineService } from 'src/online/online.service';
 
 @Injectable()
 export class ProfileService {
@@ -13,6 +14,7 @@ export class ProfileService {
 		private gameHistory: GameHistoryService,
 		private users: UsersService,
 		private friend: FriendService,
+		private readonly online: OnlineService
 		) {}
 	
 	async getIconInfo(username: UpdateUserNameDto, user: any) {
@@ -40,7 +42,8 @@ export class ProfileService {
 		return await this.gameHistory.usergamerHistory(username);
 	}
 
-	async logout(res: Res) {
+	async logout(res: Res, userId: number) {
+		this.online.logout(userId);
 		return this.users.logout(res);
 	}
 }

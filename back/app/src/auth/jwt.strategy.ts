@@ -27,12 +27,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-	console.log("playload == ", payload);
 	if (payload == null)
 		throw new UnauthorizedException();
-	const username = (await this.usersService.findById(payload.sub)).username;
-	if (username == null)
+	const user = (await this.usersService.findById(payload.sub));
+	
+	if (user == null)
 		throw new UnauthorizedException();
-    return { userId: payload.sub, isTauth: payload.isTwoFactorAuthenticated, username: username };
+    return { userId: payload.sub, isTauth: payload.isTwoFactorAuthenticated, username: user.username };
   }
 }

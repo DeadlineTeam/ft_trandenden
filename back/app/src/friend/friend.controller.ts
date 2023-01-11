@@ -28,5 +28,14 @@ export class FriendController {
 	async getallfriends (@Req () req) {
 		return this.friendService.getall (req.user.userId);
 	}
+	@Get('/:Id/get')
+	async getfriendinfo(@Req () req, @Param('Id', ParseIntPipe) Id:number) {
+		return this.friendService.getfriend(req.user.userId, Id);
+	}
+
+	@Get('/:Id/DM')
+	async getDM(@Req () req, @Param('Id', ParseIntPipe) Id:number) {
+		return this.friendService.getDM(req.user.userId, Id);
+	}
 }
 

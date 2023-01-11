@@ -15,23 +15,37 @@ const TwoFaCode = () => {
         isComplete(false)
         console.log(value)
       }
+    const handlecancel = () =>{
+      navigate("/login")
+    }
       const handlecode = (event:any) =>{
         event.preventDefault();
-        console.log("valuuuuuue", value) 
+        
         axios.post("http://localhost:3001/2fa/authenticate",{"twofasecret": value},{withCredentials: true})
         .then((response) =>{
-          console.log("respooooone");
           navigate("/Home")
           })
         .catch(error=>{
-          console.log("errrrrroooor");
-          
             navigate("/login")
         })  
       }
     useEffect(()=>{
         if(value.length == 6)
             isComplete(true)
+    })
+    useEffect(()=>{
+      async function  Ciali() {
+        // const axiosapi = axiosApi ();
+        axios.get('http://localhost:3001/getUser', {
+          withCredentials: true,
+        }).then((data)=> {
+          navigate("/Notfound");
+          // navigate("/");
+        }).catch((err) => {
+          
+        });
+      }
+      Ciali();
     })
   return (
     
@@ -43,7 +57,7 @@ const TwoFaCode = () => {
                     <ReactInputVerificationCode autoFocus={true} placeholder='' value={value} onChange={handlevalue}  length={6} />
                   </div>
                 <div className='footer'>
-                  <button className='cancelButton'>Cancel </button>
+                  <button className='cancelButton' onClick={handlecancel}>Cancel </button>
                   <button className='continueButton' disabled={complete ? false:true} onClick={handlecode} >Continue </button>
                 </div>
             </div>

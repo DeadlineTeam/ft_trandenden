@@ -70,8 +70,9 @@ export class GameService {
 	
 	async Matching (queue: Array<Socket>, mode: string): Promise<void> {
 
-		let pSockets: Array<Socket> = [] 
+		let pSockets: Array<Socket> = []
 		for (let i = 0; i < queue.length - 1; i++) {
+			console.log (queue[i]);
 			if (queue[i].data.id !== queue[i + 1].data.id) {
 				pSockets = queue.splice (i, 2);
 				delete queue [i];
@@ -89,7 +90,8 @@ export class GameService {
 		}
 	}
 
-	async joinQueue (socket: Socket, mode: string) {	
+	async joinQueue (socket: Socket, mode: string) {
+		this.onlineService.setInGame (socket.data.id, true);
 		socket.emit ('leftPlayer', socket.data)
 		this.queues[mode].push (socket)
 		this.Matching (this.queues[mode], mode);
@@ -99,6 +101,7 @@ export class GameService {
 		const match = this.matches.get (id)
 		if (match) {
 			match.addWatcher (socket);
+			this.onlineService.setInGame (socket.data.id, true);
 			const event = {
 					leftPlayer: match.game.players[0].socket.data,
 					rightPlayer: match.game.players[1].socket.data 
@@ -117,28 +120,57 @@ export class GameService {
 		for (const match of this.matches.values ()) {
 			for (const p of match.game.players) {
 				if (p.socket.data.id === id)
-					return match;
+					return { match, type: "player" };
+			}
+			for (const p of match.game.watchers) {
+				if (p.data.id === id)
+					return { match, type: "watcher" };
 			}
 		}
+		return null;
 	}
 
+
 	leaveMatch (socket: Socket): void {
-		const match: Pong = this.findMatch (socket);
-		if (match) {
-			GameService.emitRoom (match, "end");
-			this.matches.delete (match.id);
-			this.LiveGameBroadcast ();
-			const anothermatch = this.findMatchById (socket.data.id);
-			const inqueue = 
-				this.queues.Normal.find ((s) => s.data.id === socket.data.id) ||
-				this.queues.Ultimate.find ((s) => s.data.id === socket.data.id);
-			if (!inqueue && !anothermatch) {
-				this.onlineService.setInGame (socket.data.id, false);
+		const matchAndType = this.findMatch (socket);
+		if (matchAndType) {
+			const match = matchAndType.match;
+			const type = matchAndType.type;
+			if (type === "player") {
+				match.game.players.forEach ((p) => {
+					this.onlineService.setInGame (p.socket.data.id, false);
+				})
+				match.game.watchers.forEach ((w) => {
+					this.onlineService.setInGame (w.data.id, false);
+				})
+				GameService.emitRoom (match, "end");
+				this.matches.delete (match.id);
+				this.LiveGameBroadcast ();
+			}
+			else if (type === "watcher") {
+				match.game.watchers.forEach ((w, i) => {
+					if (w.id === socket.id) {
+						this.onlineService.setInGame (socket.data.id, false);
+						match.game.watchers.splice (i, 1);
+					
+					}
+				})
 			}
 		}
 		else {
-			this.queues.Normal = this.queues.Normal.filter ((s) => s.id !== socket.id)
-			this.queues.Ultimate = this.queues.Ultimate.filter ((s) => s.id !== socket.id)
+			
+			this.queues.Normal.forEach ((s, i) => {
+				if (s.id === socket.id) {
+					this.queues.Normal.splice (i, 1);
+					this.onlineService.setInGame (socket.data.id, false);
+				}	
+			})
+			this.queues.Ultimate.forEach ((s, i) => {
+				if (s.id === socket.id) {
+					this.queues.Ultimate.splice (i, 1);
+					this.onlineService.setInGame (socket.data.id, false);
+				}
+			})
 		}
 		for (const match of this.matchesWithInvites.values ()) {
 			const players = match.game.players;
@@ -146,25 +178,31 @@ export class GameService {
 				if (p.socket.id === socket.id) {
 					p.socket.emit ("end");
 					this.matchesWithInvites.delete (match.id);
+					this.onlineService.setInGame (p.socket.data.id, false);
 				}
 			})
 		}
 	}
 	
-	findMatch (client: Socket): Pong {
+	findMatch (client: Socket): {match: Pong, type: "player" | "watcher"} {
 		for (const match of this.matches.values ()) {
 			if (match.isPlaying (client))
-				return match;
+				return {match, type: "player"};
+			if (match.isWatching (client))
+				return {match, type: "watcher"};
 		}
 		return null;
 	}
 
 	handleInput (client: Socket, data: string): void {
-		const match: Pong = this.findMatch (client);
-		if (match) {
-			const side: SIDE = (match.game.players[SIDE.LEFT].socket.id === client.id)? SIDE.LEFT: SIDE.RIGHT;
-			match.handleInput (side, data)
-			GameService.emitRoom (match, "paddle", side, match.game.players[side].paddle.position)
+		const match_and_type = this.findMatch (client);
+		if (match_and_type) {
+			const match = match_and_type.match;
+			if (match_and_type.type === "player") {
+				const side: SIDE = (match.game.players[SIDE.LEFT].socket.id === client.id)? SIDE.LEFT: SIDE.RIGHT;
+				match.handleInput (side, data)
+				GameService.emitRoom (match, "paddle", side, match.game.players[side].paddle.position)
+			}
 		}
 	}
 
@@ -216,6 +254,11 @@ export class GameService {
 						player2Score: game.players[1].score,
 						gameMode: mode == "Ultimate"? "ULTIMATE": "CLASSIC",
 				});
+				this.onlineService.setInGame (game.players[0].socket.data.id, false);
+				this.onlineService.setInGame (game.players[1].socket.data.id, false);
+				for (const watcherSocket  of game.watchers) {
+					this.onlineService.setInGame (watcherSocket.data.id, false);
+				}
 				this.LiveGameBroadcast ();
 				break;
 			}
@@ -226,42 +269,19 @@ export class GameService {
 	}
 
 	async invite (inviterId: number, invitee: number) {
-		// check if the userId is online
-		// and not in a match
-		// create a match and send the gameId to both the players
-		// for the requester as post request response
-		// for the invitee as a notification with the gameId
-		// if the invitee accepts the invitation by clicking on accept button
-		// he will be redirected to the game page /Game?accept=gameId
-		// if he clicked on cancel button, he will send a post request to
-		// /game/reject/:gameId and the inviter needs to be removed from the match
-		// and the match needs to be deleted
-		// else if the invitee does not respond within 30 seconds, the match needs to be deleted
-		// and the inviter needs to be notified that the invitee did not respond
-		// if the invitee accepts the invitation, he needs to be redirected to /Game?accept=gameId
-
 		const user = await  this.userService.findById (invitee);
 		const inviter = await this.userService.findById (inviterId);
 
 		if (!user) {
 			throw new HttpException ('User not found', HttpStatus.NOT_FOUND);
 		}
-		// const online = await this.userService.getOnlineStatus (invitee);
-		// if (!online.online) {
-		// 	throw new HttpException ('User is not online', HttpStatus.NOT_FOUND);
-		// }
-		// const inGame = await this.userService.getInGameStatus (invitee);
-		// console.log ("status --->", invitee, inGame, online)
-		// if (inGame) {
-		// 	throw new HttpException ('User is in a game', HttpStatus.BAD_REQUEST);
-		// }
 
 		const status = await this.userService.getStatus (invitee);
 		if (!status.online) {
 			throw new HttpException ('User is not online', HttpStatus.NOT_FOUND);
 		}
 		if (status.inGame) {
-			throw new HttpException ('User is in a game', HttpStatus.BAD_REQUEST);
+			throw new HttpException (`${user.username} playing or watching a game`, HttpStatus.BAD_REQUEST);
 		}
 
 		// let's try to create a match
@@ -285,9 +305,6 @@ export class GameService {
 		const match = this.matchesWithInvites.get (gameId);
 		if (!match) {
 			socket.emit ("end");
-			// send a notification to the requester that
-			// the invitee did not respond
-			//
 			return;
 		}
 		else {
@@ -307,6 +324,9 @@ export class GameService {
 			}
 			if (match.game.players.length === 2) {
 				this.matches.set (match.id, match);
+				match.game.players.forEach ((p) => {
+					this.onlineService.setInGame (p.socket.data.id, true);
+				})
 				this.matchesWithInvites.delete (match.id);
 				this.LiveGameBroadcast ();
 			}
@@ -314,6 +334,7 @@ export class GameService {
 	}
 
 	decline (gameId: string) {
+		console.log ("decline", gameId)
 		const match = this.matchesWithInvites.get (gameId);
 		if (match) {
 			const inviterSocket = match.game.players[0].socket;

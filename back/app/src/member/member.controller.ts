@@ -19,35 +19,23 @@ export class MemberController {
 
 	
 	@UseGuards(ExistanceGuard)
-	@UseGuards(RolesGuard)
 	@Get('/:roomId/:userId/get')
 	getMember(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.getMember(roomId, userId);
 	}
 
-	@UseGuards(ExistanceGuard)
-	@UseGuards (RolesGuard)
-	@Roles('OWNER', 'ADMIN')
-	@Delete ('/:roomId/:userId/delete')
-	deleteMember(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
-		return this.memberService.deleteMember(roomId, userId);
-	}
-
-	@UseGuards(ExistanceGuard)
-	@UseGuards(RolesGuard)
+	
 	@Get('/:roomId/:userId/role')
 	getRole(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.getRole(roomId, userId);
 	}
-
-	@UseGuards(RolesGuard)
+	
 	@Get ('/:roomId/all')
 	getAllMembers(@Param('roomId', ParseIntPipe) roomId: number) {
 		return this.memberService.getAllMembers(roomId);
 	}
 
 
-	@UseGuards(RolesGuard)
 	@Get ('/:roomId/owner')
 	getOwner(@Param('roomId', ParseIntPipe) roomId: number) {
 		return this.memberService.getOwner(roomId);
@@ -75,4 +63,27 @@ export class MemberController {
 	unmuteUser(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.memberService.unmuteUser(roomId, userId);
 	}
+	
+	@UseGuards(ExistanceGuard)
+	@Roles ('OWNER', 'ADMIN')
+	@Post ('/:roomId/:userId/ban')
+	banUser (@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
+		return this.memberService.banUser(roomId, userId);
+	}
+	
+	@UseGuards(ExistanceGuard)
+	@Roles ('OWNER', 'ADMIN')
+	@Post ('/:roomId/:userId/unban')
+	unbanUser (@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
+		return this.memberService.unbanUser(roomId, userId);
+	}
+	
+	@UseGuards(ExistanceGuard)
+	@UseGuards (RolesGuard)
+	@Roles('OWNER', 'ADMIN')
+	@Delete ('/:roomId/:userId/delete')
+	deleteMember(@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
+		return this.memberService.deleteMember(roomId, userId);
+	}
+	
 }

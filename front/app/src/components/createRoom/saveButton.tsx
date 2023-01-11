@@ -1,18 +1,10 @@
 import React from 'react'
 import './createRoom.css'
 
-const SaveButton = ({ handleSubmit, formIsFilled }: { handleSubmit: (e:any) => void, formIsFilled: () => boolean}) => {
-    const handleSave = (e:any) => {
-        e.preventDefault();
-        if (formIsFilled()) {
-            handleSubmit(e);
-        } else {
-            console.log("form not fully filled");
-        }
-    }
+const SaveButton = ({ handleSubmit }: { handleSubmit: (e:any) => void}) => {
     return (
         <div className="child7Save">
-            <button className="btn" type="submit" onClick={handleSave}>
+            <button className="btn1" type="submit" onClick={handleSubmit}>
               <p>Save</p>
             </button>
         </div>

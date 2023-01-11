@@ -3,7 +3,6 @@ import ProtectedLayout from './components/ProtectedLayout';
 import { BrowserRouter , Routes, Route} from 'react-router-dom';
 import DashBoard from './pages/DashBoard';
 import Home from './pages/Home';
-import Chat from './pages/Chat';
 import Rooms from './pages/Rooms';
 import Myprofile from './pages/Myprofile';
 import Settings from './pages/Settings';
@@ -11,8 +10,9 @@ import Login from "./pages/Login"
 import GameComponent from './components/game/game';
 import './App.css';
 import TwoFaCode from './pages/TwoFaCode';
+import Notfound from './pages/Notfound';
 
-
+import Chat  from './components/ChatRefactoring/chat';
 
 const App:React.FC = () => {
 
@@ -31,7 +31,7 @@ const App:React.FC = () => {
         		<Route path="/profile/:id"element={<Myprofile/>}/>
         		<Route path="/Settings"element={<Settings/>}/>
 				<Route path="/Game" element= {<GameComponent/>}/>
-				<Route path="*" element={<div>404</div>} />
+				<Route path="*" element={<Notfound/>} />
 			</Route>
 			
 			

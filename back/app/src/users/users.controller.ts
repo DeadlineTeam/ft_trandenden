@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, UploadedFile, UseGuards, Request} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UploadedFile, UseGuards, Request, ParseIntPipe} from '@nestjs/common';
 import { UsersService} from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UserDto } from './dto/User.dto';
@@ -48,8 +48,19 @@ export class UsersController {
 		return req.user.username;
 	}
 
+	@Get("id")
+	async getId(@Request() req) {
+		return req.user.userId;
+	}
+
 	@Get('all')
 	async getAllUsers(@Request() req) {
 		return await this.userService.getAllUsers(req.user.userId);
 	}
+
+	@Get('/:Id/online')
+	async isOnline(@Param('Id', ParseIntPipe) Id: number) {
+		return await this.userService.getStatus(Id);
+	}
+
 }

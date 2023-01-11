@@ -1,0 +1,85 @@
+.match{
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+}
+.usernamehistory{
+
+    position: absolute;
+    left: 7%;
+    top: 55%;
+    font-size: xx-small;
+    font-weight: 200;
+}
+.user11img{
+    position: relative;
+    height: 100%;
+    width: 5%;
+}
+.result{
+    position: absolute;
+    flex-direction: column;
+    width: 20%;
+    left:40%;
+    text-align: center;
+    align-items: center;
+    font-size: xx-small;
+    font-weight: 200;
+    height: 100%;
+}
+.score1{
+    position: absolute;
+    font-size: xx-small;
+    align-items: center;
+    left: 50%;
+    top: 45%;
+}
+.user21img{
+    position: relative;
+    height: 100%;
+    width: 5%;
+    left: 80%;
+}
+.matchhistory{
+    height: 70%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.matchhistory{
+    position: relative;
+    flex-direction: column;
+    top: 60%;
+    height: 40%;
+    width: 100%;
+}
+
+.matchhistory::-webkit-scrollbar{
+    display: none;
+  }
+.usernamehistory2{
+    position: absolute;
+    left: 82.5%;
+    top: 55%;
+    font-size: xx-small;
+    font-weight: 200;
+}
+.user1img{
+    position: relative;
+    height: 100%;
+    width: 5%;
+}
+.usernamehistory{
+
+    position: absolute;
+    left: 7%;
+    top: 55%;
+    font-size: xx-small;
+    font-weight: 200;
+}
+h1 {
+	margin: auto;
+	font-style: italic;
+	margin-top: 3%;
+	color: white;
+	font-size: large
+}

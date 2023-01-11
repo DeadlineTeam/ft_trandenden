@@ -2,12 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { FRIENDSHIPSTATUS } from '@prisma/client'
+import { RoomService } from 'src/room/room.service';
 
 @Injectable()
 export class FriendService {
 	constructor (
 		private readonly prisma: PrismaService,
 		private readonly user: UsersService,
+		private readonly room: RoomService
 	) {}
 
 	// add a friend to the user
@@ -46,6 +48,7 @@ export class FriendService {
 				AcceptorId: userId,
 			}
 		});
+		await this.room.createDM (userId, friendId);
 	}
 
 	async add (userId: number, friendId: number) {
@@ -170,6 +173,21 @@ export class FriendService {
 			friendDto.push ({...friend.Acceptor})
 		}
 		return friendDto;
+	}
+
+	async getDM (userId: number, friendId: number) {
+		return await this.room.findDM (userId, friendId);
+	}
+
+	async getfriend (userId: number, friendId: number) {
+		const friend = await this.user.findById(friendId)
+		if (!friend)
+			throw new HttpException ("no friend with that id exist", HttpStatus.BAD_REQUEST)
+		return {
+			id: friend.id,
+			username: friend.username,
+			avatar: friend.avatar_url
+		}
 	}
 
 	async getStatus (userId: number, friendId: number) {

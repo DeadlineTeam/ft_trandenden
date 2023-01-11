@@ -33,7 +33,7 @@ export class ProfileController {
 	}
 
 	@Get('logout')
-	async logout(@Response() res: Res) {
-		await this.profile.logout(res);
+	async logout(@Request () req, @Response() res: Res) {
+		await this.profile.logout(res, req.user.userId);
 	}
 }
