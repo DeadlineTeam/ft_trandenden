@@ -9,6 +9,7 @@ import Faca from '../components/Faca';
 import Faca1 from '../components/Faca1'
 import axios from 'axios'
 import Faca2 from '../components/Faca2'
+import {AiFillCloseCircle} from 'react-icons/ai'
 const StyledLabel = styled.label<{ checked: boolean }>`  
 cursor: pointer;  
 text-indent: -9999px;  
@@ -56,7 +57,8 @@ const dataUrlToBlob = (dataurl: string): Blob => {
 
 const Settings = () => {
 
-  const [authen, setAuth] = useState(false)
+
+  const [valid, setValid] = useState(false)
   var [username1, setUsername] = useState("");
   const [avatarurl, setAvatarurl] = useState("")
   const [img, setImg] = useState("");
@@ -111,14 +113,17 @@ const Settings = () => {
     e.preventDefault();
     const url3 = "http://localhost:3001/users/username"
     axios.post(url3, { username: name }, { withCredentials: true }).then((response2) => {
-    }).then().catch((err)=> {
-      
+    }).then(()=>{
+      console.log("username work")
+      setUpdated(!updated)
+    }).catch((err)=> {
+      console.log("username error")
+      setValid(true);
 
     })
   }
-  console.log(openmodel)
-  console.log("im here")
-  console.log(openmodel1)
+
+  console.log(valid)
   return (
     <div> 
       <h1 style={{ padding: "20px 20px", fontSize: "25px", color: "white", fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: "400" }}>Settings</h1>
@@ -137,6 +142,16 @@ const Settings = () => {
           {openmodel1 && <Faca1 closemodel={setOpenmodel1} openmodel2={setOpenmodel2}  ssucces={setSucces} settoggled={setToggled} />}
           {openmodel2 && <Faca2 closemodel={setOpenmodel2} ssucces={success} />}
           <button type='submit' onSubmit={handlesubmit} className='input-submit'> Sauvegarder</button>
+          {valid == true && (
+            <div className="invalidusername"> 
+              <div className="invalidusername1">
+                Invalide UserName
+              </div>
+              <button className='closebuttt' onClick={() =>{setValid(false)}}>
+                  <AiFillCloseCircle className='closeicc'/>
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>
