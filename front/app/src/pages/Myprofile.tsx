@@ -12,6 +12,9 @@ import {IoMdPersonAdd} from 'react-icons/io'
 import {ImBlocked} from 'react-icons/im'
 import {CgUnblock} from 'react-icons/cg'
 import { Console } from 'console';
+import rank1 from '../output-onlinepngtools1.png'
+import rank2 from '../output-onlinepngtools2.png'
+import rank3 from '../output-onlinepngtools.png'
 import { toast } from 'react-toastify';
 const Historitem = styled.div<{close: boolean}>`
 display: flex;
@@ -244,6 +247,12 @@ return (
 				</div>
 				<div className='rank'>
 					<h1 className='rankhead'>RANK</h1>
+					<div className='Rankranks'>
+					<img className='ranking' src={rank1}/>
+					<img className='ranking' src={rank2}/>
+					</div>
+					<img className='ranking1' src={rank3}/>
+					
 				</div>
 			</div>
 		</div>

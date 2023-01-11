@@ -107,9 +107,13 @@ const Settings = () => {
 
     }
   }
-  const handlesubmit = () => {
+  const handlesubmit = (e:any) => {
+    e.preventDefault();
     const url3 = "http://localhost:3001/users/username"
     axios.post(url3, { username: name }, { withCredentials: true }).then((response2) => {
+    }).then().catch((err)=> {
+      
+
     })
   }
   console.log(openmodel)
