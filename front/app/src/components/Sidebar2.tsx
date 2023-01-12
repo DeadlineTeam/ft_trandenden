@@ -113,7 +113,7 @@ const Sidebar2 = ({ placeholder, data }: props) => {
 
      }
     const handleFilter = (event: React.FormEvent & { target: HTMLInputElement }) => {   
-        const url3 = "http://localhost:3001/users/all"
+        const url3 = `${process.env.REACT_APP_BACK_URL}/users/all`
         setValue(event.target.value);
         axios.get(url3, { withCredentials: true }).then((response2) => {
             setTrudata(response2.data)
@@ -136,7 +136,7 @@ const Sidebar2 = ({ placeholder, data }: props) => {
             }
     }
     const handlLogOut = () =>{
-        axios.get("http://localhost:3001/profile/logout", {withCredentials: true}).then((response) =>{
+        axios.get(`${process.env.REACT_APP_BACK_URL}/profile/logout`, {withCredentials: true}).then((response) =>{
             navigate ('/login');
       	})
     

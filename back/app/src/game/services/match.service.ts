@@ -27,7 +27,7 @@ export class Pong {
 						x: Math.random(),
 						y: Math.random()
 					} ,
-					speed: 0.006,
+					speed: 0.008,
 				}
 			}
 		}

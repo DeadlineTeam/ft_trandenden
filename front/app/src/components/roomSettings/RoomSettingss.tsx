@@ -40,7 +40,7 @@ const Member = (props: memberDto) => {
 	const [admin, setAdmin]		= useState(props.role === 'ADMIN')
 	
 	const handlemute = () =>{
-		axios.post (`http://localhost:3001/member/${props.roomId}/${props.user.id}/${mute ? 'unmute': 'mute'}`, {}, { withCredentials: true, })
+		axios.post (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/${mute ? 'unmute': 'mute'}`, {}, { withCredentials: true, })
 		.then ((response) => {
 		}).catch ((e) => {
 		})
@@ -48,7 +48,7 @@ const Member = (props: memberDto) => {
 	}
 
 	const handleBan = () => {
-		axios.post (`http://localhost:3001/member/${props.roomId}/${props.user.id}/${ban ? 'unban': 'ban'}`, {}, { withCredentials: true, })
+		axios.post (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/${ban ? 'unban': 'ban'}`, {}, { withCredentials: true, })
 		.then ((response) => {
 
 		}).catch ((e) => {
@@ -58,7 +58,7 @@ const Member = (props: memberDto) => {
 	}
 
 	const handleKick = () => {
-		axios.delete (`http://localhost:3001/member/${props.roomId}/${props.user.id}/delete`, { withCredentials: true, })
+		axios.delete (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/delete`, { withCredentials: true, })
 		.then ((response) => {
 			toast (`${props.user.username} is kicked successfully`)
 			props.close (false);
@@ -124,7 +124,7 @@ const RoomSettingss = (props : RoomSettingsProps) => {
 	const user					= useContext (UserContext)
 	
 	useEffect (() => {
-		axios.get (`http://localhost:3001/member/${props.id}/all`, { withCredentials: true, })
+		axios.get (`${process.env.REACT_APP_BACK_URL}/member/${props.id}/all`, { withCredentials: true, })
 		.then ((response) => {
 			response.data.forEach ((member: memberDto) => {
 				setMembers (members => [...members, member])

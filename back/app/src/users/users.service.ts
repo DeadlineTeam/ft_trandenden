@@ -40,7 +40,7 @@ export class UsersService {
 	async addUserAuth(profile: any): Promise<User> {
 		const res = this.prisma.user.create({
 			data: {
-				link: `localhost:3000/profile/${profile.username}`,
+				link: `${process.env.FRONTEND_URL}/profile/${profile.username}`,
 				login: profile.username,
 				fortytwoid: Number(profile.id),
 				avatar_url: profile._json.image.link,
@@ -54,8 +54,8 @@ export class UsersService {
 	async updateAvatar(id: number, filePath: string): Promise<any> {
 		console.log(id);
 		console.log(filePath)
-		console.log(await this.prisma.user.update({ where: { id }, data: { avatar_url: `http://localhost:3001/${filePath}` }, }));
-		return { avatar_url: `http://localhost:3001/${filePath}` };
+		console.log(await this.prisma.user.update({ where: { id }, data: { avatar_url: `${process.env.BACKENDURL}/${filePath}` }, }));
+		return { avatar_url: `${process.env.BACKENDURL}/${filePath}` };
 	}
 
 	async getStats(username: UpdateUserNameDto): Promise<any> {
@@ -135,7 +135,7 @@ export class UsersService {
 			},
 			data: {
 				username: updateUserNameDto.username,
-				link: `localhost:3000/profile/${updateUserNameDto.username}`,
+				link: `${process.env.FRONTENDURL}/profile/${updateUserNameDto.username}`,
 			},
 		})
 		return res;

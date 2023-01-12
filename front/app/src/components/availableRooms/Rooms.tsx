@@ -9,7 +9,7 @@ const Room = (props:any) => {
       }
     const handleClick = async () => {
         try {
-            const res = await axios.get(`http://localhost:3001/message/${props.roomId}`, { withCredentials: true })
+            const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/message/${props.roomId}`, { withCredentials: true })
             const topBarObject = Object.defineProperties({}, {
                 senderAvatar: {
                   value: `../../meeting.png`,

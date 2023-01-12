@@ -19,7 +19,7 @@ export class VersionHeaderInterceptor implements NestInterceptor {
     // if (context.getType() === 'http') {
     const http = context.switchToHttp();
       const response: Response = http.getResponse();
-      response.setHeader('Access-Control-Allow-Origin', "http://localhost:3000");
+      response.setHeader('Access-Control-Allow-Origin', `${process.env.FRONTENDURL}`);
     // }
     return next.handle();
   }
@@ -31,7 +31,7 @@ async function bootstrap() {
 //   app.useStaticAssets(join(__dirname, '..', 'uploads'));
   app.useGlobalInterceptors(new VersionHeaderInterceptor());
   app.enableCors({
-    origin: "http://localhost:3000",
+    origin: `${process.env.FRONTENDURL}`,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["cookie", "Cookie", "authorization", "Authorization", "content-type"],

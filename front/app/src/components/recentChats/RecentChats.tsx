@@ -11,7 +11,7 @@ const RecentChats = (props:any) => {
 
     const handleClick = async () => {
         try {
-            const res = await axios.get(`http://localhost:3001/message/${props.roomId}`, { withCredentials: true })
+            const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/message/${props.roomId}`, { withCredentials: true })
             const topBarObject = Object.defineProperties({}, {
                 senderUserName: {
                   value: ((res.data).filter((r:any) => r.senderId !== props.currentUserId))[0].senderUserName,
@@ -32,7 +32,7 @@ const RecentChats = (props:any) => {
     useEffect(() => {
         const getRoomMembers = async () => {
             try {
-              const res = await axios.get(`http://localhost:3001/member/${props.roomId}/all`, {withCredentials:true})
+              const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/all`, {withCredentials:true})
               const tmp = ((res.data).filter((r:any) => r.userId !== props.currentUserId)).map(({user}:any) => ({user}))[0].user;
               const newObject = Object.fromEntries(Object.entries(tmp).filter(([key]) => key === 'id' || key === 'username' || key === 'avatar_url' || key === 'online' || key === 'inGame'));
               setOther(newObject);
@@ -43,7 +43,7 @@ const RecentChats = (props:any) => {
         getRoomMembers();
         const getRecentMessage = async () => {
             try {
-                const res = await axios.get(`http://localhost:3001/message/${props.roomId}`, {withCredentials:true})
+                const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/message/${props.roomId}`, {withCredentials:true})
                     // too display only the recent message received from the friend
                 // ((res.data).filter((r:any) => r.senderId !== currentUserId)).slice(-1)[0].content
                 setRecentMessage((res.data).slice(-1)[0].content)
