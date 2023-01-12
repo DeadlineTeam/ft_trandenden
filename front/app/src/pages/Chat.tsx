@@ -28,7 +28,7 @@ const Chat = () => {
   useEffect(() => {
     const getCurrentUserId = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/users/id", {withCredentials: true});
+        const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/users/id`, {withCredentials: true});
         setCurrentUserId(res.data)
       } catch (error) {
         console.error(error);
@@ -38,7 +38,7 @@ const Chat = () => {
     
     const getCurrentUsername = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/users/username", {withCredentials: true});
+        const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/users/username`, {withCredentials: true});
         setCurrentUsername(res.data)
       } catch (error) {
         console.error(error);
@@ -48,7 +48,7 @@ const Chat = () => {
     
     const getFriends = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/friend/all", {withCredentials:true});
+        const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/friend/all`, {withCredentials:true});
         setFriends(res.data);
       } catch (error) {
         console.error(error)
@@ -58,7 +58,7 @@ const Chat = () => {
     
     const getRooms = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/room/myrooms", { withCredentials: true });
+        const res = await axios.get(`${process.env.REACT_APP_BACK_URL}/room/myrooms`, { withCredentials: true });
         setRooms((res.data).filter((r:any) => r.visibility !== 'DM'));
         setdmRooms((res.data).filter((r:any) => r.visibility === 'DM'))
       } catch (error) {

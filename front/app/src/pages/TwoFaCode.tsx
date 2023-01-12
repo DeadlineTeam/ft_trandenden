@@ -21,7 +21,7 @@ const TwoFaCode = () => {
       const handlecode = (event:any) =>{
         event.preventDefault();
         
-        axios.post("http://localhost:3001/2fa/authenticate",{"twofasecret": value},{withCredentials: true})
+        axios.post(`${process.env.REACT_APP_BACK_URL}/2fa/authenticate`,{"twofasecret": value},{withCredentials: true})
         .then((response) =>{
           navigate("/Home")
           })
@@ -36,7 +36,7 @@ const TwoFaCode = () => {
     useEffect(()=>{
       async function  Ciali() {
         // const axiosapi = axiosApi ();
-        axios.get('http://localhost:3001/getUser', {
+        axios.get(`${process.env.REACT_APP_BACK_URL}/getUser`, {
           withCredentials: true,
         }).then((data)=> {
           navigate("/Notfound");

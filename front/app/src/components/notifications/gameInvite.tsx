@@ -17,7 +17,7 @@ export function GameInviteNotif (props: GameInviteNotifProps) {
 	useEffect (() => {
 		return () => {
 			if (!action) {
-				axios.post (`http://localhost:3001/game/decline/${props.GameId}`, {}, {
+				axios.post (`${process.env.REACT_APP_BACK_URL}/game/decline/${props.GameId}`, {}, {
 					withCredentials: true
 				})
 			}
@@ -26,7 +26,7 @@ export function GameInviteNotif (props: GameInviteNotifProps) {
 
 	const acceptInvite = (props: GameInviteNotifProps) => {
 		setAction (true);
-		axios.post (`http://localhost:3001/game/accept/${props.GameId}`, {}, {
+		axios.post (`${process.env.REACT_APP_BACK_URL}/game/accept/${props.GameId}`, {}, {
 			withCredentials: true
 		}).then (() => {
 			navigate (`/Game?invite=${props.GameId}`);
@@ -37,7 +37,7 @@ export function GameInviteNotif (props: GameInviteNotifProps) {
 
 	const declineInvite = (props: GameInviteNotifProps) => {
 		setAction (true);
-		axios.post (`http://localhost:3001/game/decline/${props.GameId}`, {}, {
+		axios.post (`${process.env.REACT_APP_BACK_URL}/game/decline/${props.GameId}`, {}, {
 			withCredentials: true
 		})
 	}

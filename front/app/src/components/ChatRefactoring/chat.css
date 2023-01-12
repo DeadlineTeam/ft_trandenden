@@ -1,0 +1,565 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+.message {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    
+}
+
+.messageTop {
+    display: flex;
+}
+
+.messageImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 1px solid white ;
+}  
+
+.messageText {
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #363c40;
+    color: white;
+    max-width: 300px;
+	word-break: break-word;
+}
+
+.messageImg1 {
+    width: 32px;
+    height: 32px;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-left: 10px;
+    border: 1px solid white ;
+}  
+
+.messageText1 {
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #363c40;
+    color: white;
+    max-width: 300px;
+}
+
+.messageBottom {
+    font-size: 12px;
+    margin-top: 10px;
+    color: white;
+}
+
+.message.own {
+    align-items: flex-end;
+    margin-right: 10%;
+}
+.message.own1 {
+    align-items: flex-start;
+    margin-left: 10%;
+}
+
+
+.message.own .messageText{
+    background-color: #6e7274;
+    color: white;
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@200;300;400;500&display=swap');
+.chatApp {
+    font-family:'Montserrat Alternates', sans-serif;
+    font-size: 15px;
+
+    margin: auto;
+    margin-top: 5%;
+    width: 60%;
+    height: 60%;
+    background-color: #192125;
+    display: flex;
+    border: #192125;
+    border-radius: 15px;
+}
+
+.recentMessages {
+	flex : 1.5;
+    overflow-y: scroll;
+	width: 25%;
+    background-color: #53585b;
+    border-radius: 15px 0px 0px 15px;
+}
+
+.recentMessages::-webkit-scrollbar{ 
+    display: none;
+  }
+
+.recentMessagesWrapper .recentMessagesTitle {
+    color: whitesmoke;
+    font-family:'Montserrat Alternates', sans-serif;
+    text-align: center;
+}
+.recentMessagesTitle{
+    position: relative;
+    margin-top: 6%;
+    left: 0;
+
+}
+.test{
+    color: white;
+}
+
+
+.availableRooms {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 30%;
+    gap: 5%;
+}
+
+.availableRoomsTitle {
+    display: flex;
+    
+    color: whitesmoke;
+    font-family:'Montserrat Alternates', sans-serif;
+    justify-content: center;
+}
+
+.availableRoomsWrapper {
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.availableRoomsWrapper::-webkit-scrollbar{
+    display: none;
+  }
+
+.chatZone {
+    flex: 5.5;
+    background-color: #192125;
+}
+
+.roomfriendinfo{
+    position: relative;
+    display: flex;
+    width : 90%;
+    flex-direction: row;
+    height: 8%;
+    left: 5%;
+}
+.friendroomusername{
+    color: white;
+    margin-top: calc(2% + 10px);
+    font-size: large;
+    font-weight: 700;
+    margin-left: 5%;
+}
+
+.chatZoneWrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.chatimg{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 5%;
+    margin-top: 3%;
+}
+
+.chatZoneTop {
+    height: 75%;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+.chatZoneTop::-webkit-scrollbar{
+    display: none;
+  }
+
+.chatZoneBottom {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chatZoneInput {
+    position: absolute;
+    width: 80%;
+    resize: none;
+    margin-left: 10%;
+    top: 90%;
+    height:  20px;
+    padding: 10px;
+    border-radius: 15px;
+    background-color:#6e7274 ;
+    color: white;
+	overflow-y: hidden;
+}
+
+.chatZoneInput::placeholder{
+    color: white;
+}
+
+.chatZoneSubmitButton {
+    position: absolute;
+    left:calc(90% - 35px );
+    top: 90%;
+    width: 70px;
+    height: 40px;
+    background: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.chatZoneSubmitButtonImg {
+    width: 25px;
+    height: 25px;
+    margin-left: 5%;
+    margin-top: 2%;
+    background: none;
+    background-color: none;
+    color: white;
+}
+
+.onlineFriends {
+    height: 50%;
+}
+
+
+.hidden {
+	display: none;
+}
+
+.onlineFriendsAndRooms {
+    flex: 1.5;
+    flex-direction: column;
+    gap: 100px;
+    border-radius: 0px 15px 15px 0px;
+}
+
+.onlineFriendsTitle {
+    display: flex;
+    background-color:  #53585b;
+    color: whitesmoke;
+    font-family:'Montserrat Alternates', sans-serif;
+    justify-content: center;
+    border-radius: 0px 15px 0px 0px;
+    margin-top: 6%;
+}
+.onlineFriendsWrapper {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.onlineFriendsWrapper::-webkit-scrollbar{
+    display: none;
+  }
+
+.recentMessagesWrapper,.chatZoneWrapper, .onlineFriendsAndRooms {
+    background-color: #192125;
+    height: 100%;
+}
+
+.recentMessagesWrapper{
+    background-color:  #53585b;
+    border-radius: 15px 0px 0px 15px;
+}
+.onlineFriendsAndRooms{
+ background-color:  #53585b;
+
+}
+
+.noConversation {
+    position: absolute;
+    top: 40%;
+    font-size: 50px;
+    color: gray;
+    text-align: center;
+    left: 5%;
+}
+
+.usernameline{
+    position: relative;
+    top: 1%;
+    margin-bottom: 3%;
+    border-style: solid;
+    color: white;
+    width: 80%;
+    left: 10%;
+
+}
+.gameicon{
+    position: absolute;
+    color: white;
+    height: 2em;
+    width: 2em;
+    top: calc(2% + 20px);
+    left:calc(90% - 4em);
+}
+.onlinestatus{
+    position: absolute;
+    color: white;
+    height: 2em;
+    width: 2em;
+    top: calc(2% + 20px);
+        left:calc(90%);
+}
+
+
+.gamebutton{
+    position: absolute;
+    background:none;
+    border: none;
+    cursor: pointer;
+    height: 4em;
+    width: 4em;
+    left:calc(80% - 2em);
+}	
+@media(max-width:800px)
+{
+	.recentMessages {
+		flex: none;
+		overflow-y: scroll;
+		width: 60px;
+		background-color: #53585b;
+		border-radius: 15px 0px 0px 15px;
+	}
+	.recentMessagesWrapper{
+		width: 40px;
+	}
+	.chatZone {
+		flex: 5.5;
+		background-color: #192125;
+		border-radius: 0px 15px 15px 0px;
+
+	}
+	
+	.chatZoneWrapper {
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		width: 300px;
+	}
+	
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+
+
+.availableRoom {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.availableRoomImgContainer {
+    position: relative;
+    color: white;
+    margin-right: 10px;
+    margin-left: 20px;
+}
+
+.availableRoomImg {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.availableRoomName {
+    color: whitesmoke;
+}
+
+.settingsImg {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid white ;
+}
+
+.Settingsbutt{
+    margin-left: 30px;
+    background-color: none;
+    background: none;
+    border: none;
+    
+}
+.settingsbut{
+    background: none;
+    background-color: none;
+    border: none;
+    width: 1.5em;
+    height: 1.5em;
+    color: #192125;
+}
+.Room .leaveroom {
+    display: none;
+    color: white;
+    width: 1.5em;
+    height: 1.5em;
+    
+}
+.leavebutt{
+    background: none;
+    border: none;
+	justify-content: flex-end;
+	margin-left: 30px;
+}
+.Room:hover .leaveroom {
+    display: inline;
+    cursor: pointer;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+
+
+
+.onlineFriend {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 20px;
+    font-weight: 700;
+}
+
+
+.onlineFriendImgContainer {
+    position: relative;
+    margin-right: 10px;
+    margin-left: 10%;
+}
+
+.onlineFriendImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.onlineFriendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: lawngreen;
+    position: absolute;
+    top: 0;
+    right: 2px;
+}
+
+.onlineFriendName {
+    position: relative;
+    color: rgb(255, 255, 255);
+}
+
+.friends .settingsButton {
+    display: none;
+}
+
+.friends:hover .settingsButton {
+    display: inline;
+    cursor: pointer;
+}
+
+.offlineFriendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top: 0;
+    right: 2px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,600;1,700&display=swap');
+.recentConversations {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.recentConversations:hover {
+    background-color: grey;
+}
+
+.recentConversationsImg {
+    width: 32px;
+    height: 32px;
+    color: white;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-right: 20px;
+
+}
+
+.recentConversationsName {
+    font-weight: 700;
+    color: rgb(255, 255, 255);
+}
+
+.test p {
+    font-size: x-small;
+    color: rgb(255, 255, 255);
+}
+.rmline{
+    position: relative;
+    width: 80%;
+    left: 10%;
+    margin-top: 4%;
+
+}
+.rmline1{
+    position: relative;
+    width: 80%;
+    left: 5%;
+    margin-top: 4%;
+
+}
+
+@media (max-width :800px) {
+	.recentConversations {
+		display: flex;
+		align-items: center;
+		padding: 10px;
+		width: 40px;
+		cursor: pointer;
+	}
+	
+	.test{
+		display:none	
+	}
+	.recentConversationsImg {
+		width: 32px;
+		height: 32px;
+		color: white;
+		border-radius: 50px;
+		object-fit: cover;
+		margin-right: 0px;
+	
+	}
+	.recentConversations {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10px;
+		cursor: pointer;
+	}
+		
+	
+}

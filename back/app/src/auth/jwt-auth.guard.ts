@@ -18,7 +18,7 @@ import { JwtService } from '@nestjs/jwt';
 export class JwtAuthGuard extends AuthGuard('jwt') {
 	async canActivate(context: ExecutionContext,): Promise<boolean> {
 		const response = context.switchToHttp().getResponse();
-		response.setHeader('Access-Control-Allow-Origin', "http://localhost:3000");
+		response.setHeader('Access-Control-Allow-Origin', `${process.env.FRONTEND_URL}`);
 		const parentCanActivate = (await super.canActivate(context)) as boolean;
 		return parentCanActivate;
 	}

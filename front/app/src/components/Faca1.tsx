@@ -29,7 +29,7 @@ const Faca1 = ({closemodel,openmodel2 ,ssucces, settoggled}:props) => {
       event.preventDefault();
       console.log("valuuuuuue", value) 
       openmodel2(true)
-	    axios.post("http://localhost:3001/2fa/turn-on",{"twofasecret": value},{withCredentials: true})
+	    axios.post(`${process.env.REACT_APP_BACK_URL}/2fa/turn-on`,{"twofasecret": value},{withCredentials: true})
       .then((response) =>{
         console.log(response.data)
         ssucces(true)

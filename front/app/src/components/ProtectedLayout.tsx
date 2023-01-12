@@ -41,7 +41,7 @@ export default function ProtectedLayout() {
 	useEffect(() => {
 		async function  authenticateUser() {
 			// const axiosapi = axiosApi ();
-			axios.get('http://localhost:3001/getUser', {
+			axios.get(`${process.env.REACT_APP_BACK_URL}/getUser`, {
 				withCredentials: true,
 			}).then((res)=> {
 				setUser ({
