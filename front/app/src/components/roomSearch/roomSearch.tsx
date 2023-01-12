@@ -24,7 +24,7 @@ const Room = (props: RoomProps) => {
 
 
 	const joinRoom = (allo:number) => {
-		axios.post (`http://localhost:3001/room/join/${props.id}`, {password: password}, { withCredentials: true })
+		axios.post (`${process.env.REACT_APP_BACK_URL}/room/join/${props.id}`, {password: password}, { withCredentials: true })
 		.then ( () => {
 			toast.success (`successfully joined ${props.name}`)
 			props.refresh ();
@@ -67,7 +67,7 @@ const RoomSearch = (props: SearchProps) => {
 	const [update, setUpdate] = useState (false);
 
 	const loadRooms = () => {
-		axios.get('http://localhost:3001/room/available', {withCredentials :true})
+		axios.get(`${process.env.REACT_APP_BACK_URL}/room/available`, {withCredentials :true})
 		.then((response) => {
 			console.log (response.data)
 			setRooms ([]);

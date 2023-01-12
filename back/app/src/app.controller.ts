@@ -29,8 +29,10 @@ export class AppController {
 	@UseGuards(JwtAuthGuard)
 	@Get("getUser")
 	async getUser(@Request() req: Req) {
-		console.log ("get user")
-		console.log (req.user)
+		// console.log ("get user")
+		// console.log (req.user)
+		console.log (`${process.env.FRONTENDURL}`)
+
 		return (req.user)
 	}
 }

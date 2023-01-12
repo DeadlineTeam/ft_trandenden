@@ -17,13 +17,14 @@ import RoomSettingss from '../roomSettings/RoomSettingss'
 import { UserContext } from '../ProtectedLayout';
 import {BiSend} from 'react-icons/bi'
 
-import '../../pages/Chat.css';
-import '../availableRooms/Rooms.css';
-import '../onlineFriends/Friends.css';
+// import '../../pages/Chat.css';
+// import '../availableRooms/Rooms.css';
+// import '../onlineFriends/Friends.css';
 import {GiExitDoor} from 'react-icons/gi';
-import '../chatZone/ChatZone.css';
-import '../recentChats/RecentChats.css';
+// import '../chatZone/ChatZone.css';
+// import '../recentChats/RecentChats.css';
 import { useRef } from 'react';
+import "./chat.css"
 
 type UserId = {
 	id: number;
@@ -34,7 +35,7 @@ const OnlineStatus = (props: UserId) => {
 	const [online, setOnline] = useState (false);
 
 	useEffect (() => {
-		axios.get(`http://localhost:3001/users/${props.id}/online`, {withCredentials: true}).
+		axios.get(`${process.env.REACT_APP_BACK_URL}/users/${props.id}/online`, {withCredentials: true}).
 		then (res => {
 			setOnline (res.data.online);
 		}).catch ((e) => {
@@ -76,7 +77,7 @@ const GameInvite = (props: UserId) => {
 
 	const inviteToGame = () => {
 		console.log ('invite to game', props.id);
-		const url = `http://localhost:3001/game/invite/${props.id}`
+		const url = `${process.env.REACT_APP_BACK_URL}/game/invite/${props.id}`
 		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
 			navigate(`/Game?invite=${response.data.gameId}`)
 		}).catch ((error) => {
@@ -94,7 +95,7 @@ const GameInvite = (props: UserId) => {
 	})
 
 	useEffect(() => {
-		axios.get(`http://localhost:3001/users/${props.id}/online`, {withCredentials: true}).
+		axios.get(`${process.env.REACT_APP_BACK_URL}/users/${props.id}/online`, {withCredentials: true}).
 		then (res => {
 			if (res.data) {
 				setOnline(res.data.online);
@@ -226,7 +227,7 @@ const Room = (props: RoomProps) => {
 	const user 									=	useContext (UserContext);
 
 	useEffect (() => {
-		axios.get (`http://localhost:3001/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
+		axios.get (`${process.env.REACT_APP_BACK_URL}/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
 		.then ((res) => {
 			if (res.data === 'OWNER' || res.data === 'ADMIN') {
 				console.log ('admin or owner')
@@ -239,7 +240,7 @@ const Room = (props: RoomProps) => {
 
 
 	const LeaveRoom = () => {
-		axios.post (`http://localhost:3001/room/leave/${props.id}`, {}, {withCredentials: true})
+		axios.post (`${process.env.REACT_APP_BACK_URL}/room/leave/${props.id}`, {}, {withCredentials: true})
 		.then ((res) => {
 			toast ('you left the room')
 		}).catch ((e) => {
@@ -494,7 +495,7 @@ const ConvoRoom = (props: ConvoRoomProps) => {
 			{props.visibility === 'PROTECTED'? <FaLock className="recentConversationsImg" />: props.visibility === 'PUBLIC'? <MdGroups className="recentConversationsImg" />: <GiPrivate className="recentConversationsImg"/>}
 			<div className={`test ${className}`}>
 				<span className="recentConversationsName">{props.name}</span>
-				<p>{props.lastmsg.slice (0, 20)}</p>
+				<p>{props.lastmsg? props.lastmsg.slice (0, 20): ""}</p>
 			</div>
 		</div>
 	)
@@ -531,7 +532,7 @@ const ConvoFriend = (props: ConvoFriendProps) => {
 				<>
 					<div className="test">
 						<span className="recentConversationsName">{props.name}</span>
-						<p>{props.lastmsg.slice (0, 20)}</p>
+						<p>{props.lastmsg? props.lastmsg.slice (0, 20): ""}</p>
 					</div>
 				</>
 			}
@@ -645,15 +646,15 @@ const Chat = () => {
 	// console.log (className);
 
 	useEffect (() => {
-		axios.get ('http://localhost:3001/room/myrooms', {withCredentials: true}).then ((res) => {
+		axios.get (`${process.env.REACT_APP_BACK_URL}/room/myrooms`, {withCredentials: true}).then ((res) => {
 			setRoomIdToMsgs(new Map());
 			for (const room of res.data) {
 				if (room.visibility === 'DM') {
 					const splits = room.name.split('-');
 					let friendId = splits[1] === String(user?.user.id)? Number(splits[2]): Number(splits[1]);
-					axios.get (`http://localhost:3001/friend/${friendId}/get`, {withCredentials: true})
+					axios.get (`${process.env.REACT_APP_BACK_URL}/friend/${friendId}/get`, {withCredentials: true})
 					.then ((friend) => {
-						axios.get(`http://localhost:3001/message/${room.id}`, {withCredentials: true})
+						axios.get(`${process.env.REACT_APP_BACK_URL}/message/${room.id}`, {withCredentials: true})
 						.then ((messages) => {
 							setRoomIdToMsgs ((prev) => {
 								prev.set(room.id, {
@@ -672,7 +673,7 @@ const Chat = () => {
 					})
 				}
 				else {
-					axios.get(`http://localhost:3001/message/${room.id}`, {withCredentials: true})
+					axios.get(`${process.env.REACT_APP_BACK_URL}/message/${room.id}`, {withCredentials: true})
 					.then ((msgs) => {
 						setRoomIdToMsgs ((prev) => {
 							prev.set(room.id, {
@@ -700,6 +701,8 @@ const Chat = () => {
 				let conversation = newRoomIdToMsgs.get(data.roomId);
 				if (conversation) {
 					conversation.messages.push(data);
+					if ((conversation.visibility === 'DM' && data.senderId !== user?.user.id) || conversation.visibility !== 'DM')
+						toast (`${conversation.name} : ${data.content}`)
 				}
 				return newRoomIdToMsgs;
 			})

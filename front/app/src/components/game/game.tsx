@@ -370,14 +370,3 @@ const GameComponent: React.FC<any> = () => {
 
 
 export default GameComponent;
-
-
-// const inviteToGame = () => {
-// 	const url = `http://localhost:3001/game/invite/${id}`
-// 	axios.post(url, {} ,{withCredentials: true}).then((response) =>{
-// 		console.log(response.data)
-// 		navigate(`/Game?invite=${response.data.gameId}`)
-// 	}).catch ((error) => {
-// 		console.log(error)
-// 	})
-// }

@@ -9,7 +9,7 @@ const Login = () => {
 	
 	const handlelogin = () =>{
 
-		window.location.replace( "http://localhost:3001/pong_api");
+		window.location.replace( `${process.env.REACT_APP_BACK_URL}/pong_api`);
 
 	}
   	return (

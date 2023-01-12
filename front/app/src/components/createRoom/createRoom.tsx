@@ -74,7 +74,7 @@ const CreateRoom = (props: CreateRoomProps) => {
 	const [users, setUsers] = useState <number []> ([]);
 
 	useEffect (() => {
-		axios.get ('http://localhost:3001/friend/all', { withCredentials: true, })
+		axios.get (`${process.env.REACT_APP_BACK_URL}/friend/all`, { withCredentials: true, })
 		.then ((response) => {
 			setFriends (response.data);
 		}).catch (() => {})
@@ -98,7 +98,7 @@ const CreateRoom = (props: CreateRoomProps) => {
 			users: users,
 		};
 
-    	axios.post('http://localhost:3001/room/create', formData,  { withCredentials: true, })
+    	axios.post(`${process.env.REACT_APP_BACK_URL}/room/create`, formData,  { withCredentials: true, })
     	.then((response) => {
 			toast.success('Room created successfully');
 			props.handleCancel();

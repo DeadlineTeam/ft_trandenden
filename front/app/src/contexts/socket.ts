@@ -2,15 +2,15 @@ import io from "socket.io-client"
 import React from "react";
 
 
-const gameSocket = io("http://localhost:3001/playgame", {
+const gameSocket = io(`${process.env.REACT_APP_BACK_URL}/playgame`, {
 	withCredentials: true
 })
 
-const onlineSocket = io ("http://localhost:3001/online", {
+const onlineSocket = io (`${process.env.REACT_APP_BACK_URL}/online`, {
 	withCredentials: true,
 })
 
-const chatSocket = io("http://localhost:3001/chat", {
+const chatSocket = io(`${process.env.REACT_APP_BACK_URL}/chat`, {
 	withCredentials: true,
 })
 

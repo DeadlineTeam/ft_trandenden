@@ -80,11 +80,11 @@ avatar_url: string;
 }
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3001/profile/',
+  baseURL: `${process.env.REACT_APP_BACK_URL}/profile/`,
 
 });
 const instance2 = axios.create({
-  baseURL: 'http://localhost:3001/profile/',
+  baseURL: `${process.env.REACT_APP_BACK_URL}/profile/`,
 
 });
 
@@ -124,14 +124,14 @@ const Myprofile = () => {
 			navigate("/Notfound")
 		})
       	
-		const url3 = "http://localhost:3001/profile/gameHistory"
+		const url3 = `${process.env.REACT_APP_BACK_URL}/profile/gameHistory`
       	axios.post(url3, {username: stri},{withCredentials: true}).then((response2) =>{
      		setMaphistory(response2.data)
       	}).catch(error=>{
 			setMaphistory([])
 		})
       
-		const url4 = "http://localhost:3001/profile/stats"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/profile/stats`
       	axios.post(url4, {username: stri},{withCredentials: true}).then((response3) =>{
 			setStats (response3.data)
 			setWin(response3.data.win)
@@ -146,36 +146,25 @@ const Myprofile = () => {
 
 
 	const handleadd = (e:any) =>{
-		const url4 = "http://localhost:3001/"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/`
 		axios.post(`${url4}friend/${id}/add`, {},{withCredentials: true}).then((response2) =>{
 			setRender (!render);
 		})
 	}
 
 	const handleblock = (e:any) =>{
-		const url4 = "http://localhost:3001/"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/`
 		axios.post(`${url4}friend/${id}/block`, {},{withCredentials: true}).then((response2) =>{
 			setRender (!render);
 		})
 	}
 	const handleunblock = (e:any) =>{
-		const url4 = "http://localhost:3001/"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/`
 		axios.post(`${url4}friend/${id}/unblock`, {},{withCredentials: true}).then((response2) =>{
 			setRender (!render);
 		})
 	}
-
-
-	////// invite to game button for testing
-	////// remove it later
-	const inviteToGame = () => {
-		const url = `http://localhost:3001/game/invite/${id}`
-		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
-			navigate(`/Game?invite=${response.data.gameId}`)
-		}).catch ((error) => {
-			toast (error.response.data.message)
-		})
-	}
+	
 
 	var  intvalue = Math.floor(leveluser)
 	let level = leveluser;
