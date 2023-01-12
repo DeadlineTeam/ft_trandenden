@@ -13,6 +13,9 @@ import {ImBlocked} from 'react-icons/im'
 import {CgUnblock} from 'react-icons/cg'
 import { Console } from 'console';
 import rank1 from '../output-onlinepngtools1.png'
+import rank11 from '../rank11.png'
+import rank22 from '../rank22.png'
+import rank33 from '../rank33.png'
 import rank2 from '../output-onlinepngtools2.png'
 import rank3 from '../output-onlinepngtools.png'
 import { toast } from 'react-toastify';
@@ -99,8 +102,10 @@ const Myprofile = () => {
   	const [lose, setLose] = useState(0)
   	const [totalgames, setTotalgames] = useState(0)
   	const [winrate1, setWinrate] = useState(0)
-  	const user = useContext(UserContext)
+	  const user = useContext(UserContext)
+
 	const [render, setRender] = useState (false);
+	const [valrank, setValrank] = useState(0);
 	const navigate = useNavigate();
 
   	useEffect(()=>{
@@ -133,6 +138,7 @@ const Myprofile = () => {
 			setLose(response3.data.loss)
 			setWinrate(Math.floor(response3.data.winrate * 100))
 			setTotalgames(response3.data.totalgames)
+			setValrank(response3.data.rank)
       	}).catch(error=>{
 			
 		})
@@ -182,7 +188,7 @@ const Myprofile = () => {
 	let Totalgamepl:number= 17
 	let gamewin:number= 7
 	let gamelose:number=5
-
+	console.log(valrank	)
 
 	
 return (
@@ -248,10 +254,27 @@ return (
 				<div className='rank'>
 					<h1 className='rankhead'>RANK</h1>
 					<div className='Rankranks'>
-					<img className='ranking' src={rank1}/>
+					{valrank < 1&& (
+						<img className='ranking' src={rank1}/>
+					)
+}
+					{valrank >=1 && (
+						<img className='ranking' src={rank11}/>
+					)
+					}
+					{ valrank >= 2 && (
+					<img className='ranking' src={rank22}/>
+					)}
+					{ valrank <2  && (
 					<img className='ranking' src={rank2}/>
+					)}
 					</div>
+					{ valrank == 3 && (
+					<img className='ranking1' src={rank33}/>
+					)}
+					{ valrank <3 && (
 					<img className='ranking1' src={rank3}/>
+					)}
 					
 				</div>
 			</div>
