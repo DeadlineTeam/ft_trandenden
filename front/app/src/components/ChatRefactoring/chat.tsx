@@ -23,6 +23,7 @@ import '../onlineFriends/Friends.css';
 import {GiExitDoor} from 'react-icons/gi';
 import '../chatZone/ChatZone.css';
 import '../recentChats/RecentChats.css';
+import { useRef } from 'react';
 
 type UserId = {
 	id: number;
@@ -368,7 +369,7 @@ const Message = (props: MessageProps) => {
 			<div className="message own1">
 				<div className="messageTop">
 					<img className="messageImg" src={props.avatar}/>
-					<p className="messageText" >{props.content}</p>
+					<div className="messageText" >{props.content}</div>
 				</div>
 			</div>
 		)
@@ -376,7 +377,7 @@ const Message = (props: MessageProps) => {
 		{ props.ownMsg == false && (
 			<div className="message own">
 				<div className="messageTop">
-					<p className="messageText" >{props.content}</p>
+					<div className="messageText" >{props.content}</div>
 					<img className="messageImg1" src={props.avatar}/>
 				</div>
 			</div>
@@ -391,24 +392,33 @@ type SendMessageProps = {
 }
 
 const SendMessage = (props: SendMessageProps) => {
-	const [message, setMessage] = useState ('');
+	// const [message, setMessage] = useState ('');
 	const chatSocket = useContext(chatSocketContext);
 	const [value, setValue] = useState("");
 	
 	const saveMessage = (event: any) => {
-		setMessage(event.target.value)
+		// setMessage(event.target.value)
 		setValue(event.target.value)
 	}
-	const sendMessage = () => {
-		if (message !== '') {
-			chatSocket.emit('message', {roomId: props.roomId, content: message})
-			setValue("");
+	const handleKeyDown = (event: any) => {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			event.preventDefault();
+			// setValue(event.target.value.replace(/(\r\n|\n|\r)/gm, ""))
+			sendMessage();
 		}
-		setValue("");
 	}
+
+	
+	const sendMessage = () => {
+		if (value !== '') {
+			chatSocket.emit('message', {roomId: props.roomId, content: value})
+		}
+		setValue('');
+	}
+
 	return (
 		<div className="chatZoneBottom">
-			<textarea className="chatZoneInput"  value={value} placeholder="write a text...." onChange={saveMessage}></textarea>
+			<textarea className="chatZoneInput"  value={value} placeholder="write a text...." onChange={saveMessage} onKeyDown={handleKeyDown}/>
 			<button className="chatZoneSubmitButton" onClick={sendMessage}><BiSend className="chatZoneSubmitButtonImg"/></button>
 		</div>
 	)
@@ -422,6 +432,7 @@ type  ChatZoneProps = {
 const ChatZone = (props: ChatZoneProps) => {
 	const [ conversation, setConversation ] 	= useState<Conversation | undefined> (undefined);
 	const user 									= useContext(UserContext);
+	const chatZoneTopRef 						= useRef<HTMLDivElement>(null);
 
 	useEffect (() => {
 		if (props.chatZoneId !== null) {
@@ -430,12 +441,19 @@ const ChatZone = (props: ChatZoneProps) => {
 
 	}, [props.chatZoneId])
 
+	useEffect(() => {
+		if (chatZoneTopRef.current) {
+			chatZoneTopRef.current.scrollTop = chatZoneTopRef.current.scrollHeight;
+		}
+	}, [conversation?.messages.length]);
+
+
 	return (
 		<div className="chatZone">
 			<div className="chatZoneWrapper">
 				{conversation === undefined? null: conversation.visibility === 'DM' ? <FriendInfo {...conversation} /> : <RoomInfo {...conversation}/>}
-				<div className="chatZoneTop">
-					{conversation === undefined? null: conversation.messages.map((msg) => <Message avatar={msg.avatar} content={msg.content} ownMsg={user?.user.id == msg.senderId}/>)}
+				<div className="chatZoneTop" ref={chatZoneTopRef}>
+					{conversation === undefined? null: conversation.messages.map((msg, index) => <Message avatar={msg.avatar} content={msg.content} ownMsg={user?.user.id == msg.senderId} key={index}/>)}
 				</div>
 				<div className="chatZoneBottom">
 					{conversation === undefined? null: <SendMessage roomId={conversation.roomId} />}
@@ -456,6 +474,17 @@ type ConvoRoomProps = {
 }
 
 const ConvoRoom = (props: ConvoRoomProps) => {
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+	let className = width > 800 ? "" : "hidden";
 	
 	const setChatZoneId = () => {
 		props.setChatZoneId(props.id);
@@ -463,9 +492,9 @@ const ConvoRoom = (props: ConvoRoomProps) => {
 	return (
 		<div className ="recentConversations" onClick={setChatZoneId}>
 			{props.visibility === 'PROTECTED'? <FaLock className="recentConversationsImg" />: props.visibility === 'PUBLIC'? <MdGroups className="recentConversationsImg" />: <GiPrivate className="recentConversationsImg"/>}
-			<div className="test">
+			<div className={`test ${className}`}>
 				<span className="recentConversationsName">{props.name}</span>
-				<p>{props.lastmsg}</p>
+				<p>{props.lastmsg.slice (0, 20)}</p>
 			</div>
 		</div>
 	)
@@ -480,17 +509,32 @@ type ConvoFriendProps = {
 }
 
 const ConvoFriend = (props: ConvoFriendProps) => {
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
+	let className = width > 800 ? "" : "hidden";
 	const setChatZoneId = () => {
 		props.setChatZoneId(props.id);
 	}
 	return (
 		<div className ="recentConversations" onClick={setChatZoneId}>
 			<img className="recentConversationsImg" src={props.avatar} />
-			<div className="test">
-				<span className="recentConversationsName">{props.name}</span>
-				<p>{props.lastmsg}</p>
-			</div>
+			{
+				width > 800 &&
+				<>
+					<div className="test">
+						<span className="recentConversationsName">{props.name}</span>
+						<p>{props.lastmsg.slice (0, 20)}</p>
+					</div>
+				</>
+			}
 		</div>
 	)
 }
@@ -504,6 +548,18 @@ type ConvoZoneProps = {
 
 const ConvoZone = (props: ConvoZoneProps) => {
 	const  [conversation, setConversations] = useState<JSX.Element[]>([]);
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+	let className = width > 800 ? "" : "hidden";
 
 	useEffect (() => {
 		setConversations ([]);
@@ -534,10 +590,15 @@ const ConvoZone = (props: ConvoZoneProps) => {
 	return (
 		<div className='recentMessages'>
 			<div className="recentMessagesWrapper">
-				<div className="recentMessagesTitle">
-					Messages
-				</div>
-				<hr className="rmline"></hr>
+				{
+					width > 800 &&
+					<>
+					<div className="recentMessagesTitle">
+						Messages
+					</div>
+					<hr className="rmline"></hr>
+					</>
+				}
 				<div>
 					{conversation}
 				</div>
@@ -569,8 +630,20 @@ const Chat = () => {
 	const user 									= useContext(UserContext);
 	const chatSocket							= useContext(chatSocketContext);
 	const [done, setDone]						= useState<boolean>(false);
-	
-	
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+	let className = width > 800 ? "" : "hidden";
+	// console.log (className);
+
 	useEffect (() => {
 		axios.get ('http://localhost:3001/room/myrooms', {withCredentials: true}).then ((res) => {
 			setRoomIdToMsgs(new Map());
@@ -649,7 +722,7 @@ const Chat = () => {
 		<div className='chatApp'>
 			<ConvoZone RoomIdToMsgs={RoomIdToMsgs} setChatZoneId={setChatZoneId} done={done}/>
 			<ChatZone chatZoneId={chatZoneId} RoomIdToMsgs={RoomIdToMsgs}/>
-			<div className="onlineFriendsAndRooms">
+			<div className={`onlineFriendsAndRooms ${className}`}>
 				<FriendZone RoomIdToMsgs={RoomIdToMsgs} setChatZoneId={setChatZoneId} done={done}/>
 				<RoomZone RoomIdToMsgs={RoomIdToMsgs} setChatZoneId={setChatZoneId} done={done}/>
 			</div>
