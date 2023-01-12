@@ -15,7 +15,7 @@
 }
 
 .recentMessages {
-    flex: 2;
+	flex : 1.5;
     overflow-y: scroll;
 	width: 25%;
     background-color: #53585b;
@@ -77,7 +77,7 @@
     display: flex;
     width : 90%;
     flex-direction: row;
-    height: 10%;
+    height: 8%;
     left: 5%;
 }
 .friendroomusername{
@@ -132,6 +132,7 @@
     border-radius: 15px;
     background-color:#6e7274 ;
     color: white;
+	overflow-y: hidden;
 }
 
 .chatZoneInput::placeholder{
@@ -165,9 +166,13 @@
     height: 50%;
 }
 
+
+.hidden {
+	display: none;
+}
+
 .onlineFriendsAndRooms {
-    flex: 2;
-    display: flex;
+    flex: 1.5;
     flex-direction: column;
     gap: 100px;
     border-radius: 0px 15px 15px 0px;
@@ -217,7 +222,7 @@
 .usernameline{
     position: relative;
     top: 1%;
-    margin-bottom: 1%;
+    margin-bottom: 3%;
     border-style: solid;
     color: white;
     width: 80%;
@@ -250,4 +255,31 @@
     height: 4em;
     width: 4em;
     left:calc(80% - 2em);
-}
+}	
+@media(max-width:800px)
+{
+	.recentMessages {
+		flex: none;
+		overflow-y: scroll;
+		width: 60px;
+		background-color: #53585b;
+		border-radius: 15px 0px 0px 15px;
+	}
+	.recentMessagesWrapper{
+		width: 40px;
+	}
+	.chatZone {
+		flex: 5.5;
+		background-color: #192125;
+		border-radius: 0px 15px 15px 0px;
+
+	}
+	
+	.chatZoneWrapper {
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		width: 300px;
+	}
+	
+}	

@@ -26,6 +26,7 @@
     background-color: #363c40;
     color: white;
     max-width: 300px;
+	word-break: break-word;
 }
 
 .messageImg1 {

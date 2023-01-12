@@ -61,6 +61,8 @@
 .leavebutt{
     background: none;
     border: none;
+	justify-content: flex-end;
+	margin-left: 30px;
 }
 .Room:hover .leaveroom {
     display: inline;
