@@ -43,7 +43,9 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
 	}
 
-	handleDisconnect(@ConnectedSocket () client: Socket) {}
+	handleDisconnect(@ConnectedSocket () client: Socket) {
+		this.gameService.leaveMatch (client);
+	}
 
 	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("join")

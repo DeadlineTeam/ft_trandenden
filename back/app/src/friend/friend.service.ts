@@ -3,13 +3,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { FRIENDSHIPSTATUS } from '@prisma/client'
 import { RoomService } from 'src/room/room.service';
+import { OnlineService } from 'src/online/online.service';
 
 @Injectable()
 export class FriendService {
 	constructor (
 		private readonly prisma: PrismaService,
 		private readonly user: UsersService,
-		private readonly room: RoomService
+		private readonly room: RoomService,
+		private readonly online: OnlineService,
 	) {}
 
 	// add a friend to the user
@@ -49,6 +51,8 @@ export class FriendService {
 			}
 		});
 		await this.room.createDM (userId, friendId);
+		const user = await this.user.findById (userId);
+		this.online.notify (friendId, "friendship", `${user.username} added you as a friend`);
 	}
 
 	async add (userId: number, friendId: number) {

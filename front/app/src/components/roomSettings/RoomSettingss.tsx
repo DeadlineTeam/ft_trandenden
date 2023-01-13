@@ -38,6 +38,7 @@ const Member = (props: memberDto) => {
 	const [ban , setBan] 		= useState(props.banned);
 	const [owner , setOwner]	= useState(props.role === 'OWNER');
 	const [admin, setAdmin]		= useState(props.role === 'ADMIN')
+	const user					= useContext (UserContext)
 	
 	const handlemute = () =>{
 		axios.post (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/${mute ? 'unmute': 'mute'}`, {}, { withCredentials: true, })
@@ -67,6 +68,16 @@ const Member = (props: memberDto) => {
 		})
 	}
 
+	const handleAdmin = () => {
+		axios.post (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/updateRole`, {role: "admin"}, { withCredentials: true, })
+		.then ((response) => {
+			toast (`${props.user.username} is now an admin`)
+			props.close (false);
+		}).catch ((e) => {
+			toast (`only the owner can make someone an admin`)
+		})
+	}
+
 
 	return (
 		<div className="membeR" key={props.id}>
@@ -82,6 +93,13 @@ const Member = (props: memberDto) => {
 					<RiAdminFill className='addremobutt'/>
 				</button>
 			}
+
+			{
+				!admin && !owner &&<button className='addremobutt1' >
+					<RiAdminFill onClick={handleAdmin} className='setAdmin'/>
+				</button>
+			}
+			
 			{
 				!owner && 	
 				<button className='addremobutt1'>
