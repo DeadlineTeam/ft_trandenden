@@ -19,6 +19,7 @@ export class MessageService {
 			senderId	: message.senderId,
 			avatar		: message.sender.avatar_url,
 			content		: message.content,
+			senderName	: message.sender.username,
 		};
 	}
 	async getRoomMessages(userId: number, roomId: number) {
