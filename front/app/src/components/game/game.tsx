@@ -341,6 +341,7 @@ function GameCanvas ({width, height}: Icanvas) {
 const GameComponent: React.FC<any> = () => {
 	const pRef = useRef<HTMLDivElement>(null);
 	const [width, setWidth] = useState(0);
+	const navigate = useNavigate();
 	
 	function onWidthChange () {
 		if (pRef.current) {
@@ -361,6 +362,9 @@ const GameComponent: React.FC<any> = () => {
 	return  (
 			<div className="GameContainer">
 				<h1>Pong</h1>
+				<div className="leaveButton">
+					<button onClick={() => navigate ("/Home")}>leave</button>
+				</div>
 				<div className="game" ref={pRef}>
 					{width && <GameCanvas width={width} height={width / 2}/>}
 				</div>
