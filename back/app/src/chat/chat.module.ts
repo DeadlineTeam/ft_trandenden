@@ -8,9 +8,11 @@ import { AuthModule } from 'src/auth/auth.module';
 import { MemberModule } from 'src/member/member.module';
 import { MessageModule } from 'src/message/message.module';
 import { FriendModule } from 'src/friend/friend.module';
+import { OnlineModule } from 'src/online/online.module';
 
 @Module({
 	imports: [
+		OnlineModule,
 		FriendModule,
 		PrismaModule,
 		UsersModule,
