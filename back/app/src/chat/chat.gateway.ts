@@ -15,6 +15,7 @@ import { WsAuthGuardConnect } from 'src/auth/ws-auth.guard';
 import { UsersService } from 'src/users/users.service';
 import { WsAuthGuard } from 'src/auth/ws-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { OnlineService } from 'src/online/online.service';
 
 @WebSocketGateway({
 	cors: {
@@ -31,6 +32,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		private readonly authService: AuthService,
 		private readonly memberService: MemberService,
 		private readonly userService: UsersService,
+		private readonly onlineService: OnlineService,
 	) {}
 	@WebSocketServer ()
 	server;
@@ -83,15 +85,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	broadcastToRoom (eventName: string, RoomId: number, filterIds: number[], message: any) {
 		const room = this.server.adapter.rooms.get (RoomId.toString());
 		if (room) {
+			const socketsId: Set<number> = new Set ();
 			room.forEach (socketId => {
 				const socket = this.server.sockets.get (socketId);
 				if (socket && filterIds.includes (socket.data.id)) {
 					socket.emit (eventName, message);
+					socketsId.add (socket.data.id);
+					// this.onlineService.notify (socket.data.id ,'message', message)
 				}
+			})
+			socketsId.forEach (id => {
+				this.onlineService.notify (id, 'message', message);
 			})
 		}
 	}
 
+	
 	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ('join')
 	joinRoom (@ConnectedSocket () client: Socket, @MessageBody() data: {roomId: number}) {
@@ -109,4 +118,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			socket.emit ('update');
 		})
 	}
+
+	@UseGuards(WsAuthGuard)
+	@SubscribeMessage ('admin')
+	updateAdmin (@ConnectedSocket () client: Socket, @MessageBody() data: {roomId: number}) {
+		this.userIdToSocket.get (client.data.id).forEach ((socket, key) => {
+			socket.emit ('update');
+		})
+	}
+	
 }
