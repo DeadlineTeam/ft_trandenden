@@ -124,7 +124,6 @@ const Sidebar2 = ({ placeholder, data }: props) => {
             const newfilter = truedata.filter((value) => {
                 return value.username.includes(searchWord)
             })
-            console.log(searchWord.length)
             if (searchWord.length == 0) {
                 setFiltredData([]);
                 setSerach(false);
@@ -143,7 +142,6 @@ const Sidebar2 = ({ placeholder, data }: props) => {
 
     }
     const handlesearch = ()=>{
-        console.log("im hereeee")
         setValue("");
         setSerach(false);
         setFiltredData([])
@@ -175,7 +173,7 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                         (
                             <div className="dataInputs">
                                 {filtredData.map((value, key) =>
-                                <Link to={"profile/"+value.username}>
+                                <Link to={"profile/"+value.username} key={key}>
                                     <p onClick={handlesearch}  className='dataitem'>
                                         {value.username}
                                     </p>

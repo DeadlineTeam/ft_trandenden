@@ -26,8 +26,7 @@ export class AuthController {
   	@UseFilters(AuthDeclinedExceptionFilter)
 	@Get("pong_api")
 	async auth(@Request() req, @Response() res: Res) {
-		console.log("holla");
-		console.log(req.user)
+
 		const redirect_url = await this.authService.signIn(req.user, res);
 		res.redirect(redirect_url);
 	}
@@ -42,9 +41,7 @@ export class AuthController {
 	@Post("2fa/turn-on")
 	@UseGuards(JwtAuthGuard)
 	async turnOnTa(@Request() req, @Body() tfaCode: Update2faDto) {
-		console.log("controller", tfaCode);
 		const isVerified = await this.twofaService.verifyToken(req.user.username, tfaCode.twofasecret);
-		console.log(isVerified)
 		if (!isVerified)
 			throw new UnauthorizedException('Wrong authentication code');
 		await this.usersService.turnOnTwofa(req.user.userId);

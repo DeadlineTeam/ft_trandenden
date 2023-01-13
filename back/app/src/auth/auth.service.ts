@@ -20,7 +20,6 @@ export class AuthService {
  async validateUser(profile: any): Promise<any> {
     var user: any = await this.usersService.findbylogin(profile.username);
     if (!user) {
-        console.log("hello form the other side")
         user = await this.usersService.addUserAuth(profile);
         user.firstSignin = true;
         return user;
@@ -43,7 +42,6 @@ export class AuthService {
 	async login(user: any, isTfauth: boolean = false) : Promise<string>{
 		const playload = {isTwoFactorAuthenticated: isTfauth, sub: user.id};
 		const accessTocken = await this.jwtService.sign(playload);
-		console.log(accessTocken);
 		return accessTocken;
 	}
 

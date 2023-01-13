@@ -27,11 +27,9 @@ const Faca1 = ({closemodel,openmodel2 ,ssucces, settoggled}:props) => {
       }
     const handlecode = (event:any) =>{
       event.preventDefault();
-      console.log("valuuuuuue", value) 
       openmodel2(true)
 	    axios.post(`${process.env.REACT_APP_BACK_URL}/2fa/turn-on`,{"twofasecret": value},{withCredentials: true})
       .then((response) =>{
-        console.log(response.data)
         ssucces(true)
         closemodel(false)
         settoggled(true)

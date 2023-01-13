@@ -68,7 +68,7 @@ export default function ProtectedLayout() {
 				gameSocket.connect ();
 
 				// check if the socket is connected
-				console.log ("-------> login");
+		
 				
 				
 				// onlineSocket.emit ("login");
@@ -115,7 +115,6 @@ export default function ProtectedLayout() {
 
 		onlineSocket.on ('update', (data: {action: string, roomId: number}) => {
 			chatSocket.emit (data.action, {roomId: data.roomId});
-			console.log ("update received out of chat");
 		})
 
 		onlineSocket.on("logout", () => {

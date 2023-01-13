@@ -177,7 +177,6 @@ const Myprofile = () => {
 	let Totalgamepl:number= 17
 	let gamewin:number= 7
 	let gamelose:number=5
-	console.log(valrank	)
 
 	
 return (
@@ -273,9 +272,9 @@ return (
 		MATCH HISTORY
 		</h1>
 		<div className='matchhistory1'>
-			{maphistory.map((value)=>{
+			{maphistory.map((value, index)=>{
 				return(
-							<Historitem close={true} className="Historitem">
+							<Historitem close={true} className="Historitem" key={index}>
 								<img className='user1img' src={value.player1.avatar}/>
 								<Usernamehis1 close={value.true}>{value.player1.username}</Usernamehis1>
         						<h2 className='usernamehistory'>level {Math.floor(value.player1.level)}</h2>

@@ -61,7 +61,6 @@ export class GameHistoryService {
 				totalgames: info.player.totalgames + 1,
 			}
 		});
-		console.log(db, "db");
 		for (let i = 0; i < db.length; i++)
 		{
 			await this.prisma.user.update({
@@ -77,7 +76,6 @@ export class GameHistoryService {
 	async addGameHistory(gameHistory: GameHistoryDto): Promise<any>
 	{
 		const results = await this.playerResult(gameHistory);
-		console.log(results);
 		const res = await this.prisma.game.create({
 			data: {
 				players: {

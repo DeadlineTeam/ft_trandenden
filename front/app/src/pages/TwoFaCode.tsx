@@ -13,7 +13,6 @@ const TwoFaCode = () => {
     const handlevalue = (data:string) =>{
         setValue(data);
         isComplete(false)
-        console.log(value)
       }
     const handlecancel = () =>{
       navigate("/login")

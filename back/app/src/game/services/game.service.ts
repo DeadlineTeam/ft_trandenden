@@ -72,7 +72,6 @@ export class GameService {
 
 		let pSockets: Array<Socket> = []
 		for (let i = 0; i < queue.length - 1; i++) {
-			console.log (queue[i]);
 			if (queue[i].data.id !== queue[i + 1].data.id) {
 				pSockets = queue.splice (i, 2);
 				delete queue [i];
@@ -245,7 +244,6 @@ export class GameService {
 				const mode = match.mode;
 				this.matches.delete (match.id);
 				GameService.emitRoom (match, "end");
-				console.log ("saving game", match.id)
 				await this.gameHistoryService.addGameHistory (
 					{
 						player1: { id: game.players[0].socket.data.id},
@@ -334,7 +332,6 @@ export class GameService {
 	}
 
 	decline (gameId: string) {
-		console.log ("decline", gameId)
 		const match = this.matchesWithInvites.get (gameId);
 		if (match) {
 			const inviterSocket = match.game.players[0].socket;
