@@ -51,4 +51,9 @@ export class RoomController {
 	async search(@Req() req, @Body('name') name: string) {
 		return await this.roomService.acessUserCanAcess(req.user.userId);
 	}
+
+	@Get('/get/:roomId')
+	async getRoom(@Req() req, @Param('roomId', ParseIntPipe) roomId: number) {
+		return await this.roomService.findById(roomId);
+	}
 }
