@@ -52,8 +52,7 @@ export class UsersService {
 	}
 
 	async updateAvatar(id: number, filePath: string): Promise<any> {
-		console.log(id);
-		console.log(filePath)
+
 		console.log(await this.prisma.user.update({ where: { id }, data: { avatar_url: `${process.env.BACKENDURL}/${filePath}` }, }));
 		return { avatar_url: `${process.env.BACKENDURL}/${filePath}` };
 	}
@@ -78,7 +77,6 @@ export class UsersService {
 	}
 
 	async getIconInfo(username: UpdateUserNameDto): Promise<any> {
-		console.log("usernaaaaaame ", username);
 		const res = await this.prisma.user.findUnique({
 			where: {
 				username: username.username,
@@ -94,7 +92,6 @@ export class UsersService {
 		})
 		if (res === null)
 			throw new NotFoundException('User not found');
-		console.log("usernaaaaaame ", username);
 		return res;
 	}
 

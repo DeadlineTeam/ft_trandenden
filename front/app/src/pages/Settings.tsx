@@ -71,13 +71,10 @@ const Settings = () => {
   const [updated, setUpdated] = useState(true);
   let username: string = "Flen ben Flen"
   useEffect(() => {
-    console.log("executed");
     const url4 = `${process.env.REACT_APP_BACK_URL}/profile/iconInfo/`
     axios.post(url4, { username: "me" }, { withCredentials: true }).then((response3) => {
-      console.log(response3.data)
       setAvatarurl(response3.data.avatar_url)
       setImg(response3.data.avatar_url)
-      console.log('>>', response3.data.avatar_url)
       setUsername(response3.data.username)
       setToggled(response3.data.twofactor)
       
@@ -86,14 +83,12 @@ const Settings = () => {
 
 
   function handleFileChange(event: any | null) {
-    console.log("im here i just ccamed here ")
     const data = new FormData();
     data.append('file', event.target.files[0], event.target.files[0].name);
     const url4 = `${process.env.REACT_APP_BACK_URL}/users/Avatar`
     axios.post(url4, data, { withCredentials: true }).then((response3) => {
       setImg(response3.data.avatar_url);
     }).catch((err) => {
-      console.log(err);
     }) 
   }
   const handlename = (event: React.FormEvent & { target: HTMLInputElement }) => {
@@ -114,16 +109,13 @@ const Settings = () => {
     const url3 = `${process.env.REACT_APP_BACK_URL}/users/username`
     axios.post(url3, { username: name }, { withCredentials: true }).then((response2) => {
     }).then(()=>{
-      console.log("username work")
       setUpdated(!updated)
     }).catch((err)=> {
-      console.log("username error")
       setValid(true);
 
     })
   }
 
-  console.log(valid)
   return (
     <div> 
       <h1 style={{ padding: "20px 20px", fontSize: "25px", color: "white", fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: "400" }}>Settings</h1>

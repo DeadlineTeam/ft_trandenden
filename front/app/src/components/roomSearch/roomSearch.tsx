@@ -69,7 +69,6 @@ const RoomSearch = (props: SearchProps) => {
 	const loadRooms = () => {
 		axios.get(`${process.env.REACT_APP_BACK_URL}/room/available`, {withCredentials :true})
 		.then((response) => {
-			console.log (response.data)
 			setRooms ([]);
 			setFilteredRooms ([]);
 			response.data.forEach ((room: any, index: number) => {
@@ -83,7 +82,6 @@ const RoomSearch = (props: SearchProps) => {
 	useEffect (() => {
 		loadRooms ();
 		setSearchValue ('');
-		console.log ('rooms reloads')
 	}, [update])
 	
 	useEffect (() => {
@@ -111,7 +109,7 @@ const RoomSearch = (props: SearchProps) => {
 			</div>
 			<>
 			{
-				filteredRooms.map ((room, index) => <Room {...room} refresh={updateComp} index={index%2 == 0}/> )
+				filteredRooms.map ((room, index) => <Room {...room} refresh={updateComp} index={index%2 == 0} key={index}/> )
 			}
 			</>	
 		</div>

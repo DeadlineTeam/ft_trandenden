@@ -102,12 +102,10 @@ const CreateRoom = (props: CreateRoomProps) => {
     	.then((response) => {
 			toast.success('Room created successfully');
 			props.handleCancel();
-			console.log(response);
     	})
     	.catch(e => {
     		toast.error(e.response.data.message);
     	});
-		console.log(formData);
 	};
 
     return (

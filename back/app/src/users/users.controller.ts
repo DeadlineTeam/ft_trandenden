@@ -26,7 +26,6 @@ export class UsersController {
 		fileFilter: imageFileFilter,
 	}),)
 	async updateAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
-		console.log(req.user.userId);
 		if (!file)
 			throw new BadRequestException("error uploading file");
 		return await this.userService.updateAvatar(req.user.userId, file.path);

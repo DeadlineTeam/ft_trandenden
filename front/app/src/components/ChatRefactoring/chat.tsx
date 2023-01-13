@@ -76,7 +76,6 @@ const GameInvite = (props: UserId) => {
 	const navigate = useNavigate();
 
 	const inviteToGame = () => {
-		console.log ('invite to game', props.id);
 		const url = `${process.env.REACT_APP_BACK_URL}/game/invite/${props.id}`
 		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
 			navigate(`/Game?invite=${response.data.gameId}`)
@@ -230,7 +229,6 @@ const Room = (props: RoomProps) => {
 		axios.get (`${process.env.REACT_APP_BACK_URL}/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
 		.then ((res) => {
 			if (res.data === 'OWNER' || res.data === 'ADMIN') {
-				console.log ('admin or owner')
 				showSettings(true);
 			}
 		}).catch ((e) => {

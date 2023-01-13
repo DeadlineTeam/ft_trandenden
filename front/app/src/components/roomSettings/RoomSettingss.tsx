@@ -64,7 +64,6 @@ const Member = (props: memberDto) => {
 			toast (`${props.user.username} is kicked successfully`)
 			props.close (false);
 		}).catch ((e) => {
-			console.log (e);
 		})
 	}
 

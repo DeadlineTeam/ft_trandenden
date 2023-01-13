@@ -19,7 +19,7 @@ export class VersionHeaderInterceptor implements NestInterceptor {
     // if (context.getType() === 'http') {
     const http = context.switchToHttp();
       const response: Response = http.getResponse();
-      response.setHeader('Access-Control-Allow-Origin', `${process.env.FRONTENDURL}`);
+      response.setHeader('Access-Control-Allow-Origin', process.env.FRONTENDURL);
     // }
     return next.handle();
   }
@@ -31,11 +31,11 @@ async function bootstrap() {
 //   app.useStaticAssets(join(__dirname, '..', 'uploads'));
   app.useGlobalInterceptors(new VersionHeaderInterceptor());
   app.enableCors({
-    origin: `${process.env.FRONTENDURL}`,
+    origin: process.env.FRONTENDURL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-    allowedHeaders: ["cookie", "Cookie", "authorization", "Authorization", "content-type"],
-    exposedHeaders: ["cookie", "Cookie", "authorization", "Authorization", "content-type"],
+    allowedHeaders: ["cookie", "Cookie", "authorization", "Authorization", "content-type", "TfaCookie"],
+    exposedHeaders: ["cookie", "Cookie", "authorization", "Authorization", "content-type", "TfaCookie"],
   });
 
   // validation pipe for DTOs 

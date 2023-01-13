@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
+import {ConfigService} from '@nestjs/config';
 
 // @Injectable()
 // export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -18,7 +19,8 @@ import { JwtService } from '@nestjs/jwt';
 export class JwtAuthGuard extends AuthGuard('jwt') {
 	async canActivate(context: ExecutionContext,): Promise<boolean> {
 		const response = context.switchToHttp().getResponse();
-		response.setHeader('Access-Control-Allow-Origin', `${process.env.FRONTEND_URL}`);
+		
+		response.setHeader('Access-Control-Allow-Origin', process.env.FRONTENDURL);
 		const parentCanActivate = (await super.canActivate(context)) as boolean;
 		return parentCanActivate;
 	}

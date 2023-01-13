@@ -32,10 +32,8 @@ export class TwofaService {
 
 	async verifyToken(username: string, tfaCode: string) : Promise<boolean> {
 		const user: UserDto = await this.usersService.findByuername(username);
-		console.log("verifyToken",tfaCode);
 		if (!user || !user.twofasecret)
 			return false;
-		console.log("verifyToken user.twofasecret",user.twofasecret);
 		return authenticator.verify({
 			token: tfaCode,
 			secret: user.twofasecret,
