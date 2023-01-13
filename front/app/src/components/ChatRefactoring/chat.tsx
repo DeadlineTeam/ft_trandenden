@@ -358,18 +358,29 @@ const RoomInfo = (props: RoomInfoProps) => {
 
 
 type MessageProps = {
-	avatar: string;
-	content: string;
-	ownMsg: boolean;
+	avatar		: string;
+	content		: string;
+	ownMsg		: boolean;
+	username	: string;
 }
 
 const Message = (props: MessageProps) => {
+	const user = useContext (UserContext);
+	const navigate = useNavigate();
+
+	const ToProfile = () => {
+		if (props.username === user?.user.username)
+			navigate(`/profile/me`)
+		else 
+			navigate(`/profile/${props.username}`)
+	}
+	
 	return (
 		<div>
 		{ props.ownMsg == true && (
 			<div className="message own1">
 				<div className="messageTop">
-					<img className="messageImg" src={props.avatar}/>
+					<img onClick={ToProfile} className="messageImg" src={props.avatar}/>
 					<div className="messageText" >{props.content}</div>
 				</div>
 			</div>
@@ -379,7 +390,7 @@ const Message = (props: MessageProps) => {
 			<div className="message own">
 				<div className="messageTop">
 					<div className="messageText" >{props.content}</div>
-					<img className="messageImg1" src={props.avatar}/>
+					<img onClick={ToProfile} className="messageImg1" src={props.avatar}/>
 				</div>
 			</div>
 		)
@@ -454,7 +465,7 @@ const ChatZone = (props: ChatZoneProps) => {
 			<div className="chatZoneWrapper">
 				{conversation === undefined? null: conversation.visibility === 'DM' ? <FriendInfo {...conversation} /> : <RoomInfo {...conversation}/>}
 				<div className="chatZoneTop" ref={chatZoneTopRef}>
-					{conversation === undefined? null: conversation.messages.map((msg, index) => <Message avatar={msg.avatar} content={msg.content} ownMsg={user?.user.id == msg.senderId} key={index}/>)}
+					{conversation === undefined? null: conversation.messages.map((msg, index) => <Message avatar={msg.avatar} content={msg.content} ownMsg={user?.user.id == msg.senderId} key={index} username={msg.senderName}/>)}
 				</div>
 				<div className="chatZoneBottom">
 					{conversation === undefined? null: <SendMessage roomId={conversation.roomId} />}
@@ -613,6 +624,7 @@ type Message = {
 	senderId		: number,
 	avatar			: string,
 	content			: string,
+	senderName		: string,
 };
 
 type Conversation = {
@@ -643,7 +655,6 @@ const Chat = () => {
 
 
 	let className = width > 800 ? "" : "hidden";
-	// console.log (className);
 
 	useEffect (() => {
 		axios.get (`${process.env.REACT_APP_BACK_URL}/room/myrooms`, {withCredentials: true}).then ((res) => {
@@ -701,8 +712,6 @@ const Chat = () => {
 				let conversation = newRoomIdToMsgs.get(data.roomId);
 				if (conversation) {
 					conversation.messages.push(data);
-					if ((conversation.visibility === 'DM' && data.senderId !== user?.user.id) || conversation.visibility !== 'DM')
-						toast (`${conversation.name} : ${data.content}`)
 				}
 				return newRoomIdToMsgs;
 			})
