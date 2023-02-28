@@ -1,7 +1,7 @@
 import { url } from 'inspector'
 import React from 'react'
 import "./Login.css"
-import myimg from '../42ss.png'
+import myimg from '../images/42ss.png'
 import { useState } from 'react'
 
 const Login = () => {
