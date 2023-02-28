@@ -12,12 +12,12 @@ import {IoMdPersonAdd} from 'react-icons/io'
 import {ImBlocked} from 'react-icons/im'
 import {CgUnblock} from 'react-icons/cg'
 import { Console } from 'console';
-import rank1 from '../output-onlinepngtools1.png'
-import rank11 from '../rank11.png'
-import rank22 from '../rank22.png'
-import rank33 from '../rank33.png'
-import rank2 from '../output-onlinepngtools2.png'
-import rank3 from '../output-onlinepngtools.png'
+import rank1 from '../images/output-onlinepngtools1.png'
+import rank11 from '../images/rank11.png'
+import rank22 from '../images/rank22.png'
+import rank33 from '../images/rank33.png'
+import rank2 from '../images/output-onlinepngtools2.png'
+import rank3 from '../images/output-onlinepngtools.png'
 import { toast } from 'react-toastify';
 const Historitem = styled.div<{close: boolean}>`
 display: flex;
