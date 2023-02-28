@@ -15,13 +15,16 @@ import { MdGroups } from 'react-icons/md';
 import { GiPrivate } from 'react-icons/gi';
 import RoomSettingss from '../roomSettings/RoomSettingss'
 import { UserContext } from '../ProtectedLayout';
+import {BiSend} from 'react-icons/bi'
 
-import '../../pages/Chat.css';
-import '../availableRooms/Rooms.css';
-import '../onlineFriends/Friends.css';
+// import '../../pages/Chat.css';
+// import '../availableRooms/Rooms.css';
+// import '../onlineFriends/Friends.css';
 import {GiExitDoor} from 'react-icons/gi';
-import '../chatZone/ChatZone.css';
-import '../recentChats/RecentChats.css';
+// import '../chatZone/ChatZone.css';
+// import '../recentChats/RecentChats.css';
+import { useRef } from 'react';
+import "./chat.css"
 
 type UserId = {
 	id: number;
@@ -32,7 +35,7 @@ const OnlineStatus = (props: UserId) => {
 	const [online, setOnline] = useState (false);
 
 	useEffect (() => {
-		axios.get(`http://localhost:3001/users/${props.id}/online`, {withCredentials: true}).
+		axios.get(`${process.env.REACT_APP_BACK_URL}/users/${props.id}/online`, {withCredentials: true}).
 		then (res => {
 			setOnline (res.data.online);
 		}).catch ((e) => {
@@ -60,7 +63,7 @@ const OnlineStatus = (props: UserId) => {
 
 	return (
 		<div>
-			{online ? <HiStatusOnline className='gameicon'/> : <HiStatusOffline className='gameicon'/>}
+			{online ? <HiStatusOnline className='onlinestatus'/> : <HiStatusOffline className='onlinestatus'/>}
 		</div>
 	)
 }
@@ -73,8 +76,7 @@ const GameInvite = (props: UserId) => {
 	const navigate = useNavigate();
 
 	const inviteToGame = () => {
-		console.log ('invite to game', props.id);
-		const url = `http://localhost:3001/game/invite/${props.id}`
+		const url = `${process.env.REACT_APP_BACK_URL}/game/invite/${props.id}`
 		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
 			navigate(`/Game?invite=${response.data.gameId}`)
 		}).catch ((error) => {
@@ -92,7 +94,7 @@ const GameInvite = (props: UserId) => {
 	})
 
 	useEffect(() => {
-		axios.get(`http://localhost:3001/users/${props.id}/online`, {withCredentials: true}).
+		axios.get(`${process.env.REACT_APP_BACK_URL}/users/${props.id}/online`, {withCredentials: true}).
 		then (res => {
 			if (res.data) {
 				setOnline(res.data.online);
@@ -203,6 +205,7 @@ const FriendZone = (props: AvatarToConvoPointers) => {
 			<div className="onlineFriendsTitle">
 				Friends
 			</div>
+			<hr className="rmline"></hr>
 			<div className="onlineFriendsWrapper">
 				{friends.map((friend) => <Friend {...friend} key={friend.id}/>)}
 			</div>
@@ -223,10 +226,9 @@ const Room = (props: RoomProps) => {
 	const user 									=	useContext (UserContext);
 
 	useEffect (() => {
-		axios.get (`http://localhost:3001/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
+		axios.get (`${process.env.REACT_APP_BACK_URL}/member/${props.id}/${user?.user.id}/role`, {withCredentials: true})
 		.then ((res) => {
 			if (res.data === 'OWNER' || res.data === 'ADMIN') {
-				console.log ('admin or owner')
 				showSettings(true);
 			}
 		}).catch ((e) => {
@@ -236,7 +238,7 @@ const Room = (props: RoomProps) => {
 
 
 	const LeaveRoom = () => {
-		axios.post (`http://localhost:3001/room/leave/${props.id}`, {}, {withCredentials: true})
+		axios.post (`${process.env.REACT_APP_BACK_URL}/room/leave/${props.id}`, {}, {withCredentials: true})
 		.then ((res) => {
 			toast ('you left the room')
 		}).catch ((e) => {
@@ -264,9 +266,9 @@ const Room = (props: RoomProps) => {
 				<span className="availableRoomName">
 					{props.name}
 				</span>
-				{settings && <button onClick={RoomSettings1}> <IoSettingsSharp/></button>}
+				{settings && <button className="Settingsbutt" onClick={RoomSettings1}> <IoSettingsSharp className="settingsbut"/></button>}
 				{open == true && (<RoomSettingss close= {seTopen} id={props.id}/>)}
-				<button onClick={LeaveRoom}><GiExitDoor className="settingsButton"/></button>
+				<button className="leavebutt"onClick={LeaveRoom}><GiExitDoor className="leaveroom"/></button>
 			</div>
 		</div>
 	)
@@ -301,6 +303,7 @@ const RoomZone = (props: AvatarToConvoPointers) => {
 			<div className="availableRoomsTitle">
 				Rooms
 			</div>
+			<hr className="rmline1"></hr>
 			<div className="availableRoomsWrapper">
 				{rooms.map((room) => <Room {...room} key={room.id}/>)}
 			</div>
@@ -353,18 +356,43 @@ const RoomInfo = (props: RoomInfoProps) => {
 
 
 type MessageProps = {
-	avatar: string;
-	content: string;
-	ownMsg: boolean;
+	avatar		: string;
+	content		: string;
+	ownMsg		: boolean;
+	username	: string;
 }
 
 const Message = (props: MessageProps) => {
+	const user = useContext (UserContext);
+	const navigate = useNavigate();
+
+	const ToProfile = () => {
+		if (props.username === user?.user.username)
+			navigate(`/profile/me`)
+		else 
+			navigate(`/profile/${props.username}`)
+	}
+	
 	return (
-		<div className="message own">
-			<div className="messageTop">
-				<img className="messageImg" src={props.avatar}/>
-				<p className="messageText" >{props.content}</p>
+		<div>
+		{ props.ownMsg == true && (
+			<div className="message own1">
+				<div className="messageTop">
+					<img onClick={ToProfile} className="messageImg" src={props.avatar}/>
+					<div className="messageText" >{props.content}</div>
+				</div>
 			</div>
+		)
+		}
+		{ props.ownMsg == false && (
+			<div className="message own">
+				<div className="messageTop">
+					<div className="messageText" >{props.content}</div>
+					<img onClick={ToProfile} className="messageImg1" src={props.avatar}/>
+				</div>
+			</div>
+		)
+		}
 		</div>
 	)
 }
@@ -374,21 +402,34 @@ type SendMessageProps = {
 }
 
 const SendMessage = (props: SendMessageProps) => {
-	const [message, setMessage] = useState ('');
+	// const [message, setMessage] = useState ('');
 	const chatSocket = useContext(chatSocketContext);
+	const [value, setValue] = useState("");
 	
 	const saveMessage = (event: any) => {
-		setMessage(event.target.value)
+		// setMessage(event.target.value)
+		setValue(event.target.value)
 	}
-	const sendMessage = () => {
-		if (message !== '') {
-			chatSocket.emit('message', {roomId: props.roomId, content: message})
+	const handleKeyDown = (event: any) => {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			event.preventDefault();
+			// setValue(event.target.value.replace(/(\r\n|\n|\r)/gm, ""))
+			sendMessage();
 		}
 	}
+
+	
+	const sendMessage = () => {
+		if (value !== '') {
+			chatSocket.emit('message', {roomId: props.roomId, content: value})
+		}
+		setValue('');
+	}
+
 	return (
 		<div className="chatZoneBottom">
-			<textarea className="chatZoneInput" placeholder="write a text...." onChange={saveMessage}></textarea>
-			<button className="chatZoneSubmitButton" onClick={sendMessage}><img className="chatZoneSubmitButtonImg" src={require(`../../send.png`)} alt="send" /></button>
+			<textarea className="chatZoneInput"  value={value} placeholder="write a text...." onChange={saveMessage} onKeyDown={handleKeyDown}/>
+			<button className="chatZoneSubmitButton" onClick={sendMessage}><BiSend className="chatZoneSubmitButtonImg"/></button>
 		</div>
 	)
 }
@@ -401,6 +442,7 @@ type  ChatZoneProps = {
 const ChatZone = (props: ChatZoneProps) => {
 	const [ conversation, setConversation ] 	= useState<Conversation | undefined> (undefined);
 	const user 									= useContext(UserContext);
+	const chatZoneTopRef 						= useRef<HTMLDivElement>(null);
 
 	useEffect (() => {
 		if (props.chatZoneId !== null) {
@@ -409,12 +451,19 @@ const ChatZone = (props: ChatZoneProps) => {
 
 	}, [props.chatZoneId])
 
+	useEffect(() => {
+		if (chatZoneTopRef.current) {
+			chatZoneTopRef.current.scrollTop = chatZoneTopRef.current.scrollHeight;
+		}
+	}, [conversation?.messages.length]);
+
+
 	return (
 		<div className="chatZone">
 			<div className="chatZoneWrapper">
 				{conversation === undefined? null: conversation.visibility === 'DM' ? <FriendInfo {...conversation} /> : <RoomInfo {...conversation}/>}
-				<div className="chatZoneTop">
-					{conversation === undefined? null: conversation.messages.map((msg) => <Message avatar={msg.avatar} content={msg.content} ownMsg={user?.user.id == msg.senderId}/>)}
+				<div className="chatZoneTop" ref={chatZoneTopRef}>
+					{conversation === undefined? null: conversation.messages.map((msg, index) => <Message avatar={msg.avatar} content={msg.content} ownMsg={user?.user.id == msg.senderId} key={index} username={msg.senderName}/>)}
 				</div>
 				<div className="chatZoneBottom">
 					{conversation === undefined? null: <SendMessage roomId={conversation.roomId} />}
@@ -435,6 +484,17 @@ type ConvoRoomProps = {
 }
 
 const ConvoRoom = (props: ConvoRoomProps) => {
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+	let className = width > 800 ? "" : "hidden";
 	
 	const setChatZoneId = () => {
 		props.setChatZoneId(props.id);
@@ -442,9 +502,9 @@ const ConvoRoom = (props: ConvoRoomProps) => {
 	return (
 		<div className ="recentConversations" onClick={setChatZoneId}>
 			{props.visibility === 'PROTECTED'? <FaLock className="recentConversationsImg" />: props.visibility === 'PUBLIC'? <MdGroups className="recentConversationsImg" />: <GiPrivate className="recentConversationsImg"/>}
-			<div className="test">
+			<div className={`test ${className}`}>
 				<span className="recentConversationsName">{props.name}</span>
-				<p>{props.lastmsg}</p>
+				<p>{props.lastmsg? props.lastmsg.slice (0, 20): ""}</p>
 			</div>
 		</div>
 	)
@@ -459,17 +519,32 @@ type ConvoFriendProps = {
 }
 
 const ConvoFriend = (props: ConvoFriendProps) => {
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
+	let className = width > 800 ? "" : "hidden";
 	const setChatZoneId = () => {
 		props.setChatZoneId(props.id);
 	}
 	return (
 		<div className ="recentConversations" onClick={setChatZoneId}>
 			<img className="recentConversationsImg" src={props.avatar} />
-			<div className="test">
-				<span className="recentConversationsName">{props.name}</span>
-				<p>{props.lastmsg}</p>
-			</div>
+			{
+				width > 800 &&
+				<>
+					<div className="test">
+						<span className="recentConversationsName">{props.name}</span>
+						<p>{props.lastmsg? props.lastmsg.slice (0, 20): ""}</p>
+					</div>
+				</>
+			}
 		</div>
 	)
 }
@@ -483,6 +558,18 @@ type ConvoZoneProps = {
 
 const ConvoZone = (props: ConvoZoneProps) => {
 	const  [conversation, setConversations] = useState<JSX.Element[]>([]);
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+	let className = width > 800 ? "" : "hidden";
 
 	useEffect (() => {
 		setConversations ([]);
@@ -513,9 +600,15 @@ const ConvoZone = (props: ConvoZoneProps) => {
 	return (
 		<div className='recentMessages'>
 			<div className="recentMessagesWrapper">
-				<div className="recentMessagesTitle">
-					Messages
-				</div>
+				{
+					width > 800 &&
+					<>
+					<div className="recentMessagesTitle">
+						Messages
+					</div>
+					<hr className="rmline"></hr>
+					</>
+				}
 				<div>
 					{conversation}
 				</div>
@@ -529,6 +622,7 @@ type Message = {
 	senderId		: number,
 	avatar			: string,
 	content			: string,
+	senderName		: string,
 };
 
 type Conversation = {
@@ -547,18 +641,29 @@ const Chat = () => {
 	const user 									= useContext(UserContext);
 	const chatSocket							= useContext(chatSocketContext);
 	const [done, setDone]						= useState<boolean>(false);
-	
-	
+	const [width, setWidth] 					= useState(window.innerWidth);
+  
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+	let className = width > 800 ? "" : "hidden";
+
 	useEffect (() => {
-		axios.get ('http://localhost:3001/room/myrooms', {withCredentials: true}).then ((res) => {
+		axios.get (`${process.env.REACT_APP_BACK_URL}/room/myrooms`, {withCredentials: true}).then ((res) => {
 			setRoomIdToMsgs(new Map());
 			for (const room of res.data) {
 				if (room.visibility === 'DM') {
 					const splits = room.name.split('-');
 					let friendId = splits[1] === String(user?.user.id)? Number(splits[2]): Number(splits[1]);
-					axios.get (`http://localhost:3001/friend/${friendId}/get`, {withCredentials: true})
+					axios.get (`${process.env.REACT_APP_BACK_URL}/friend/${friendId}/get`, {withCredentials: true})
 					.then ((friend) => {
-						axios.get(`http://localhost:3001/message/${room.id}`, {withCredentials: true})
+						axios.get(`${process.env.REACT_APP_BACK_URL}/message/${room.id}`, {withCredentials: true})
 						.then ((messages) => {
 							setRoomIdToMsgs ((prev) => {
 								prev.set(room.id, {
@@ -577,7 +682,7 @@ const Chat = () => {
 					})
 				}
 				else {
-					axios.get(`http://localhost:3001/message/${room.id}`, {withCredentials: true})
+					axios.get(`${process.env.REACT_APP_BACK_URL}/message/${room.id}`, {withCredentials: true})
 					.then ((msgs) => {
 						setRoomIdToMsgs ((prev) => {
 							prev.set(room.id, {
@@ -627,7 +732,7 @@ const Chat = () => {
 		<div className='chatApp'>
 			<ConvoZone RoomIdToMsgs={RoomIdToMsgs} setChatZoneId={setChatZoneId} done={done}/>
 			<ChatZone chatZoneId={chatZoneId} RoomIdToMsgs={RoomIdToMsgs}/>
-			<div className="onlineFriendsAndRooms">
+			<div className={`onlineFriendsAndRooms ${className}`}>
 				<FriendZone RoomIdToMsgs={RoomIdToMsgs} setChatZoneId={setChatZoneId} done={done}/>
 				<RoomZone RoomIdToMsgs={RoomIdToMsgs} setChatZoneId={setChatZoneId} done={done}/>
 			</div>

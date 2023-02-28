@@ -38,9 +38,10 @@ const Member = (props: memberDto) => {
 	const [ban , setBan] 		= useState(props.banned);
 	const [owner , setOwner]	= useState(props.role === 'OWNER');
 	const [admin, setAdmin]		= useState(props.role === 'ADMIN')
+	const user					= useContext (UserContext)
 	
 	const handlemute = () =>{
-		axios.post (`http://localhost:3001/member/${props.roomId}/${props.user.id}/${mute ? 'unmute': 'mute'}`, {}, { withCredentials: true, })
+		axios.post (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/${mute ? 'unmute': 'mute'}`, {}, { withCredentials: true, })
 		.then ((response) => {
 		}).catch ((e) => {
 		})
@@ -48,7 +49,7 @@ const Member = (props: memberDto) => {
 	}
 
 	const handleBan = () => {
-		axios.post (`http://localhost:3001/member/${props.roomId}/${props.user.id}/${ban ? 'unban': 'ban'}`, {}, { withCredentials: true, })
+		axios.post (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/${ban ? 'unban': 'ban'}`, {}, { withCredentials: true, })
 		.then ((response) => {
 
 		}).catch ((e) => {
@@ -58,12 +59,21 @@ const Member = (props: memberDto) => {
 	}
 
 	const handleKick = () => {
-		axios.delete (`http://localhost:3001/member/${props.roomId}/${props.user.id}/delete`, { withCredentials: true, })
+		axios.delete (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/delete`, { withCredentials: true, })
 		.then ((response) => {
 			toast (`${props.user.username} is kicked successfully`)
 			props.close (false);
 		}).catch ((e) => {
-			console.log (e);
+		})
+	}
+
+	const handleAdmin = () => {
+		axios.post (`${process.env.REACT_APP_BACK_URL}/member/${props.roomId}/${props.user.id}/updateRole`, {role: "admin"}, { withCredentials: true, })
+		.then ((response) => {
+			toast (`${props.user.username} is now an admin`)
+			props.close (false);
+		}).catch ((e) => {
+			toast (`only the owner can make someone an admin`)
 		})
 	}
 
@@ -82,6 +92,13 @@ const Member = (props: memberDto) => {
 					<RiAdminFill className='addremobutt'/>
 				</button>
 			}
+
+			{
+				!admin && !owner &&<button className='addremobutt1' >
+					<RiAdminFill onClick={handleAdmin} className='setAdmin'/>
+				</button>
+			}
+			
 			{
 				!owner && 	
 				<button className='addremobutt1'>
@@ -124,7 +141,7 @@ const RoomSettingss = (props : RoomSettingsProps) => {
 	const user					= useContext (UserContext)
 	
 	useEffect (() => {
-		axios.get (`http://localhost:3001/member/${props.id}/all`, { withCredentials: true, })
+		axios.get (`${process.env.REACT_APP_BACK_URL}/member/${props.id}/all`, { withCredentials: true, })
 		.then ((response) => {
 			response.data.forEach ((member: memberDto) => {
 				setMembers (members => [...members, member])

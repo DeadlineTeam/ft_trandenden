@@ -341,6 +341,7 @@ function GameCanvas ({width, height}: Icanvas) {
 const GameComponent: React.FC<any> = () => {
 	const pRef = useRef<HTMLDivElement>(null);
 	const [width, setWidth] = useState(0);
+	const navigate = useNavigate();
 	
 	function onWidthChange () {
 		if (pRef.current) {
@@ -361,6 +362,9 @@ const GameComponent: React.FC<any> = () => {
 	return  (
 			<div className="GameContainer">
 				<h1>Pong</h1>
+				<div className="leaveButton">
+					<button onClick={() => navigate ("/Home")}>leave</button>
+				</div>
 				<div className="game" ref={pRef}>
 					{width && <GameCanvas width={width} height={width / 2}/>}
 				</div>
@@ -370,14 +374,3 @@ const GameComponent: React.FC<any> = () => {
 
 
 export default GameComponent;
-
-
-// const inviteToGame = () => {
-// 	const url = `http://localhost:3001/game/invite/${id}`
-// 	axios.post(url, {} ,{withCredentials: true}).then((response) =>{
-// 		console.log(response.data)
-// 		navigate(`/Game?invite=${response.data.gameId}`)
-// 	}).catch ((error) => {
-// 		console.log(error)
-// 	})
-// }

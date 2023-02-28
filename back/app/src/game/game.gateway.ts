@@ -10,7 +10,7 @@ import { WsAuthGuard } from "src/auth/ws-auth.guard";
 import { UseGuards } from "@nestjs/common";
 @WebSocketGateway ({
 	cors: {
-		origin: 'http://localhost:3000',
+		origin: `${process.env.FRONTENDURL}`,
 		credentials: true
 	},
 	namespace: "playgame"
@@ -43,7 +43,9 @@ export class GameGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
 	}
 
-	handleDisconnect(@ConnectedSocket () client: Socket) {}
+	handleDisconnect(@ConnectedSocket () client: Socket) {
+		this.gameService.leaveMatch (client);
+	}
 
 	@UseGuards(WsAuthGuard)
 	@SubscribeMessage ("join")

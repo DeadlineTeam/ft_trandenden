@@ -113,7 +113,7 @@ const Sidebar2 = ({ placeholder, data }: props) => {
 
      }
     const handleFilter = (event: React.FormEvent & { target: HTMLInputElement }) => {   
-        const url3 = "http://localhost:3001/users/all"
+        const url3 = `${process.env.REACT_APP_BACK_URL}/users/all`
         setValue(event.target.value);
         axios.get(url3, { withCredentials: true }).then((response2) => {
             setTrudata(response2.data)
@@ -124,7 +124,6 @@ const Sidebar2 = ({ placeholder, data }: props) => {
             const newfilter = truedata.filter((value) => {
                 return value.username.includes(searchWord)
             })
-            console.log(searchWord.length)
             if (searchWord.length == 0) {
                 setFiltredData([]);
                 setSerach(false);
@@ -136,14 +135,13 @@ const Sidebar2 = ({ placeholder, data }: props) => {
             }
     }
     const handlLogOut = () =>{
-        axios.get("http://localhost:3001/profile/logout", {withCredentials: true}).then((response) =>{
+        axios.get(`${process.env.REACT_APP_BACK_URL}/profile/logout`, {withCredentials: true}).then((response) =>{
             navigate ('/login');
       	})
     
 
     }
     const handlesearch = ()=>{
-        console.log("im hereeee")
         setValue("");
         setSerach(false);
         setFiltredData([])
@@ -175,7 +173,7 @@ const Sidebar2 = ({ placeholder, data }: props) => {
                         (
                             <div className="dataInputs">
                                 {filtredData.map((value, key) =>
-                                <Link to={"profile/"+value.username}>
+                                <Link to={"profile/"+value.username} key={key}>
                                     <p onClick={handlesearch}  className='dataitem'>
                                         {value.username}
                                     </p>

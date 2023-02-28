@@ -73,3 +73,11 @@
     top: 30px;
     left: calc(50% - 75px);
 }
+
+.setAdmin {
+    height: 1em;
+    width: 1em;
+    background-color: none;
+    background: none;
+    color: rgb(111, 104, 104);
+}

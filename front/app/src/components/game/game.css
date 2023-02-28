@@ -14,6 +14,12 @@
 	text-align: center;
 }
 
+.leaveButton {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .GameState {
 	width: 50vw;
 	height: 3vw;

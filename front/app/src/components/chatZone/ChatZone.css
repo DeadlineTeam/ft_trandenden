@@ -26,6 +26,24 @@
     background-color: #363c40;
     color: white;
     max-width: 300px;
+	word-break: break-word;
+}
+
+.messageImg1 {
+    width: 32px;
+    height: 32px;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-left: 10px;
+    border: 1px solid white ;
+}  
+
+.messageText1 {
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #363c40;
+    color: white;
+    max-width: 300px;
 }
 
 .messageBottom {
@@ -36,7 +54,13 @@
 
 .message.own {
     align-items: flex-end;
+    margin-right: 10%;
 }
+.message.own1 {
+    align-items: flex-start;
+    margin-left: 10%;
+}
+
 
 .message.own .messageText{
     background-color: #6e7274;

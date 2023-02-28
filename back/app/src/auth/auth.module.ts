@@ -11,7 +11,7 @@ import {TwofaService} from './2fa.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [UsersModule, PassportModule.register({failureRedirect: 'localhost:3000'}), 
+  imports: [UsersModule, PassportModule.register({failureRedirect: `${process.env.FRONTEND_URL}`}), 
 	JwtModule.registerAsync({
 		imports: [ConfigModule],
       	inject: [ConfigService],

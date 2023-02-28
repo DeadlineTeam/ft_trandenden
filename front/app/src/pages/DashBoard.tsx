@@ -9,7 +9,7 @@ import { valueToNode } from '@babel/types'
 const DashBoard = () => {
   const[leaderboard, setLeaderboard] = useState(Array<any>())
   useEffect(()=>{
-      const url4 = "http://localhost:3001/users/leaderboard"
+      const url4 = `${process.env.REACT_APP_BACK_URL}/users/leaderboard`
       axios.get(url4,{withCredentials: true}).then((response3) =>{
       setLeaderboard(response3.data)
       })

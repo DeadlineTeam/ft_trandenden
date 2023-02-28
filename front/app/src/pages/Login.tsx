@@ -1,7 +1,7 @@
 import { url } from 'inspector'
 import React from 'react'
 import "./Login.css"
-import myimg from '../42ss.png'
+import myimg from '../images/42ss.png'
 import { useState } from 'react'
 
 const Login = () => {
@@ -9,7 +9,7 @@ const Login = () => {
 	
 	const handlelogin = () =>{
 
-		window.location.replace( "http://localhost:3001/pong_api");
+		window.location.replace( `${process.env.REACT_APP_BACK_URL}/pong_api`);
 
 	}
   	return (

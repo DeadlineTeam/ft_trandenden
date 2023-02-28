@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactInputVerificationCode from 'react-input-verification-code';
 import { useState , useEffect } from 'react';
-import "../components/faca1.css"
+import "../components/faca.css"
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +13,6 @@ const TwoFaCode = () => {
     const handlevalue = (data:string) =>{
         setValue(data);
         isComplete(false)
-        console.log(value)
       }
     const handlecancel = () =>{
       navigate("/login")
@@ -21,7 +20,7 @@ const TwoFaCode = () => {
       const handlecode = (event:any) =>{
         event.preventDefault();
         
-        axios.post("http://localhost:3001/2fa/authenticate",{"twofasecret": value},{withCredentials: true})
+        axios.post(`${process.env.REACT_APP_BACK_URL}/2fa/authenticate`,{"twofasecret": value},{withCredentials: true})
         .then((response) =>{
           navigate("/Home")
           })
@@ -36,7 +35,7 @@ const TwoFaCode = () => {
     useEffect(()=>{
       async function  Ciali() {
         // const axiosapi = axiosApi ();
-        axios.get('http://localhost:3001/getUser', {
+        axios.get(`${process.env.REACT_APP_BACK_URL}/getUser`, {
           withCredentials: true,
         }).then((data)=> {
           navigate("/Notfound");
@@ -51,11 +50,13 @@ const TwoFaCode = () => {
     
         <div className='faBackground'>
             <div className='facontainer'>
+			<div className='Tp'>
               <h1 className='title'>Enter Password
                 </h1>
                   <div className="custom-style">
                     <ReactInputVerificationCode autoFocus={true} placeholder='' value={value} onChange={handlevalue}  length={6} />
                   </div>
+				</div>
                 <div className='footer'>
                   <button className='cancelButton' onClick={handlecancel}>Cancel </button>
                   <button className='continueButton' disabled={complete ? false:true} onClick={handlecode} >Continue </button>

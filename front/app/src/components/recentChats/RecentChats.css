@@ -13,17 +13,64 @@
 .recentConversationsImg {
     width: 32px;
     height: 32px;
+    color: white;
     border-radius: 50px;
     object-fit: cover;
     margin-right: 20px;
-    border: 1px solid white ;
+
 }
 
 .recentConversationsName {
-    font-weight: 500;
-    color: whitesmoke;
+    font-weight: 700;
+    color: rgb(255, 255, 255);
 }
 
 .test p {
-    color: green;
+    font-size: x-small;
+    color: rgb(255, 255, 255);
+}
+.rmline{
+    position: relative;
+    width: 80%;
+    left: 10%;
+    margin-top: 4%;
+
+}
+.rmline1{
+    position: relative;
+    width: 80%;
+    left: 5%;
+    margin-top: 4%;
+
+}
+@media (max-width :800px) {
+	.recentConversations {
+		display: flex;
+		align-items: center;
+		padding: 10px;
+		width: 40px;
+		cursor: pointer;
+	}
+	
+	.test{
+		display:none	
+	}
+	.recentConversationsImg {
+		width: 32px;
+		height: 32px;
+		color: white;
+		border-radius: 50px;
+		object-fit: cover;
+		margin-right: 0px;
+	
+	}
+	.recentConversations {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10px;
+		cursor: pointer;
+	}
+		
+	
 }

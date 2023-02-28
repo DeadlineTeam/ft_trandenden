@@ -27,12 +27,13 @@ export class GameHistoryService {
 
 	private playerRank(level: number): number
 	{
-		if (level < 1)
-			return 0;
-		if (level < 3)
+		if (level >= 0.5 && level < 2)
 			return 1;
-		if (level < 5)
+		if (level >= 2 && level < 5)
 			return 2;
+		if (level >= 5)
+			return 3;
+		return 0;
 	}
 
 	rankAvatar(rank: number): string
@@ -60,7 +61,6 @@ export class GameHistoryService {
 				totalgames: info.player.totalgames + 1,
 			}
 		});
-		console.log(db, "db");
 		for (let i = 0; i < db.length; i++)
 		{
 			await this.prisma.user.update({
@@ -76,7 +76,6 @@ export class GameHistoryService {
 	async addGameHistory(gameHistory: GameHistoryDto): Promise<any>
 	{
 		const results = await this.playerResult(gameHistory);
-		console.log(results);
 		const res = await this.prisma.game.create({
 			data: {
 				players: {

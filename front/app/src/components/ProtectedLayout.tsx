@@ -21,7 +21,13 @@ type IuserContext = {
 export const UserContext = createContext<IuserContext | null>(null);
 
 
-
+type Message = {
+	roomId			: number,
+	senderId		: number,
+	avatar			: string,
+	content			: string,
+	senderName		: string,
+};
 
 
 export default function ProtectedLayout() {
@@ -41,7 +47,7 @@ export default function ProtectedLayout() {
 	useEffect(() => {
 		async function  authenticateUser() {
 			// const axiosapi = axiosApi ();
-			axios.get('http://localhost:3001/getUser', {
+			axios.get(`${process.env.REACT_APP_BACK_URL}/getUser`, {
 				withCredentials: true,
 			}).then((res)=> {
 				setUser ({
@@ -62,13 +68,10 @@ export default function ProtectedLayout() {
 				gameSocket.connect ();
 
 				// check if the socket is connected
-				console.log ("-------> login");
+		
 				
 				
 				// onlineSocket.emit ("login");
-
-				
-
 				setLoading(false);
 			}).catch((err) => {
 				setLoading(false);
@@ -86,25 +89,44 @@ export default function ProtectedLayout() {
 			if (notification.type === "GameInviteDeclined") {
 				toast (`Game Invitation declined`)
 			}
+
+			if (notification.type === "friendship") {
+				toast (notification.message)
+			}
+
+			if (notification.type === "message") {
+				axios.get(`${process.env.REACT_APP_BACK_URL}/getUser`, {withCredentials: true,})
+				.then((res)=> {
+					if (notification.message.senderId !== res.data.userId) {
+						axios.get (`${process.env.REACT_APP_BACK_URL}/room/get/${notification.message.roomId}`, {withCredentials: true})
+						.then ((res) => {
+							if (res.data.visibility !== "DM") {
+								toast (`[${res.data.name}] ${notification.message.senderName} :${notification.message.content}`)
+							}
+							else {
+								toast (`${notification.message.senderName} :${notification.message.content}`)
+							}
+						})
+					}
+
+				})
+			}
 		})
 
 		onlineSocket.on ('update', (data: {action: string, roomId: number}) => {
 			chatSocket.emit (data.action, {roomId: data.roomId});
-			console.log ("update received out of chat");
 		})
 
 		onlineSocket.on("logout", () => {
 			navigate ("/login");
 		})
-		
-		
+
 
 		return () => {
-			// onlineSocket.emit ("logout");
+			onlineSocket.off ('update');
+			onlineSocket.off ("notification");
+			onlineSocket.off ("logout");
 			onlineSocket.disconnect ();
-			// onlineSocket.off ('update');
-			// onlineSocket.off ("notification");
-			// onlineSocket.off ("logout");
 		}
 	}, [])
 

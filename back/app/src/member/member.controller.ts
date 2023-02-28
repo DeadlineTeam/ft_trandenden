@@ -57,6 +57,7 @@ export class MemberController {
 		return this.memberService.muteUser(roomId, userId);
 	}
 
+	@UseGuards(ExistanceGuard)
 	@UseGuards(RolesGuard)
 	@Roles('OWNER', 'ADMIN')
 	@Post ('/:roomId/:userId/unmute')
@@ -65,6 +66,7 @@ export class MemberController {
 	}
 	
 	@UseGuards(ExistanceGuard)
+	@UseGuards(RolesGuard)
 	@Roles ('OWNER', 'ADMIN')
 	@Post ('/:roomId/:userId/ban')
 	banUser (@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {
@@ -72,6 +74,7 @@ export class MemberController {
 	}
 	
 	@UseGuards(ExistanceGuard)
+	@UseGuards (RolesGuard)
 	@Roles ('OWNER', 'ADMIN')
 	@Post ('/:roomId/:userId/unban')
 	unbanUser (@Param('roomId', ParseIntPipe) roomId: number, @Param('userId', ParseIntPipe) userId: number) {

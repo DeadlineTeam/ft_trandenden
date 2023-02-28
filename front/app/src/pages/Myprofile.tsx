@@ -12,6 +12,12 @@ import {IoMdPersonAdd} from 'react-icons/io'
 import {ImBlocked} from 'react-icons/im'
 import {CgUnblock} from 'react-icons/cg'
 import { Console } from 'console';
+import rank1 from '../images/output-onlinepngtools1.png'
+import rank11 from '../images/rank11.png'
+import rank22 from '../images/rank22.png'
+import rank33 from '../images/rank33.png'
+import rank2 from '../images/output-onlinepngtools2.png'
+import rank3 from '../images/output-onlinepngtools.png'
 import { toast } from 'react-toastify';
 const Historitem = styled.div<{close: boolean}>`
 display: flex;
@@ -74,11 +80,11 @@ avatar_url: string;
 }
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3001/profile/',
+  baseURL: `${process.env.REACT_APP_BACK_URL}/profile/`,
 
 });
 const instance2 = axios.create({
-  baseURL: 'http://localhost:3001/profile/',
+  baseURL: `${process.env.REACT_APP_BACK_URL}/profile/`,
 
 });
 
@@ -96,8 +102,10 @@ const Myprofile = () => {
   	const [lose, setLose] = useState(0)
   	const [totalgames, setTotalgames] = useState(0)
   	const [winrate1, setWinrate] = useState(0)
-  	const user = useContext(UserContext)
+	  const user = useContext(UserContext)
+
 	const [render, setRender] = useState (false);
+	const [valrank, setValrank] = useState(0);
 	const navigate = useNavigate();
 
   	useEffect(()=>{
@@ -116,20 +124,21 @@ const Myprofile = () => {
 			navigate("/Notfound")
 		})
       	
-		const url3 = "http://localhost:3001/profile/gameHistory"
+		const url3 = `${process.env.REACT_APP_BACK_URL}/profile/gameHistory`
       	axios.post(url3, {username: stri},{withCredentials: true}).then((response2) =>{
      		setMaphistory(response2.data)
       	}).catch(error=>{
 			setMaphistory([])
 		})
       
-		const url4 = "http://localhost:3001/profile/stats"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/profile/stats`
       	axios.post(url4, {username: stri},{withCredentials: true}).then((response3) =>{
 			setStats (response3.data)
 			setWin(response3.data.win)
 			setLose(response3.data.loss)
 			setWinrate(Math.floor(response3.data.winrate * 100))
 			setTotalgames(response3.data.totalgames)
+			setValrank(response3.data.rank)
       	}).catch(error=>{
 			
 		})
@@ -137,36 +146,25 @@ const Myprofile = () => {
 
 
 	const handleadd = (e:any) =>{
-		const url4 = "http://localhost:3001/"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/`
 		axios.post(`${url4}friend/${id}/add`, {},{withCredentials: true}).then((response2) =>{
 			setRender (!render);
 		})
 	}
 
 	const handleblock = (e:any) =>{
-		const url4 = "http://localhost:3001/"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/`
 		axios.post(`${url4}friend/${id}/block`, {},{withCredentials: true}).then((response2) =>{
 			setRender (!render);
 		})
 	}
 	const handleunblock = (e:any) =>{
-		const url4 = "http://localhost:3001/"
+		const url4 = `${process.env.REACT_APP_BACK_URL}/`
 		axios.post(`${url4}friend/${id}/unblock`, {},{withCredentials: true}).then((response2) =>{
 			setRender (!render);
 		})
 	}
-
-
-	////// invite to game button for testing
-	////// remove it later
-	const inviteToGame = () => {
-		const url = `http://localhost:3001/game/invite/${id}`
-		axios.post(url, {} ,{withCredentials: true}).then((response) =>{
-			navigate(`/Game?invite=${response.data.gameId}`)
-		}).catch ((error) => {
-			toast (error.response.data.message)
-		})
-	}
+	
 
 	var  intvalue = Math.floor(leveluser)
 	let level = leveluser;
@@ -179,7 +177,6 @@ const Myprofile = () => {
 	let Totalgamepl:number= 17
 	let gamewin:number= 7
 	let gamelose:number=5
-
 
 	
 return (
@@ -244,6 +241,29 @@ return (
 				</div>
 				<div className='rank'>
 					<h1 className='rankhead'>RANK</h1>
+					<div className='Rankranks'>
+					{valrank < 1&& (
+						<img className='ranking' src={rank1}/>
+					)
+}
+					{valrank >=1 && (
+						<img className='ranking' src={rank11}/>
+					)
+					}
+					{ valrank >= 2 && (
+					<img className='ranking' src={rank22}/>
+					)}
+					{ valrank <2  && (
+					<img className='ranking' src={rank2}/>
+					)}
+					</div>
+					{ valrank == 3 && (
+					<img className='ranking1' src={rank33}/>
+					)}
+					{ valrank <3 && (
+					<img className='ranking1' src={rank3}/>
+					)}
+					
 				</div>
 			</div>
 		</div>
@@ -252,9 +272,9 @@ return (
 		MATCH HISTORY
 		</h1>
 		<div className='matchhistory1'>
-			{maphistory.map((value)=>{
+			{maphistory.map((value, index)=>{
 				return(
-							<Historitem close={true} className="Historitem">
+							<Historitem close={true} className="Historitem" key={index}>
 								<img className='user1img' src={value.player1.avatar}/>
 								<Usernamehis1 close={value.true}>{value.player1.username}</Usernamehis1>
         						<h2 className='usernamehistory'>level {Math.floor(value.player1.level)}</h2>

@@ -9,6 +9,7 @@ import Faca from '../components/Faca';
 import Faca1 from '../components/Faca1'
 import axios from 'axios'
 import Faca2 from '../components/Faca2'
+import {AiFillCloseCircle} from 'react-icons/ai'
 const StyledLabel = styled.label<{ checked: boolean }>`  
 cursor: pointer;  
 text-indent: -9999px;  
@@ -56,7 +57,8 @@ const dataUrlToBlob = (dataurl: string): Blob => {
 
 const Settings = () => {
 
-  const [authen, setAuth] = useState(false)
+
+  const [valid, setValid] = useState(false)
   var [username1, setUsername] = useState("");
   const [avatarurl, setAvatarurl] = useState("")
   const [img, setImg] = useState("");
@@ -69,13 +71,10 @@ const Settings = () => {
   const [updated, setUpdated] = useState(true);
   let username: string = "Flen ben Flen"
   useEffect(() => {
-    console.log("executed");
-    const url4 = "http://localhost:3001/profile/iconInfo/"
+    const url4 = `${process.env.REACT_APP_BACK_URL}/profile/iconInfo/`
     axios.post(url4, { username: "me" }, { withCredentials: true }).then((response3) => {
-      console.log(response3.data)
       setAvatarurl(response3.data.avatar_url)
       setImg(response3.data.avatar_url)
-      console.log('>>', response3.data.avatar_url)
       setUsername(response3.data.username)
       setToggled(response3.data.twofactor)
       
@@ -84,14 +83,12 @@ const Settings = () => {
 
 
   function handleFileChange(event: any | null) {
-    console.log("im here i just ccamed here ")
     const data = new FormData();
     data.append('file', event.target.files[0], event.target.files[0].name);
-    const url4 = "http://localhost:3001/users/Avatar"
+    const url4 = `${process.env.REACT_APP_BACK_URL}/users/Avatar`
     axios.post(url4, data, { withCredentials: true }).then((response3) => {
       setImg(response3.data.avatar_url);
     }).catch((err) => {
-      console.log(err);
     }) 
   }
   const handlename = (event: React.FormEvent & { target: HTMLInputElement }) => {
@@ -102,19 +99,23 @@ const Settings = () => {
       setOpenmodel(!openmodel)
     else{
       setToggled(!toggled)
-      axios.get("http://localhost:3001/2fa/turn-off",  { withCredentials: true }).then((response2) => {
+      axios.get(`${process.env.REACT_APP_BACK_URL}/2fa/turn-off`,  { withCredentials: true }).then((response2) => {
       })
 
     }
   }
-  const handlesubmit = () => {
-    const url3 = "http://localhost:3001/users/username"
+  const handlesubmit = (e:any) => {
+    e.preventDefault();
+    const url3 = `${process.env.REACT_APP_BACK_URL}/users/username`
     axios.post(url3, { username: name }, { withCredentials: true }).then((response2) => {
+    }).then(()=>{
+      setUpdated(!updated)
+    }).catch((err)=> {
+      setValid(true);
+
     })
   }
-  console.log(openmodel)
-  console.log("im here")
-  console.log(openmodel1)
+
   return (
     <div> 
       <h1 style={{ padding: "20px 20px", fontSize: "25px", color: "white", fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: "400" }}>Settings</h1>
@@ -133,6 +134,16 @@ const Settings = () => {
           {openmodel1 && <Faca1 closemodel={setOpenmodel1} openmodel2={setOpenmodel2}  ssucces={setSucces} settoggled={setToggled} />}
           {openmodel2 && <Faca2 closemodel={setOpenmodel2} ssucces={success} />}
           <button type='submit' onSubmit={handlesubmit} className='input-submit'> Sauvegarder</button>
+          {valid == true && (
+            <div className="invalidusername"> 
+              <div className="invalidusername1">
+                Invalide UserName
+              </div>
+              <button className='closebuttt' onClick={() =>{setValid(false)}}>
+                  <AiFillCloseCircle className='closeicc'/>
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

@@ -113,9 +113,10 @@ export class MemberService {
 		if (member?.role === ROLE.OWNER) {
 			throw new HttpException('Cannot change owner', 400);
 		}
-		if (role === ROLE.USER || role == ROLE.ADMIN) {
+		// if (role === ROLE.USER || role == ROLE.ADMIN) {
+			this.online.broadcast ("update", "admin", userId, roomId);
 			return this.setRole(roomId, userId, role); 
-		}
+		// }
 	}
 
 	async muteUser(roomId: number, userId: number) {
@@ -123,9 +124,11 @@ export class MemberService {
 		if (member?.muted === true) {
 			throw new HttpException('User is already muted', 400);
 		}
-		setTimeout (async () => {
+		
+		let timoutId = setTimeout (async () => {
 			await this.unmuteUser(roomId, userId);
-		}, 20000)
+		}, 60000)
+		
 		return await this.prisma.memberShip.updateMany({
 			where: {
 				roomId: roomId,
@@ -133,7 +136,7 @@ export class MemberService {
 			},
 			data: {
 				muted: true,
-				muteTime: 120 // 2 minutes
+				muteTime: Number (timoutId)
 			}
 		});
 	}
@@ -141,6 +144,7 @@ export class MemberService {
 	async unmuteUser(roomId: number, userId: number) {
 		const member = await this.getMember(roomId, userId);
 		if (member && member.muted === true) {
+			clearTimeout (member.muteTime);
 			return await this.prisma.memberShip.updateMany({
 				where: {
 					roomId: roomId,

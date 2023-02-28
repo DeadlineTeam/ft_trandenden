@@ -38,6 +38,19 @@ export class OnlineService {
 				message: message,
 			});
 		}
+
+		if (type === "friendship") {
+			this.onlineGateway.server.to (id.toString ()).emit (`notification`, {
+				type: "friendship",
+				message: message,
+			});
+		}
+		if (type === "message") {
+			this.onlineGateway.server.to (id.toString ()).emit (`notification`, {
+				type: "message",
+				message: message,
+			});
+		}
 	}
 
 	logout (id: number) {
